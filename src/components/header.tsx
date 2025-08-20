@@ -74,7 +74,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-xl shadow-2xl text-background w-10 h-10 hover:bg-background/20 transition-transform duration-300 ease-in-out hover:scale-110">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-xl shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -106,7 +106,7 @@ export default function Header() {
                         <p className="text-background/80">Síguenos</p>
                         <div className="flex gap-4">
                             {socialLinks.map((social) => (
-                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 backdrop-blur-sm text-accent hover:bg-accent/80 transition-transform duration-300 ease-in-out hover:scale-110">
+                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 text-accent transition-transform duration-300 ease-in-out hover:scale-110">
                                 <Link href={social.href} aria-label={social.label}>
                                     {social.icon}
                                 </Link>
