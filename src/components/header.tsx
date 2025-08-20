@@ -31,16 +31,16 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className="flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg">
+        <div className="flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-300 ease-in-out">
           <nav
             className={cn(
-              "flex items-center gap-4 transition-all duration-300 ease-in-out",
+              "flex items-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
               navVisible
-                ? "opacity-100 max-w-full"
+                ? "opacity-100 max-w-xl"
                 : "opacity-0 max-w-0"
             )}
           >
-            <div className={cn("flex items-center gap-4 overflow-hidden whitespace-nowrap", !navVisible && "px-0")}>
+            <div className={cn("flex items-center gap-4 whitespace-nowrap px-4")}>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -53,8 +53,8 @@ export default function Header() {
             </div>
           </nav>
           
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-primary-foreground hover:bg-primary-foreground/20 rounded-full h-9 w-9">
+          <div className="flex items-center">
+            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-primary-foreground hover:bg-primary-foreground/20 rounded-full h-9 w-9 flex-shrink-0">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
             </Button>
