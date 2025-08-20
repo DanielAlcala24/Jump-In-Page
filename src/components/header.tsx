@@ -41,10 +41,10 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-full shadow-lg transition-all duration-500 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-center justify-center bg-background/30 backdrop-blur-lg rounded-full shadow-lg transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
-              "flex items-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
+              "flex items-center gap-4 transition-all duration-700 ease-in-out overflow-hidden",
               navVisible
                 ? "opacity-100 max-w-xl"
                 : "opacity-0 max-w-0"
@@ -75,7 +75,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/80 backdrop-blur-sm text-foreground w-10 h-10">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/30 backdrop-blur-lg text-foreground w-10 h-10">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -83,7 +83,7 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-background/80 backdrop-blur-sm rounded-full w-10 h-10">
+                <Button variant="ghost" size="icon" className="bg-background/30 backdrop-blur-lg rounded-full w-10 h-10">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
