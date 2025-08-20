@@ -27,7 +27,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-4 left-4 z-50">
+      <header className="fixed top-4 left-4 z-50 flex items-center h-11">
          <Link href="#inicio" className="flex items-center gap-2">
           <Image 
             src="/assets/logojumpin.png"
@@ -35,6 +35,7 @@ export default function Header() {
             width={120}
             height={90}
             data-ai-hint="logo jump"
+            className="h-auto"
           />
         </Link>
       </header>
