@@ -12,7 +12,7 @@ export default function InfoBar() {
   }
 
   return (
-    <div className="relative z-50 bg-primary text-primary-foreground">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground">
       <div className="container mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-2 text-center text-sm font-medium">
         <Megaphone className="h-4 w-4 flex-shrink-0" />
         <span>

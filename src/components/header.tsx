@@ -19,7 +19,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-4 left-4 z-50">
+      <header className="fixed top-12 left-4 z-50">
          <Link href="#inicio" className="flex items-center gap-2">
           <div className="bg-background/80 backdrop-blur-sm p-2 rounded-full">
             <Zap className="h-8 w-8 text-primary" />
@@ -30,7 +30,7 @@ export default function Header() {
         </Link>
       </header>
 
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-12 right-4 z-50 hidden md:flex">
         <div className="flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg">
           <nav
             className={cn(
