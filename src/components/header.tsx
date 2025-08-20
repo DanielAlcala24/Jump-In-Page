@@ -41,7 +41,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-500 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-full shadow-lg transition-all duration-500 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
