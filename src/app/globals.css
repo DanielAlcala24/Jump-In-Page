@@ -7,24 +7,24 @@
     @apply scroll-smooth;
   }
   :root {
-    --background: 60 56% 91%;
+    --background: 48 94% 91%;
     --foreground: 240 10% 3.9%;
-    --card: 60 56% 91%;
+    --card: 48 94% 91%;
     --card-foreground: 240 10% 3.9%;
-    --popover: 60 56% 91%;
+    --popover: 48 94% 91%;
     --popover-foreground: 240 10% 3.9%;
     --primary: 211 81% 34%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 60 20% 85%;
+    --secondary: 48 83% 81%;
     --secondary-foreground: 240 10% 3.9%;
-    --muted: 60 20% 85%;
+    --muted: 48 83% 81%;
     --muted-foreground: 240 5% 45.1%;
     --accent: 20 82% 52%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 60 15% 80%;
-    --input: 60 15% 80%;
+    --border: 48 76% 71%;
+    --input: 48 76% 71%;
     --ring: 211 81% 34%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;

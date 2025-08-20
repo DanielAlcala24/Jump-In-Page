@@ -12,7 +12,7 @@ export default function SocialIcons() {
   return (
     <div className="fixed right-4 top-1/2 z-40 -translate-y-1/2 hidden flex-col gap-2 md:flex">
       {socialLinks.map((social) => (
-        <Button key={social.label} variant="outline" size="icon" asChild className="rounded-full bg-background/30 backdrop-blur-lg">
+        <Button key={social.label} variant="outline" size="icon" asChild className="rounded-full bg-accent/20 backdrop-blur-xl">
           <Link href={social.href} aria-label={social.label}>
             {social.icon}
           </Link>
