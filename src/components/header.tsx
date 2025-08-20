@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Menu, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "#inicio", label: "Inicio" },
@@ -13,8 +15,35 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) {
+          setVisible(false);
+        } else {
+          setVisible(true);
+        }
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+
+      return () => {
+        window.removeEventListener('scroll', controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+        "sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-transform duration-300",
+        visible ? "translate-y-0" : "-translate-y-full"
+    )}>
       <div className="container flex h-16 max-w-7xl items-center justify-between">
         <Link href="#inicio" className="flex items-center gap-2">
           <Zap className="h-6 w-6 text-primary" />
