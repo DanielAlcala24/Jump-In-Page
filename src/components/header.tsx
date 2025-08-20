@@ -30,7 +30,7 @@ export default function Header() {
       <header className="fixed top-4 left-4 z-50">
          <Link href="#inicio" className="flex items-center gap-2">
           <Image 
-            src="https://placehold.co/120x90.png"
+            src="/assets/logojumpin.png"
             alt="Jump-in Trampoline Park Logo"
             width={120}
             height={90}
@@ -40,7 +40,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-300 ease-in-out", !navVisible && "p-0")}>
+        <div className={cn("flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-300 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
