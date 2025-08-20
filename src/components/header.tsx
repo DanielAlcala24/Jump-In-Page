@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, LayoutGrid, ShoppingCart, RefreshCw, X, Menu } from "lucide-react";
+import { Zap, LayoutGrid, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -54,10 +54,6 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center gap-2">
-            <Button variant="ghost" className="bg-background/90 text-primary hover:bg-background rounded-full px-4 text-sm h-9">
-              <RefreshCw className="mr-2 h-4 w-4"/>
-              Recarga
-            </Button>
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-primary-foreground hover:bg-primary-foreground/20 rounded-full h-9 w-9">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
