@@ -41,10 +41,11 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-accent/20 backdrop-blur-xl rounded-full shadow-lg transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-center justify-center bg-accent/50 backdrop-blur-xl rounded-full shadow-lg transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-700 ease-in-out overflow-hidden",
+              "ease-in-out transition-max-width",
               navVisible
                 ? "opacity-100 max-w-xl"
                 : "opacity-0 max-w-0"
@@ -55,7 +56,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+                  className="text-sm font-medium text-background transition-colors hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -64,7 +65,7 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center">
-            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-foreground hover:bg-foreground/20 rounded-full h-9 w-9 flex-shrink-0">
+            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
             </Button>
@@ -75,7 +76,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/20 backdrop-blur-xl text-foreground w-10 h-10">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/50 backdrop-blur-xl text-foreground w-10 h-10">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -83,7 +84,7 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-accent/20 backdrop-blur-xl rounded-full w-10 h-10">
+                <Button variant="ghost" size="icon" className="bg-accent/50 backdrop-blur-xl rounded-full w-10 h-10">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
