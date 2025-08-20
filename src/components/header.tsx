@@ -58,10 +58,6 @@ export default function Header() {
               <RefreshCw className="mr-2 h-4 w-4"/>
               Recarga
             </Button>
-            <Button variant="ghost" className="bg-background/90 text-primary hover:bg-background rounded-full px-4 text-sm h-9">
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              $0
-            </Button>
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-primary-foreground hover:bg-primary-foreground/20 rounded-full h-9 w-9">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
