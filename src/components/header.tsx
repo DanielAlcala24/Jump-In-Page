@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, LayoutGrid, X, Menu, Facebook, Instagram, Twitter } from "lucide-react";
+import { LayoutGrid, X, Menu, Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
+import Image from "next/image";
 
 const navLinks = [
   { href: "#inicio", label: "Inicio" },
@@ -28,9 +29,14 @@ export default function Header() {
     <>
       <header className="fixed top-4 left-4 z-50">
          <Link href="#inicio" className="flex items-center gap-2">
-          <div className="bg-background/80 backdrop-blur-sm p-2 rounded-full">
-            <Zap className="h-8 w-8 text-primary" />
-          </div>
+          <Image 
+            src="https://placehold.co/40x40/FF7F50/F5F5DC.png?text=J"
+            alt="JumpZone Logo"
+            width={40}
+            height={40}
+            className="rounded-full"
+            data-ai-hint="logo jump"
+          />
           <span className="font-headline text-2xl font-bold text-background drop-shadow-lg">
             JumpZone
           </span>
@@ -38,7 +44,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className="flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-300 ease-in-out">
+        <div className={cn("flex items-center justify-center bg-primary/90 backdrop-blur-sm rounded-full p-2 gap-2 shadow-lg transition-all duration-300 ease-in-out", !navVisible && "p-0")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
@@ -47,7 +53,7 @@ export default function Header() {
                 : "opacity-0 max-w-0"
             )}
           >
-            <div className={cn("flex items-center gap-4 whitespace-nowrap px-4")}>
+            <div className={cn("flex items-center gap-4 whitespace-nowrap", navVisible ? "px-4" : "px-0")}>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
