@@ -41,7 +41,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-accent/90 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,1)] transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-center justify-center bg-accent/80 backdrop-blur-lg rounded-full shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-700 ease-in-out overflow-hidden",
@@ -74,7 +74,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-xl text-background w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,1)] hover:bg-background/20">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/80 backdrop-blur-lg text-background w-10 h-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] hover:bg-background/20">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -82,31 +82,31 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-accent/90 backdrop-blur-xl rounded-full w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,1)] text-background hover:bg-background/20">
+                <Button variant="ghost" size="icon" className="bg-accent/80 backdrop-blur-lg rounded-full w-10 h-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] text-background hover:bg-background/20">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
+                <SheetContent side="right" className="bg-accent/80 backdrop-blur-lg border-l-0">
                 <div className="flex flex-col gap-6 pt-12 h-full">
                     <div className="flex flex-col gap-6">
                         {navLinks.map((link) => (
                         <SheetClose asChild key={link.href}>
                             <Link
                             href={link.href}
-                            className="text-2xl font-medium text-foreground transition-colors hover:text-primary"
+                            className="text-2xl font-medium text-background transition-colors hover:text-primary"
                             >
                             {link.label}
                             </Link>
                         </SheetClose>
                         ))}
                     </div>
-                    <Separator className="my-4"/>
+                    <Separator className="my-4 bg-background/20"/>
                     <div className="flex flex-col gap-4">
-                        <p className="text-muted-foreground">Síguenos</p>
+                        <p className="text-background/80">Síguenos</p>
                         <div className="flex gap-4">
                             {socialLinks.map((social) => (
-                                <Button key={social.label} variant="outline" size="icon" asChild className="rounded-full bg-background/50 backdrop-blur-sm">
+                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 backdrop-blur-sm text-accent">
                                 <Link href={social.href} aria-label={social.label}>
                                     {social.icon}
                                 </Link>
