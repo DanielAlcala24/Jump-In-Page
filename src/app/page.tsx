@@ -1,5 +1,4 @@
 import Header from '@/components/header';
-import InfoBar from '@/components/info-bar';
 import Eventos from '@/components/sections/eventos';
 import Experiencia from '@/components/sections/experiencia';
 import HazTuCompra from '@/components/sections/haz-tu-compra';
@@ -12,7 +11,6 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <VideoBackground />
       <Header />
-      <InfoBar />
       <SocialIcons />
       <main className="flex-1">
         <Inicio />
