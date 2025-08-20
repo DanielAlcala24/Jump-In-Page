@@ -106,7 +106,7 @@ export default function Header() {
                         <p className="text-background/80">Síguenos</p>
                         <div className="flex gap-4">
                             {socialLinks.map((social) => (
-                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 text-accent transition-transform duration-300 ease-in-out hover:scale-110">
+                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 text-background transition-transform duration-300 ease-in-out hover:scale-110">
                                 <Link href={social.href} aria-label={social.label}>
                                     {social.icon}
                                 </Link>
