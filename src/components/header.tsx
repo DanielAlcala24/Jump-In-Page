@@ -41,14 +41,12 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-accent/80 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-center justify-center bg-accent/90 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,1)] transition-all duration-700 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-700 ease-in-out overflow-hidden",
-              "ease-in-out transition-max-width",
-              navVisible
-                ? "opacity-100 max-w-xl"
-                : "opacity-0 max-w-0"
+              !navVisible && "max-w-0 opacity-0", 
+              navVisible && "max-w-xl opacity-100"
             )}
           >
             <div className={cn("flex items-center gap-4 whitespace-nowrap", navVisible ? "px-4" : "px-0")}>
@@ -76,7 +74,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/80 backdrop-blur-xl text-foreground w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-xl text-background w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,1)] hover:bg-background/20">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -84,7 +82,7 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-accent/80 backdrop-blur-xl rounded-full w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <Button variant="ghost" size="icon" className="bg-accent/90 backdrop-blur-xl rounded-full w-10 h-10 shadow-[0_20px_50px_rgba(0,0,0,1)] text-background hover:bg-background/20">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
