@@ -30,16 +30,12 @@ export default function Header() {
       <header className="fixed top-4 left-4 z-50">
          <Link href="#inicio" className="flex items-center gap-2">
           <Image 
-            src="https://placehold.co/40x40/FF7F50/F5F5DC.png?text=J"
-            alt="JumpZone Logo"
-            width={40}
-            height={40}
-            className="rounded-full"
+            src="https://storage.googleapis.com/gcp-kms-prod-media/project-1111631580951230403/uploads/2024-08-01/1722521876615-jump-in-trampoline-park.png"
+            alt="Jump-in Trampoline Park Logo"
+            width={120}
+            height={90}
             data-ai-hint="logo jump"
           />
-          <span className="font-headline text-2xl font-bold text-background drop-shadow-lg">
-            JumpZone
-          </span>
         </Link>
       </header>
 
