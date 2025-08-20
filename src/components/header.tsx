@@ -30,7 +30,7 @@ export default function Header() {
       <header className="fixed top-4 left-4 z-50">
          <Link href="#inicio" className="flex items-center gap-2">
           <Image 
-            src="https://storage.googleapis.com/gcp-kms-prod-media/project-1111631580951230403/uploads/2024-08-01/1722521876615-jump-in-trampoline-park.png"
+            src="https://placehold.co/120x90.png"
             alt="Jump-in Trampoline Park Logo"
             width={120}
             height={90}
