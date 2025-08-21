@@ -41,7 +41,7 @@ export default function Inicio() {
             </Button>
           </Link>
           <Link href="#">
-            <Button size="lg" className="bg-primary/80 text-primary-foreground hover:bg-primary/90 backdrop-blur-sm border border-primary">
+            <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-orange-500/30 hover:bg-orange-500/40">
               <Ticket className="mr-2 h-5 w-5" />
               Promociones
             </Button>
