@@ -46,15 +46,15 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-center bg-accent/90 backdrop-blur-lg rounded-full shadow-2xl transition-all duration-1000 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-start justify-center bg-accent/90 backdrop-blur-lg rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
               !navVisible && "max-w-0 opacity-0", 
-              navVisible && "max-w-7xl opacity-100"
+              navVisible && "max-w-md opacity-100"
             )}
           >
-            <div className={cn("flex items-center gap-4 whitespace-nowrap", navVisible ? "px-4" : "px-0")}>
+            <div className={cn("flex flex-wrap items-center justify-end gap-x-4 gap-y-2", navVisible ? "px-4" : "px-0")}>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
