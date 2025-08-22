@@ -61,7 +61,7 @@ export default function Header() {
               navVisible && "max-h-96 opacity-100 delay-500"
             )}
           >
-            <div className={cn("flex flex-col items-center justify-center gap-y-2", navVisible ? "px-4" : "px-0")}>
+            <div className={cn("flex flex-col items-center justify-center gap-y-2", navVisible ? "px-4 pb-4" : "px-0")}>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
