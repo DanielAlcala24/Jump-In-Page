@@ -46,7 +46,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-start justify-center bg-accent/90 backdrop-blur-lg rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-start justify-center bg-accent/90 backdrop-blur-lg rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
               "flex items-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
@@ -54,7 +54,7 @@ export default function Header() {
               navVisible && "max-w-md opacity-100"
             )}
           >
-            <div className={cn("flex flex-wrap items-center justify-end gap-x-4 gap-y-2", navVisible ? "px-4" : "px-0")}>
+            <div className={cn("flex flex-wrap items-center justify-center gap-x-4 gap-y-2", navVisible ? "px-4" : "px-0")}>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -79,7 +79,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-lg shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110 hover:bg-accent/90">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-accent/90 backdrop-blur-lg shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110 hover:bg-accent/90 shadow-black/50">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -87,7 +87,7 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-accent/90 backdrop-blur-lg rounded-full w-10 h-10 shadow-2xl text-background hover:bg-background/20 transition-transform duration-300 ease-in-out hover:scale-110">
+                <Button variant="ghost" size="icon" className="bg-accent/90 backdrop-blur-lg rounded-full w-10 h-10 shadow-2xl text-background hover:bg-background/20 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
