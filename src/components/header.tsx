@@ -92,7 +92,7 @@ export default function Header() {
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="bg-orange-500/80 backdrop-blur-lg border-l-0">
+                <SheetContent side="right" className="bg-orange-500/50 backdrop-blur-xl border-l-0">
                 <div className="flex flex-col gap-6 pt-12 h-full">
                     <div className="flex flex-col gap-6">
                         {navLinks.map((link) => (
