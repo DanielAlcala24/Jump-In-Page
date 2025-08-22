@@ -5,6 +5,7 @@ import Experiencia from '@/components/sections/experiencia';
 import Inicio from '@/components/sections/inicio';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
+import WhatsappButton from '@/components/whatsapp-button';
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <Experiencia />
         <Eventos />
       </main>
+      <WhatsappButton />
       <Footer />
     </div>
   );
