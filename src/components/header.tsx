@@ -33,6 +33,7 @@ export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<typeof navLinks>([]);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     if (searchTerm.trim() !== '') {
@@ -52,6 +53,7 @@ export default function Header() {
     }
     setSearchTerm('');
     setSuggestions([]);
+    setIsSheetOpen(false); 
   };
 
   return (
@@ -95,7 +97,7 @@ export default function Header() {
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
                 {suggestions.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto">
+                  <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto z-10">
                     {suggestions.map((link) => (
                       <a
                         key={link.href}
@@ -131,7 +133,7 @@ export default function Header() {
                     </Link>
                 </Button>
             ))}
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
                     <Menu className="h-6 w-6" />
@@ -141,6 +143,29 @@ export default function Header() {
                 <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0">
                   <ScrollArea className="h-full w-full">
                     <div className="flex flex-col gap-6 p-6 pt-12 h-full">
+                        <div className="relative w-full mb-4">
+                            <Input
+                            type="search"
+                            placeholder="Buscar..."
+                            className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
+                             {suggestions.length > 0 && (
+                                <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto z-20">
+                                    {suggestions.map((link) => (
+                                    <a
+                                        key={link.href}
+                                        onClick={() => handleSuggestionClick(link.href)}
+                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200 cursor-pointer"
+                                    >
+                                        {link.label}
+                                    </a>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         <div className="flex flex-col gap-6">
                             {navLinks.map((link) => (
                             <SheetClose asChild key={link.href}>
