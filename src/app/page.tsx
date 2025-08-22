@@ -1,3 +1,4 @@
+import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Eventos from '@/components/sections/eventos';
 import Experiencia from '@/components/sections/experiencia';
@@ -16,6 +17,7 @@ export default function Home() {
         <Experiencia />
         <Eventos />
       </main>
+      <Footer />
     </div>
   );
 }
