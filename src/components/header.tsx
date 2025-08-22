@@ -33,20 +33,27 @@ const socialLinks = [
 export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState<typeof navLinks>([]);
 
   useEffect(() => {
-    if (searchTerm) {
-      const foundLink = navLinks.find(link => 
-        link.label.toLowerCase().startsWith(searchTerm.toLowerCase())
+    if (searchTerm.trim() !== '') {
+      const filtered = navLinks.filter(link =>
+        link.label.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      if (foundLink) {
-        const element = document.querySelector(foundLink.href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
     }
   }, [searchTerm]);
+
+  const handleSuggestionClick = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setSearchTerm('');
+    setSuggestions([]);
+  };
 
   return (
     <>
@@ -75,7 +82,7 @@ export default function Header() {
             className={cn(
               "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden w-full",
               !navVisible && "max-h-0 opacity-0", 
-              navVisible && "max-h-96 opacity-100 delay-500"
+              navVisible && "max-h-[500px] opacity-100 delay-500"
             )}
           >
             <div className={cn("flex flex-col items-center justify-center gap-y-2 pb-4", navVisible ? "px-4" : "px-0")}>
@@ -88,6 +95,19 @@ export default function Header() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
+                {suggestions.length > 0 && (
+                  <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto">
+                    {suggestions.map((link) => (
+                      <a
+                        key={link.href}
+                        onClick={() => handleSuggestionClick(link.href)}
+                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200 cursor-pointer text-center"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
               {navLinks.map((link) => (
                 <Link
