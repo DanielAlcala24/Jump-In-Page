@@ -101,7 +101,7 @@ export default function Header() {
                             <SheetClose asChild key={link.href}>
                                 <Link
                                 href={link.href}
-                                className="text-2xl font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                                className="text-xl font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
                                 >
                                 {link.label}
                                 </Link>
