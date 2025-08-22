@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Search } from "lucide-react";
+import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -184,6 +184,12 @@ export default function Header() {
                             ))}
                         </div>
                         <Separator className="my-4 bg-background/20"/>
+                        <div className="flex justify-center gap-4">
+                            <Link href="#" aria-label="TikTok" className="text-background hover:text-white transition-colors"><TikTokIcon className="h-6 w-6"/></Link>
+                            <Link href="#" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
+                            <Link href="#" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>
+                            <Link href="#" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6"/></Link>
+                        </div>
                     </div>
                   </ScrollArea>
                 </SheetContent>
