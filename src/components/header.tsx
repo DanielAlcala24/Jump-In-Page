@@ -23,24 +23,6 @@ const navLinks = [
   { href: "#blog", label: "Blog" },
 ];
 
-const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M12.528 8.003c-.223-.008-.446-.013-.672-.013-4.142 0-7.5 3.358-7.5 7.5 0 .227.005.45.013.672h-2.013v-3.333c0-2.485 2.015-4.5 4.5-4.5h3.672v3.674z" />
-      <path d="M16.5 4.5c0-2.485-2.015-4.5-4.5-4.5s-4.5 2.015-4.5 4.5v12.083c.008.227.013.45.013.672 4.142 0 7.5-3.358 7.5-7.5 0-.227-.005-.45-.013-.672h2.013v-3.333c0-2.485-2.015-4.5-4.5-4.5z" />
-    </svg>
-  );
-
 export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -185,7 +167,9 @@ export default function Header() {
                         </div>
                         <Separator className="my-4 bg-background/20"/>
                         <div className="flex justify-center gap-4">
-                            <Link href="#" aria-label="TikTok" className="text-background hover:text-white transition-colors"><TikTokIcon className="h-6 w-6"/></Link>
+                            <Link href="#" aria-label="TikTok" className="text-background hover:text-white transition-colors">
+                                <Image src="/assets/svg/tiktok-round-white-icon.svg" alt="TikTok" width={24} height={24} className="h-6 w-6" />
+                            </Link>
                             <Link href="#" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
                             <Link href="#" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>
                             <Link href="#" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6"/></Link>

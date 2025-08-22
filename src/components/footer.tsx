@@ -2,24 +2,6 @@ import Link from 'next/link';
 import { Facebook, Youtube, Instagram, Twitter } from 'lucide-react';
 import Image from 'next/image';
 
-const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M12.528 8.003c-.223-.008-.446-.013-.672-.013-4.142 0-7.5 3.358-7.5 7.5 0 .227.005.45.013.672h-2.013v-3.333c0-2.485 2.015-4.5 4.5-4.5h3.672v3.674z" />
-      <path d="M16.5 4.5c0-2.485-2.015-4.5-4.5-4.5s-4.5 2.015-4.5 4.5v12.083c.008.227.013.45.013.672 4.142 0 7.5-3.358 7.5-7.5 0-.227-.005-.45-.013-.672h2.013v-3.333c0-2.485-2.015-4.5-4.5-4.5z" />
-    </svg>
-  );
-
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-8">
@@ -51,7 +33,9 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4 font-headline">Síguenos</h3>
             <div className="flex space-x-4">
-              <Link href="#" aria-label="TikTok" className="text-gray-400 hover:text-orange-500 transition-colors"><TikTokIcon /></Link>
+              <Link href="#" aria-label="TikTok" className="text-gray-400 hover:text-orange-500 transition-colors">
+                <Image src="/assets/svg/tiktok-round-white-icon.svg" alt="TikTok" width={24} height={24} />
+              </Link>
               <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-orange-500 transition-colors"><Instagram /></Link>
               <Link href="#" aria-label="Facebook" className="text-gray-400 hover:text-orange-500 transition-colors"><Facebook /></Link>
               <Link href="#" aria-label="YouTube" className="text-gray-400 hover:text-orange-500 transition-colors"><Youtube /></Link>
