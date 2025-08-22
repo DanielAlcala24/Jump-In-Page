@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Facebook, Instagram, Search, Youtube } from "lucide-react";
+import { LayoutGrid, X, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -40,13 +40,6 @@ const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
       <path d="M16.5 4.5c0-2.485-2.015-4.5-4.5-4.5s-4.5 2.015-4.5 4.5v12.083c.008.227.013.45.013.672 4.142 0 7.5-3.358 7.5-7.5 0-.227-.005-.45-.013-.672h2.013v-3.333c0-2.485-2.015-4.5-4.5-4.5z" />
     </svg>
   );
-
-const socialLinks = [
-    { href: '#', icon: <TikTokIcon className="h-5 w-5"/>, label: 'TikTok' },
-    { href: '#', icon: <Instagram className="h-5 w-5"/>, label: 'Instagram' },
-    { href: '#', icon: <Facebook className="h-5 w-5"/>, label: 'Facebook' },
-    { href: '#', icon: <Youtube className="h-5 w-5"/>, label: 'YouTube' },
-  ];
 
 export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
@@ -145,13 +138,6 @@ export default function Header() {
 
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
-            {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full backdrop-blur-xl bg-orange-500/70 hover:bg-orange-500/40 shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
-                    <Link href={social.href} aria-label={social.label}>
-                        {social.icon}
-                    </Link>
-                </Button>
-            ))}
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
@@ -198,18 +184,6 @@ export default function Header() {
                             ))}
                         </div>
                         <Separator className="my-4 bg-background/20"/>
-                        <div className="flex flex-col gap-4">
-                            <p className="text-background/80">Síguenos</p>
-                            <div className="flex gap-4">
-                                {socialLinks.map((social) => (
-                                    <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-white/20 text-white transition-transform duration-300 ease-in-out hover:scale-110">
-                                    <Link href={social.href} aria-label={social.label}>
-                                        {social.icon}
-                                    </Link>
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
                     </div>
                   </ScrollArea>
                 </SheetContent>
