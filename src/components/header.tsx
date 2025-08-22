@@ -47,12 +47,12 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-start justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2")}>
-          <nav
+        <div className={cn("flex items-start justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2 w-64")}>
+          <div
             className={cn(
-              "flex items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
-              !navVisible && "max-w-0 opacity-0", 
-              navVisible && "max-w-md opacity-100 delay-300"
+              "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
+              !navVisible && "max-h-0 opacity-0", 
+              navVisible && "max-h-96 opacity-100 delay-500"
             )}
           >
             <div className={cn("flex flex-wrap items-center justify-center gap-x-4 gap-y-2", navVisible ? "px-4" : "px-0")}>
@@ -66,7 +66,7 @@ export default function Header() {
                 </Link>
               ))}
             </div>
-          </nav>
+          </div>
           
           <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
@@ -101,7 +101,7 @@ export default function Header() {
                             <SheetClose asChild key={link.href}>
                                 <Link
                                 href={link.href}
-                                className="text-xl font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                                className="text-lg font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
                                 >
                                 {link.label}
                                 </Link>
