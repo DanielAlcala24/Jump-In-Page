@@ -47,11 +47,13 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-center justify-end backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11 justify-center", navVisible && "p-2 w-64 flex-col")}>
-          <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
-            {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
-            <span className="sr-only">Toggle navigation</span>
-          </Button>
+        <div className={cn("flex backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11 items-center justify-center", navVisible && "p-2 w-64 flex-col")}>
+          <div className={cn("w-full", navVisible && "flex justify-end")}>
+            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
+              {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
+              <span className="sr-only">Toggle navigation</span>
+            </Button>
+          </div>
           <div
             className={cn(
               "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden w-full",
@@ -98,7 +100,7 @@ export default function Header() {
                             <SheetClose asChild key={link.href}>
                                 <Link
                                 href={link.href}
-                                className="text-base font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                                className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
                                 >
                                 {link.label}
                                 </Link>
