@@ -10,10 +10,14 @@ import { Separator } from "./ui/separator";
 import Image from "next/image";
 
 const navLinks = [
-  { href: "#inicio", label: "Inicio" },
-  { href: "#compra", label: "Haz tu Compra" },
-  { href: "#experiencia", label: "Experiencia" },
-  { href: "#eventos", label: "Eventos" },
+  { href: "#nosotros", label: "Nosotros" },
+  { href: "#atracciones", label: "Atracciones" },
+  { href: "#sucursales", label: "Sucursales" },
+  { href: "#fiestas-eventos", label: "Fiestas y eventos empresariales" },
+  { href: "#precios-promociones", label: "Precios y promociones" },
+  { href: "#registro-digital", label: "Registro digital" },
+  { href: "#menu-alimentos", label: "Menú de alimentos" },
+  { href: "#galeria-blog", label: "Galería y blog" },
 ];
 
 const socialLinks = [
@@ -46,7 +50,7 @@ export default function Header() {
             className={cn(
               "flex items-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
               !navVisible && "max-w-0 opacity-0", 
-              navVisible && "max-w-xl opacity-100"
+              navVisible && "max-w-7xl opacity-100"
             )}
           >
             <div className={cn("flex items-center gap-4 whitespace-nowrap", navVisible ? "px-4" : "px-0")}>
@@ -106,7 +110,7 @@ export default function Header() {
                         <p className="text-background/80">Síguenos</p>
                         <div className="flex gap-4">
                             {socialLinks.map((social) => (
-                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 text-background transition-transform duration-300 ease-in-out hover:scale-110">
+                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-background/20 text-white transition-transform duration-300 ease-in-out hover:scale-110">
                                 <Link href={social.href} aria-label={social.label}>
                                     {social.icon}
                                 </Link>
