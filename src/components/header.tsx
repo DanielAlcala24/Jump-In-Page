@@ -29,7 +29,7 @@ const socialLinks = [
   ];
 
 export default function Header() {
-  const [navVisible, setNavVisible] = useState(true);
+  const [navVisible, setNavVisible] = useState(false);
 
   return (
     <>
