@@ -8,6 +8,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
+import { ScrollArea } from "./ui/scroll-area";
 
 const navLinks = [
   { href: "#nosotros", label: "Nosotros" },
@@ -92,34 +93,36 @@ export default function Header() {
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="bg-orange-500/50 backdrop-blur-xl border-l-0">
-                <div className="flex flex-col gap-6 pt-12 h-full">
-                    <div className="flex flex-col gap-6">
-                        {navLinks.map((link) => (
-                        <SheetClose asChild key={link.href}>
-                            <Link
-                            href={link.href}
-                            className="text-2xl font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
-                            >
-                            {link.label}
-                            </Link>
-                        </SheetClose>
-                        ))}
-                    </div>
-                    <Separator className="my-4 bg-background/20"/>
-                    <div className="flex flex-col gap-4">
-                        <p className="text-background/80">Síguenos</p>
-                        <div className="flex gap-4">
-                            {socialLinks.map((social) => (
-                                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-white/20 text-white transition-transform duration-300 ease-in-out hover:scale-110">
-                                <Link href={social.href} aria-label={social.label}>
-                                    {social.icon}
+                <SheetContent side="right" className="bg-orange-500/50 backdrop-blur-xl border-l-0 p-0">
+                  <ScrollArea className="h-full w-full">
+                    <div className="flex flex-col gap-6 p-6 pt-12 h-full">
+                        <div className="flex flex-col gap-6">
+                            {navLinks.map((link) => (
+                            <SheetClose asChild key={link.href}>
+                                <Link
+                                href={link.href}
+                                className="text-2xl font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                                >
+                                {link.label}
                                 </Link>
-                                </Button>
+                            </SheetClose>
                             ))}
                         </div>
+                        <Separator className="my-4 bg-background/20"/>
+                        <div className="flex flex-col gap-4">
+                            <p className="text-background/80">Síguenos</p>
+                            <div className="flex gap-4">
+                                {socialLinks.map((social) => (
+                                    <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full bg-white/20 text-white transition-transform duration-300 ease-in-out hover:scale-110">
+                                    <Link href={social.href} aria-label={social.label}>
+                                        {social.icon}
+                                    </Link>
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                </div>
+                  </ScrollArea>
                 </SheetContent>
             </Sheet>
         </div>
