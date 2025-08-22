@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Facebook, Instagram, Search } from "lucide-react";
+import { LayoutGrid, X, Menu, Facebook, Instagram, Search, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -45,6 +45,7 @@ const socialLinks = [
     { href: '#', icon: <TikTokIcon className="h-5 w-5"/>, label: 'TikTok' },
     { href: '#', icon: <Instagram className="h-5 w-5"/>, label: 'Instagram' },
     { href: '#', icon: <Facebook className="h-5 w-5"/>, label: 'Facebook' },
+    { href: '#', icon: <Youtube className="h-5 w-5"/>, label: 'YouTube' },
   ];
 
 export default function Header() {

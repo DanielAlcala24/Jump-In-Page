@@ -1,4 +1,4 @@
-import { Facebook, Instagram } from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -24,6 +24,7 @@ const socialLinks = [
   { href: '#', icon: <TikTokIcon />, label: 'TikTok' },
   { href: '#', icon: <Instagram />, label: 'Instagram' },
   { href: '#', icon: <Facebook />, label: 'Facebook' },
+  { href: '#', icon: <Youtube />, label: 'YouTube' },
 ];
 
 export default function SocialIcons() {
