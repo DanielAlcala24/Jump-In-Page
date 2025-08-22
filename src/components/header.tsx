@@ -60,7 +60,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                  className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110 text-center"
                 >
                   {link.label}
                 </Link>
