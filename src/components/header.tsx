@@ -4,7 +4,7 @@ import Link from "next/link";
 import { LayoutGrid, X, Menu, Facebook, Instagram, Twitter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
@@ -12,6 +12,9 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 
 const navLinks = [
+  { href: "#inicio", label: "Inicio" },
+  { href: "#experiencia", label: "Experiencia" },
+  { href: "#eventos", label: "Eventos" },
   { href: "#nosotros", label: "Nosotros" },
   { href: "#atracciones", label: "Atracciones" },
   { href: "#sucursales", label: "Sucursales" },
@@ -31,6 +34,21 @@ const socialLinks = [
 
 export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (searchTerm) {
+      const foundLink = navLinks.find(link => 
+        link.label.toLowerCase().startsWith(searchTerm.toLowerCase())
+      );
+      if (foundLink) {
+        const element = document.querySelector(foundLink.href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  }, [searchTerm]);
 
   return (
     <>
@@ -68,6 +86,8 @@ export default function Header() {
                   type="search"
                   placeholder="Buscar..."
                   className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
               </div>
