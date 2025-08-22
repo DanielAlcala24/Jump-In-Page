@@ -8,7 +8,7 @@ export default function WhatsappButton() {
       <Button
         size="icon"
         asChild
-        className="rounded-full bg-transparent hover:bg-transparent w-14 h-14 shadow-lg transition-transform duration-300 ease-in-out hover:scale-110"
+        className="rounded-full bg-transparent hover:bg-transparent w-14 h-14 shadow-lg transition-transform duration-300 ease-in-out hover:scale-110 p-0"
       >
         <Link href="https://wa.me/5215555555555" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <Image 
