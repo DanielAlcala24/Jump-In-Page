@@ -47,10 +47,14 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-start justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2 w-64")}>
+        <div className={cn("flex items-center justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2 w-64 flex-col items-end")}>
+          <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
+            {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
+            <span className="sr-only">Toggle navigation</span>
+          </Button>
           <div
             className={cn(
-              "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
+              "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden w-full",
               !navVisible && "max-h-0 opacity-0", 
               navVisible && "max-h-96 opacity-100 delay-500"
             )}
@@ -66,13 +70,6 @@ export default function Header() {
                 </Link>
               ))}
             </div>
-          </div>
-          
-          <div className="flex items-center">
-            <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
-              {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
-              <span className="sr-only">Toggle navigation</span>
-            </Button>
           </div>
         </div>
       </div>
