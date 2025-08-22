@@ -49,7 +49,7 @@ export default function Header() {
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
         <div className={cn("flex backdrop-blur-xl bg-orange-500/70 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50 flex-col", !navVisible && "w-10 h-10 items-center justify-center", navVisible && "p-2 w-64")}>
-          <div className={cn("w-full flex justify-end")}>
+          <div className={cn("w-full flex", navVisible ? 'justify-end' : 'justify-center')}>
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-10 w-10 flex-shrink-0">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
@@ -62,12 +62,12 @@ export default function Header() {
               navVisible && "max-h-96 opacity-100 delay-500"
             )}
           >
-            <div className={cn("flex flex-col items-center justify-center gap-y-2", navVisible ? "px-4 pb-4" : "px-0")}>
+            <div className={cn("flex flex-col items-center justify-center gap-y-2 pb-4", navVisible ? "px-4" : "px-0")}>
               <div className="relative w-full mb-4">
                 <Input
                   type="search"
                   placeholder="Buscar..."
-                  className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full"
+                  className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
               </div>
