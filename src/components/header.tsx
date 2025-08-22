@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Facebook, Instagram, Twitter } from "lucide-react";
+import { LayoutGrid, X, Menu, Facebook, Instagram, Twitter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
 import { ScrollArea } from "./ui/scroll-area";
+import { Input } from "./ui/input";
 
 const navLinks = [
   { href: "#nosotros", label: "Nosotros" },
@@ -62,6 +63,14 @@ export default function Header() {
             )}
           >
             <div className={cn("flex flex-col items-center justify-center gap-y-2", navVisible ? "px-4 pb-4" : "px-0")}>
+              <div className="relative w-full mb-4">
+                <Input
+                  type="search"
+                  placeholder="Buscar..."
+                  className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
+              </div>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
