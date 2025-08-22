@@ -12,7 +12,6 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 
 const navLinks = [
-  { href: "#inicio", label: "Inicio" },
   { href: "#nosotros", label: "Nosotros" },
   { href: "#atracciones", label: "Atracciones" },
   { href: "#sucursales", label: "Sucursales" },
