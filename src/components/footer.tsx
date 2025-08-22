@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Facebook, Youtube, Instagram, Twitter } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -7,7 +8,14 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="space-y-4">
-             <h3 className="text-2xl font-bold font-headline text-orange-500">Jump-In</h3>
+             <Image 
+                src="/assets/logojumpin.png"
+                alt="Jump-in Trampoline Park Logo"
+                width={90}
+                height={90}
+                data-ai-hint="logo jump"
+                className="h-auto"
+              />
              <p className="text-sm text-gray-400">
                 El Primer Trampoline Park en México. Diversión, ejercicio y deporte para toda la familia.
              </p>
