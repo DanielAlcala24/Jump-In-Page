@@ -47,8 +47,8 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11 items-center justify-center", navVisible && "p-2 w-64 flex-col")}>
-          <div className={cn("w-full", navVisible && "flex justify-end")}>
+        <div className={cn("flex backdrop-blur-xl bg-orange-500/70 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50 flex-col", !navVisible && "w-11 h-11 items-center justify-center", navVisible && "p-2 w-64")}>
+          <div className={cn("w-full flex justify-end")}>
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-9 w-9 flex-shrink-0">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
               <span className="sr-only">Toggle navigation</span>
@@ -79,7 +79,7 @@ export default function Header() {
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
-                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full backdrop-blur-xl bg-orange-500/50 hover:bg-orange-500/40 shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
+                <Button key={social.label} variant="ghost" size="icon" asChild className="rounded-full backdrop-blur-xl bg-orange-500/70 hover:bg-orange-500/40 shadow-2xl text-background w-10 h-10 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
                     <Link href={social.href} aria-label={social.label}>
                         {social.icon}
                     </Link>
@@ -87,12 +87,12 @@ export default function Header() {
             ))}
             <Sheet>
                 <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/50 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
+                <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="bg-orange-500/50 backdrop-blur-xl border-l-0 p-0">
+                <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0">
                   <ScrollArea className="h-full w-full">
                     <div className="flex flex-col gap-6 p-6 pt-12 h-full">
                         <div className="flex flex-col gap-6">
