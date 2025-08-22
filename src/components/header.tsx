@@ -47,12 +47,12 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex items-start justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-1000 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2")}>
+        <div className={cn("flex items-start justify-center backdrop-blur-xl bg-orange-500/50 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50", !navVisible && "w-11 h-11", navVisible && "p-2")}>
           <nav
             className={cn(
-              "flex items-center justify-center gap-4 transition-all duration-500 ease-in-out overflow-hidden",
+              "flex items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden",
               !navVisible && "max-w-0 opacity-0", 
-              navVisible && "max-w-md opacity-100"
+              navVisible && "max-w-md opacity-100 delay-300"
             )}
           >
             <div className={cn("flex flex-wrap items-center justify-center gap-x-4 gap-y-2", navVisible ? "px-4" : "px-0")}>
