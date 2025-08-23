@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { FerrisWheel, Cake, Briefcase, MapPin, Ticket } from 'lucide-react';
+import { FerrisWheel, Cake, Briefcase, MapPin, Ticket, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Inicio() {
@@ -48,6 +48,11 @@ export default function Inicio() {
           </Link>
         </div>
       </div>
+      <div className="absolute bottom-10 z-10 flex flex-col items-center">
+          <Link href="#experiencia" aria-label="Scroll down">
+            <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
+          </Link>
+        </div>
     </section>
   );
 }
