@@ -1,11 +1,11 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Eventos from '@/components/sections/eventos';
-import Experiencia from '@/components/sections/experiencia';
 import Inicio from '@/components/sections/inicio';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
+import HazTuCompra from '@/components/sections/haz-tu-compra';
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
       <SocialIcons />
       <main className="flex-1">
         <Inicio />
-        <Experiencia />
+        <HazTuCompra />
         <Eventos />
       </main>
       <WhatsappButton />

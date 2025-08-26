@@ -16,7 +16,7 @@ export default function Inicio() {
           Jump-In: El Primer Trampoline Park en México. Diversión, ejercicio y deporte para toda la familia.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link href="#experiencia">
+          <Link href="#compra">
             <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-sky-500/30 hover:bg-sky-500/40">
               <FerrisWheel className="mr-2 h-5 w-5" />
               Conocer Atracciones
@@ -49,7 +49,7 @@ export default function Inicio() {
         </div>
       </div>
       <div className="absolute bottom-10 z-10 flex flex-col items-center">
-          <Link href="#experiencia" aria-label="Scroll down">
+          <Link href="#compra" aria-label="Scroll down">
             <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
           </Link>
         </div>
