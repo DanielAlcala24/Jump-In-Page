@@ -1,6 +1,5 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
-import Eventos from '@/components/sections/eventos';
 import Faq from '@/components/sections/faq';
 import Inicio from '@/components/sections/inicio';
 import Introduccion from '@/components/sections/introduccion';
@@ -20,7 +19,6 @@ export default function Home() {
         <Introduccion />
         <Testimonios />
         <Faq />
-        <Eventos />
       </main>
       <WhatsappButton />
       <Footer />
