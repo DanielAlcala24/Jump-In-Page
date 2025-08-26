@@ -5,7 +5,6 @@ import Inicio from '@/components/sections/inicio';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
-import HazTuCompra from '@/components/sections/haz-tu-compra';
 
 export default function Home() {
   return (
@@ -15,7 +14,6 @@ export default function Home() {
       <SocialIcons />
       <main className="flex-1">
         <Inicio />
-        <HazTuCompra />
         <Eventos />
       </main>
       <WhatsappButton />
