@@ -12,10 +12,12 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 
 const navLinks = [
-  { href: "#nosotros", label: "Nosotros" },
+  { href: "#introduccion", label: "Nosotros" },
+  { href: "#testimonios", label: "Testimonios" },
+  { href: "#faq", label: "Preguntas Frecuentes" },
+  { href: "#eventos", label: "Fiestas y eventos" },
   { href: "#atracciones", label: "Atracciones" },
   { href: "#sucursales", label: "Sucursales" },
-  { href: "#fiestas-eventos", label: "Fiestas y eventos empresariales" },
   { href: "#precios-promociones", label: "Precios y promociones" },
   { href: "#registro-digital", label: "Registro digital" },
   { href: "#menu-alimentos", label: "Menú de alimentos" },
