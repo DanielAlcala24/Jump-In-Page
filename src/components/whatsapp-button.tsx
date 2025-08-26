@@ -12,11 +12,11 @@ export default function WhatsappButton() {
       >
         <Link href="https://wa.me/5215555555555" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <Image 
-                src="/assets/gifs/icons-whatsapp.gif" 
+                src="/assets/svg/whatsapp.svg" 
                 alt="WhatsApp" 
                 width={56} 
                 height={56} 
-                data-ai-hint="whatsapp gif"
+                data-ai-hint="whatsapp icon"
                 className="rounded-full"
             />
         </Link>
