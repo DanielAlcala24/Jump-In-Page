@@ -168,7 +168,7 @@ export default function Header() {
                         <Separator className="my-4 bg-background/20"/>
                         <div className="flex justify-center gap-4">
                             <Link href="#" aria-label="TikTok" className="text-background hover:text-white transition-colors">
-                                <Image src="/assets/svg/tiktok-round-white-icon.svg" alt="TikTok" width={24} height={24} className="h-6 w-6" />
+                                <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} className="h-6 w-6" />
                             </Link>
                             <Link href="#" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
                             <Link href="#" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>

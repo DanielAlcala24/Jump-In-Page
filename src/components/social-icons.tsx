@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const socialLinks = [
-  { href: '#', icon: <Image src="/assets/svg/tiktok-round-white-icon.svg" alt="TikTok" width={24} height={24} />, label: 'TikTok' },
+  { href: '#', icon: <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} />, label: 'TikTok' },
   { href: '#', icon: <Instagram />, label: 'Instagram' },
   { href: '#', icon: <Facebook />, label: 'Facebook' },
   { href: '#', icon: <Youtube />, label: 'YouTube' },
