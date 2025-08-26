@@ -32,13 +32,13 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="text-lg font-bold mb-4 font-headline">Síguenos</h3>
-            <div className="flex space-x-4">
+            <div className="flex items-center space-x-4">
               <Link href="#" aria-label="TikTok" className="text-white hover:text-orange-500 transition-colors">
-                <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} />
+                <Image src="/assets/svg/tiktok.png" alt="TikTok" width={20} height={20} />
               </Link>
-              <Link href="#" aria-label="Instagram" className="text-white hover:text-orange-500 transition-colors"><Instagram /></Link>
-              <Link href="#" aria-label="Facebook" className="text-white hover:text-orange-500 transition-colors"><Facebook /></Link>
-              <Link href="#" aria-label="YouTube" className="text-white hover:text-orange-500 transition-colors"><Youtube /></Link>
+              <Link href="#" aria-label="Instagram" className="text-white hover:text-orange-500 transition-colors"><Instagram size={20} /></Link>
+              <Link href="#" aria-label="Facebook" className="text-white hover:text-orange-500 transition-colors"><Facebook size={20} /></Link>
+              <Link href="#" aria-label="YouTube" className="text-white hover:text-orange-500 transition-colors"><Youtube size={20} /></Link>
             </div>
           </div>
         </div>
