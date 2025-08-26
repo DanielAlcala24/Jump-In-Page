@@ -17,7 +17,7 @@ export default function WhatsappButton() {
                 width={56} 
                 height={56} 
                 data-ai-hint="whatsapp icon"
-                className="rounded-full"
+                className=""
             />
         </Link>
       </Button>
