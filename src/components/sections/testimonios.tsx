@@ -40,11 +40,11 @@ const testimonials = [
 ]
 
 const cardColors = [
-    "bg-sky-500/30 border-sky-500/40",
-    "bg-pink-500/30 border-pink-500/40",
-    "bg-green-500/30 border-green-500/40",
-    "bg-purple-500/30 border-purple-500/40",
-    "bg-orange-500/30 border-orange-500/40",
+    "bg-sky-500 border-sky-700",
+    "bg-pink-500 border-pink-700",
+    "bg-green-500 border-green-700",
+    "bg-purple-500 border-purple-700",
+    "bg-orange-500 border-orange-700",
 ]
 
 export default function Testimonios() {
@@ -80,7 +80,7 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className={cn("h-full backdrop-blur-sm text-white", cardColors[index % cardColors.length])}>
+                  <Card className={cn("h-full text-white", cardColors[index % cardColors.length])}>
                     <CardHeader className="flex flex-row items-center gap-4 pb-4">
                         <Avatar>
                             <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
