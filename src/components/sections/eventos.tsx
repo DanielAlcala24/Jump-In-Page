@@ -35,7 +35,7 @@ const eventItems = [
 
 export default function Eventos() {
   return (
-    <section id="eventos" className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900">
+    <section id="eventos" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {eventItems.map((item) => (
