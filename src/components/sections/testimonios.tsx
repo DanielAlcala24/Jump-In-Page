@@ -44,17 +44,17 @@ export default function Testimonios() {
   )
 
   return (
-    <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+    <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                     Opiniones
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline text-gray-900 dark:text-gray-50">
                     Lo que Nuestros Clientes Dicen
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-gray-600 dark:text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     La confianza de nuestros visitantes es nuestra mejor carta de presentación.
                 </p>
             </div>
@@ -71,7 +71,7 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className="h-full">
+                  <Card className="h-full bg-white/30 dark:bg-black/30 backdrop-blur-md border-white/50 dark:border-black/50 text-gray-800 dark:text-gray-200">
                     <CardHeader className="flex flex-row items-center gap-4 pb-4">
                         <Avatar>
                             <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
@@ -79,11 +79,11 @@ export default function Testimonios() {
                         </Avatar>
                         <div>
                             <CardTitle className="text-lg font-headline">{testimonial.name}</CardTitle>
-                            <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{testimonial.title}</p>
                         </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-base text-gray-700 dark:text-gray-300">"{testimonial.quote}"</p>
+                      <p className="text-base">"{testimonial.quote}"</p>
                     </CardContent>
                   </Card>
                 </div>
