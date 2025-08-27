@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const eventItems = [
   {
@@ -9,6 +10,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/Nzi01h_e_Xg',
     buttonText: 'Cotizar Fiesta',
     href: '#',
+    colorClass: 'bg-pink-500 hover:bg-pink-600 border-pink-600',
   },
   {
     title: 'Eventos Empresariales',
@@ -16,6 +18,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/8_4119A9iYw',
     buttonText: 'Ver Paquetes',
     href: '#',
+    colorClass: 'bg-green-500 hover:bg-green-600 border-green-600',
   },
   {
     title: 'Nuestras Sucursales',
@@ -23,6 +26,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/yub524Xd09Y',
     buttonText: 'Encontrar Sucursal',
     href: '#',
+    colorClass: 'bg-purple-500 hover:bg-purple-600 border-purple-600',
   },
   {
     title: 'Nuestras Atracciones',
@@ -30,6 +34,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/LXb3EKWsInQ',
     buttonText: 'Explorar Atracciones',
     href: '#',
+    colorClass: 'bg-sky-500 hover:bg-sky-600 border-sky-600',
   },
 ];
 
@@ -57,7 +62,7 @@ export default function Eventos() {
                 <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">{item.title}</h3>
                 <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
                 <Link href={item.href}>
-                  <Button className="mt-auto w-full transition-transform group-hover:scale-105">
+                  <Button className={cn("mt-auto w-full text-white transition-transform group-hover:scale-105", item.colorClass)}>
                     {item.buttonText}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
