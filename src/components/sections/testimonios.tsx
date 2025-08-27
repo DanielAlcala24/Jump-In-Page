@@ -104,16 +104,16 @@ export default function Testimonios() {
                 <div className="p-1">
                   <Card className={cn("h-full text-background border flex flex-col justify-between", cardColors[index % cardColors.length])}>
                     <CardContent className="p-6 text-center flex flex-col justify-center items-center flex-grow">
-                      <p className="text-base text-background mb-4 italic">"{testimonial.quote}"</p>
-                      <div className="mb-4">
-                        {renderStars(testimonial.rating)}
-                      </div>
                       <Avatar className="w-20 h-20 mx-auto border-2 border-background/50 mb-2">
                           <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                           <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <h3 className="text-lg font-bold font-headline text-background">{testimonial.name}</h3>
-                      <p className="text-sm text-background/80">{testimonial.title}</p>
+                      <p className="text-sm text-background/80 mb-4">{testimonial.title}</p>
+                      <div className="mb-4">
+                        {renderStars(testimonial.rating)}
+                      </div>
+                      <p className="text-base text-background italic">"{testimonial.quote}"</p>
                     </CardContent>
                   </Card>
                 </div>
