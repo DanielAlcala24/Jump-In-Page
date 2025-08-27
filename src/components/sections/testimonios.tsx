@@ -1,5 +1,5 @@
 "use client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React from "react"
@@ -55,7 +55,7 @@ const cardColors = [
 
 const renderStars = (rating: number) => {
     return (
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center justify-center gap-0.5">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
@@ -102,20 +102,18 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className={cn("h-full text-background border", cardColors[index % cardColors.length])}>
-                    <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                        <Avatar>
-                            <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                            <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <CardTitle className="text-lg font-headline text-background">{testimonial.name}</CardTitle>
-                            <p className="text-sm text-background/80">{testimonial.title}</p>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-base text-background mb-4">"{testimonial.quote}"</p>
-                      {renderStars(testimonial.rating)}
+                  <Card className={cn("h-full text-background border flex flex-col justify-between", cardColors[index % cardColors.length])}>
+                    <CardContent className="p-6 text-center flex flex-col justify-center items-center flex-grow">
+                      <p className="text-base text-background mb-4 italic">"{testimonial.quote}"</p>
+                      <div className="mb-4">
+                        {renderStars(testimonial.rating)}
+                      </div>
+                      <Avatar className="w-20 h-20 mx-auto border-2 border-background/50 mb-2">
+                          <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                          <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <h3 className="text-lg font-bold font-headline text-background">{testimonial.name}</h3>
+                      <p className="text-sm text-background/80">{testimonial.title}</p>
                     </CardContent>
                   </Card>
                 </div>
