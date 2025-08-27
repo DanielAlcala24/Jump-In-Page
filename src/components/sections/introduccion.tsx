@@ -1,9 +1,9 @@
 export default function Introduccion() {
     return (
-      <section id="introduccion" className="w-full py-12 md:py-24 lg:py-32 bg-white">
+      <section id="introduccion" className="w-full py-12 bg-white">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
-          <div className="grid gap-12 md:grid-cols-2 md:gap-16 md:items-center">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="grid gap-12 md:grid-cols-2 md:gap-16 items-center">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center md:items-start md:text-left">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                   ¿Quiénes Somos?
