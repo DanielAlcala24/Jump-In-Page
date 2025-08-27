@@ -121,8 +121,8 @@ export default function Testimonios() {
             ))}
           </CarouselContent>
           <div className="flex justify-center gap-4 mt-6">
-            <CarouselPrevious className="relative static translate-y-0" />
-            <CarouselNext className="relative static translate-y-0" />
+            <CarouselPrevious className="relative static translate-y-0 bg-orange-500 hover:bg-orange-600 text-white border-orange-600" />
+            <CarouselNext className="relative static translate-y-0 bg-orange-500 hover:bg-orange-600 text-white border-orange-600" />
           </div>
         </Carousel>
       </div>
