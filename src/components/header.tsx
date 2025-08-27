@@ -13,8 +13,6 @@ import { Input } from "./ui/input";
 
 const navLinks = [
   { href: "#introduccion", label: "Nosotros" },
-  { href: "#testimonios", label: "Testimonios" },
-  { href: "#faq", label: "Preguntas Frecuentes" },
   { href: "#eventos", label: "Fiestas y eventos" },
   { href: "#atracciones", label: "Atracciones" },
   { href: "#sucursales", label: "Sucursales" },
