@@ -39,7 +39,7 @@ const testimonials = [
   {
     name: "Sofía Hernández",
     title: "Entusiasta del Fitness",
-    quote: "¡Qué manera tan original de hacer ejercicio! Me divertí tanto que ni sentí el esfuerzo. Las clases de fitness en trampolín son geniales.",
+    quote: "¡Qué manera tan original de hacer ejercicio! Me divertí tanto que ni sentí el esfuerzo.",
     avatar: "https://i.pravatar.cc/150?img=5",
     rating: 4,
   }
