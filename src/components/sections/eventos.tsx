@@ -43,7 +43,7 @@ export default function Eventos() {
               key={item.title}
               className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <div className="relative aspect-[9/16] w-full overflow-hidden">
+              <div className="relative aspect-video w-full overflow-hidden">
                 <iframe
                   className="absolute inset-0 h-full w-full"
                   src={item.videoUrl}
