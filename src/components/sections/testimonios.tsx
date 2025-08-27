@@ -4,6 +4,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React from "react"
 import Autoplay from "embla-carousel-autoplay"
+import { cn } from "@/lib/utils"
 
 const testimonials = [
   {
@@ -36,6 +37,14 @@ const testimonials = [
     quote: "¡Qué manera tan original de hacer ejercicio! Me divertí tanto que ni sentí el esfuerzo. Las clases de fitness en trampolín son geniales.",
     avatar: "https://i.pravatar.cc/150?img=5"
   }
+]
+
+const cardColors = [
+    "bg-sky-500/30 border-sky-500/40",
+    "bg-pink-500/30 border-pink-500/40",
+    "bg-green-500/30 border-green-500/40",
+    "bg-purple-500/30 border-purple-500/40",
+    "bg-orange-500/30 border-orange-500/40",
 ]
 
 export default function Testimonios() {
@@ -71,19 +80,19 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className="h-full bg-sky-500/30 backdrop-blur-sm border-sky-500/40 text-gray-800 dark:text-gray-200">
+                  <Card className={cn("h-full backdrop-blur-sm text-white", cardColors[index % cardColors.length])}>
                     <CardHeader className="flex flex-row items-center gap-4 pb-4">
                         <Avatar>
                             <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                             <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <CardTitle className="text-lg font-headline text-gray-900 dark:text-gray-50">{testimonial.name}</CardTitle>
-                            <p className="text-sm text-gray-700 dark:text-gray-300">{testimonial.title}</p>
+                            <CardTitle className="text-lg font-headline text-white">{testimonial.name}</CardTitle>
+                            <p className="text-sm text-white/80">{testimonial.title}</p>
                         </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-base text-gray-800 dark:text-gray-200">"{testimonial.quote}"</p>
+                      <p className="text-base text-white">"{testimonial.quote}"</p>
                     </CardContent>
                   </Card>
                 </div>
