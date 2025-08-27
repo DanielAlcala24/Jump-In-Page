@@ -1,6 +1,7 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Faq from '@/components/sections/faq';
+import Eventos from '@/components/sections/eventos';
 import Inicio from '@/components/sections/inicio';
 import Introduccion from '@/components/sections/introduccion';
 import Testimonios from '@/components/sections/testimonios';
@@ -17,6 +18,7 @@ export default function Home() {
       <main className="flex-1">
         <Inicio />
         <Introduccion />
+        <Eventos />
         <Testimonios />
         <Faq />
       </main>
