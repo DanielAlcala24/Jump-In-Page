@@ -3,7 +3,7 @@ export default function Introduccion() {
       <section id="introduccion" className="w-full py-12 bg-white">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           <div className="grid gap-12 md:grid-cols-2 md:gap-16 items-center">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center md:items-start md:text-left">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                   ¿Quiénes Somos?
@@ -19,7 +19,7 @@ export default function Introduccion() {
             <div className="relative aspect-video pointer-events-none">
                 <iframe
                     className="absolute inset-0 w-full h-full rounded-lg"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+                    src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
