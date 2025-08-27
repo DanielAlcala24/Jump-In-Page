@@ -16,7 +16,7 @@ export default function Introduccion() {
                 </p>
               </div>
             </div>
-            <div className="relative aspect-video">
+            <div className="relative aspect-video pointer-events-none">
                 <iframe
                     className="absolute inset-0 w-full h-full rounded-lg"
                     src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
@@ -25,6 +25,7 @@ export default function Introduccion() {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                 ></iframe>
+                 <div className="absolute inset-0 w-full h-full bg-transparent"></div>
             </div>
           </div>
         </div>
