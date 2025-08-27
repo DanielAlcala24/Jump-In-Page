@@ -5,37 +5,43 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React from "react"
 import Autoplay from "embla-carousel-autoplay"
 import { cn } from "@/lib/utils"
+import { Star } from "lucide-react"
 
 const testimonials = [
   {
     name: "Ana García",
     title: "Mamá Satisfecha",
     quote: "¡A mis hijos les encantó! El personal es muy amable y las instalaciones son de primera. Definitivamente volveremos pronto.",
-    avatar: "https://i.pravatar.cc/150?img=1"
+    avatar: "https://i.pravatar.cc/150?img=1",
+    rating: 5,
   },
   {
     name: "Carlos Sánchez",
     title: "Adicto a la Adrenalina",
     quote: "Una experiencia increíblemente divertida. Las diferentes áreas de salto te retan y te mantienen activo. ¡Lo recomiendo al 100%!",
-    avatar: "https://i.pravatar.cc/150?img=2"
+    avatar: "https://i.pravatar.cc/150?img=2",
+    rating: 5,
   },
   {
     name: "Laura Martínez",
     title: "Organizadora de Eventos",
     quote: "Celebramos el cumpleaños de mi sobrino aquí y fue todo un éxito. El paquete de fiesta es muy completo y los niños se la pasaron genial.",
-    avatar: "https://i.pravatar.cc/150?img=3"
+    avatar: "https://i.pravatar.cc/150?img=3",
+    rating: 4,
   },
     {
     name: "Javier Rodríguez",
     title: "Visitante Frecuente",
     quote: "Jump-In es mi lugar favorito para desestresarme después del trabajo. Saltar es un excelente ejercicio y aquí lo hacen muy divertido.",
-    avatar: "https://i.pravatar.cc/150?img=4"
+    avatar: "https://i.pravatar.cc/150?img=4",
+    rating: 5,
   },
   {
     name: "Sofía Hernández",
     title: "Entusiasta del Fitness",
     quote: "¡Qué manera tan original de hacer ejercicio! Me divertí tanto que ni sentí el esfuerzo. Las clases de fitness en trampolín son geniales.",
-    avatar: "https://i.pravatar.cc/150?img=5"
+    avatar: "https://i.pravatar.cc/150?img=5",
+    rating: 4,
   }
 ]
 
@@ -46,6 +52,22 @@ const cardColors = [
     "bg-purple-500 border-purple-600",
     "bg-orange-500 border-orange-600",
 ]
+
+const renderStars = (rating: number) => {
+    return (
+      <div className="flex items-center gap-0.5">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={cn(
+              "h-5 w-5",
+              i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300 fill-gray-300"
+            )}
+          />
+        ))}
+      </div>
+    );
+  };
 
 export default function Testimonios() {
   const plugin = React.useRef(
@@ -92,7 +114,8 @@ export default function Testimonios() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-base text-background">"{testimonial.quote}"</p>
+                      <p className="text-base text-background mb-4">"{testimonial.quote}"</p>
+                      {renderStars(testimonial.rating)}
                     </CardContent>
                   </Card>
                 </div>
