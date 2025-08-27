@@ -7,7 +7,7 @@ const eventItems = [
   {
     title: 'Fiestas de Cumpleaños',
     description: 'Celebra un día inolvidable con saltos, risas y pastel. ¡Nos encargamos de todo para que tú solo te diviertas!',
-    videoUrl: 'https://www.youtube.com/embed/Nzi01h_e_Xg',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
     buttonText: 'Cotizar Fiesta',
     href: '#',
     colorClass: 'bg-pink-500 hover:bg-pink-600 border-pink-600',
@@ -15,7 +15,7 @@ const eventItems = [
   {
     title: 'Eventos Empresariales',
     description: 'Fomenta el trabajo en equipo y desestresa a tu personal con una jornada llena de energía y actividades únicas.',
-    videoUrl: 'https://www.youtube.com/embed/8_4119A9iYw',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
     buttonText: 'Ver Paquetes',
     href: '#',
     colorClass: 'bg-green-500 hover:bg-green-600 border-green-600',
@@ -23,7 +23,7 @@ const eventItems = [
   {
     title: 'Nuestras Sucursales',
     description: 'Encuentra el Jump-In más cercano y prepárate para la acción. ¡Siempre hay uno cerca de ti esperándote!',
-    videoUrl: 'https://www.youtube.com/embed/yub524Xd09Y',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
     buttonText: 'Encontrar Sucursal',
     href: '#',
     colorClass: 'bg-purple-500 hover:bg-purple-600 border-purple-600',
@@ -31,7 +31,7 @@ const eventItems = [
   {
     title: 'Nuestras Atracciones',
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
-    videoUrl: 'https://www.youtube.com/embed/LXb3EKWsInQ',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
     buttonText: 'Explorar Atracciones',
     href: '#',
     colorClass: 'bg-sky-500 hover:bg-sky-600 border-sky-600',
