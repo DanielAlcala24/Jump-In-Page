@@ -40,11 +40,11 @@ const testimonials = [
 ]
 
 const cardColors = [
-    "bg-sky-500 border-sky-700",
-    "bg-pink-500 border-pink-700",
-    "bg-green-500 border-green-700",
-    "bg-purple-500 border-purple-700",
-    "bg-orange-500 border-orange-700",
+    "bg-sky-500/30 border-sky-500/50",
+    "bg-pink-500/30 border-pink-500/50",
+    "bg-green-500/30 border-green-500/50",
+    "bg-purple-500/30 border-purple-500/50",
+    "bg-orange-500/30 border-orange-500/50",
 ]
 
 export default function Testimonios() {
@@ -53,7 +53,7 @@ export default function Testimonios() {
   )
 
   return (
-    <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm">
+    <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -80,19 +80,19 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className={cn("h-full text-white", cardColors[index % cardColors.length])}>
+                  <Card className={cn("h-full text-background border backdrop-blur-sm", cardColors[index % cardColors.length])}>
                     <CardHeader className="flex flex-row items-center gap-4 pb-4">
                         <Avatar>
                             <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                             <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <CardTitle className="text-lg font-headline text-white">{testimonial.name}</CardTitle>
-                            <p className="text-sm text-white/80">{testimonial.title}</p>
+                            <CardTitle className="text-lg font-headline text-background">{testimonial.name}</CardTitle>
+                            <p className="text-sm text-background/80">{testimonial.title}</p>
                         </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-base text-white">"{testimonial.quote}"</p>
+                      <p className="text-base text-background">"{testimonial.quote}"</p>
                     </CardContent>
                   </Card>
                 </div>
