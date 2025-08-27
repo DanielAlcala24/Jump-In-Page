@@ -7,7 +7,7 @@ const eventItems = [
   {
     title: 'Fiestas de Cumpleaños',
     description: 'Celebra un día inolvidable con saltos, risas y pastel. ¡Nos encargamos de todo para que tú solo te diviertas!',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Cotizar Fiesta',
     href: '#',
     colorClass: 'bg-pink-500 hover:bg-pink-600 border-pink-600',
@@ -15,7 +15,7 @@ const eventItems = [
   {
     title: 'Eventos Empresariales',
     description: 'Fomenta el trabajo en equipo y desestresa a tu personal con una jornada llena de energía y actividades únicas.',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Ver Paquetes',
     href: '#',
     colorClass: 'bg-green-500 hover:bg-green-600 border-green-600',
@@ -23,7 +23,7 @@ const eventItems = [
   {
     title: 'Nuestras Sucursales',
     description: 'Encuentra el Jump-In más cercano y prepárate para la acción. ¡Siempre hay uno cerca de ti esperándote!',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Encontrar Sucursal',
     href: '#',
     colorClass: 'bg-purple-500 hover:bg-purple-600 border-purple-600',
@@ -31,7 +31,7 @@ const eventItems = [
   {
     title: 'Nuestras Atracciones',
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M',
+    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Explorar Atracciones',
     href: '#',
     colorClass: 'bg-sky-500 hover:bg-sky-600 border-sky-600',
@@ -48,7 +48,7 @@ export default function Eventos() {
               key={item.title}
               className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <div className="relative aspect-video w-full overflow-hidden">
+              <div className="relative aspect-video w-full overflow-hidden pointer-events-none">
                 <iframe
                   className="absolute inset-0 h-full w-full"
                   src={item.videoUrl}
@@ -57,6 +57,7 @@ export default function Eventos() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
+                <div className="absolute inset-0 w-full h-full bg-transparent"></div>
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">{item.title}</h3>
