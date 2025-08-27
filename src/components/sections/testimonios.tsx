@@ -2,6 +2,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import React from "react"
+import Autoplay from "embla-carousel-autoplay"
 
 const testimonials = [
   {
@@ -37,6 +39,10 @@ const testimonials = [
 ]
 
 export default function Testimonios() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
+  )
+
   return (
     <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
@@ -54,6 +60,7 @@ export default function Testimonios() {
             </div>
         </div>
         <Carousel
+          plugins={[plugin.current]}
           opts={{
             align: "start",
             loop: true,
@@ -83,8 +90,10 @@ export default function Testimonios() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute left-[-50px] top-1/2 -translate-y-1/2 fill-black" />
-          <CarouselNext className="absolute right-[-50px] top-1/2 -translate-y-1/2 fill-black" />
+          <div className="flex justify-center gap-4 mt-6">
+            <CarouselPrevious className="relative static translate-y-0" />
+            <CarouselNext className="relative static translate-y-0" />
+          </div>
         </Carousel>
       </div>
     </section>
