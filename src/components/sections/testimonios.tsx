@@ -71,19 +71,19 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className="h-full bg-white/30 dark:bg-black/30 backdrop-blur-md border-white/50 dark:border-black/50 text-gray-800 dark:text-gray-200">
+                  <Card className="h-full bg-sky-500/30 backdrop-blur-sm border-sky-500/40 text-gray-800 dark:text-gray-200">
                     <CardHeader className="flex flex-row items-center gap-4 pb-4">
                         <Avatar>
                             <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                             <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <CardTitle className="text-lg font-headline">{testimonial.name}</CardTitle>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">{testimonial.title}</p>
+                            <CardTitle className="text-lg font-headline text-gray-900 dark:text-gray-50">{testimonial.name}</CardTitle>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">{testimonial.title}</p>
                         </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-base">"{testimonial.quote}"</p>
+                      <p className="text-base text-gray-800 dark:text-gray-200">"{testimonial.quote}"</p>
                     </CardContent>
                   </Card>
                 </div>
