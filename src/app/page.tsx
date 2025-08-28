@@ -2,6 +2,7 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Faq from '@/components/sections/faq';
 import Eventos from '@/components/sections/eventos';
+import Galeria from '@/components/sections/galeria';
 import Inicio from '@/components/sections/inicio';
 import Introduccion from '@/components/sections/introduccion';
 import Testimonios from '@/components/sections/testimonios';
@@ -19,6 +20,7 @@ export default function Home() {
         <Inicio />
         <Introduccion />
         <Eventos />
+        <Galeria />
         <Testimonios />
         <Faq />
       </main>
