@@ -8,7 +8,7 @@ export default function Introduccion() {
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
             <div className="grid md:grid-cols-2 items-center">
-                <div className="p-6 md:p-12 order-2 md:order-1">
+                <div className="p-6 md:px-8 order-2 md:order-1">
                     <div className="space-y-4 text-center md:text-left">
                         <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                         ¿Quiénes Somos?
@@ -30,9 +30,9 @@ export default function Introduccion() {
                         </Link>
                     </div>
                 </div>
-                <div className="relative aspect-video pointer-events-none order-1 md:order-2 p-6 md:p-12">
+                <div className="relative aspect-video pointer-events-none order-1 md:order-2 p-6 md:px-8">
                     <iframe
-                        className="absolute inset-6 md:inset-12 w-[calc(100%-2*1.5rem)] md:w-[calc(100%-2*3rem)] h-[calc(100%-2*1.5rem)] md:h-[calc(100%-2*3rem)]"
+                        className="absolute inset-6 md:inset-x-8 inset-y-6 w-[calc(100%-2*1.5rem)] md:w-[calc(100%-2*2rem)] h-[calc(100%-2*1.5rem)]"
                         src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
                         title="YouTube video player"
                         frameBorder="0"
