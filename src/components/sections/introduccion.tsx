@@ -19,7 +19,7 @@ export default function Introduccion() {
                   Jump-In es un innovador centro de entretenimiento que integra diversión, actividad física y deporte para todas las edades. Nuestro compromiso es ofrecer un entorno seguro con instalaciones de la más alta calidad y personal capacitado para que tu única preocupación sea disfrutar al máximo.
                 </p>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    <strong>Contamos con sucursales en CDMX, Estado de México y nuestra sucursal foránea en Cuernavaca.</strong>
+                    Contamos con sucursales en <strong>CDMX</strong>, <strong>Estado de México</strong> y nuestra sucursal foránea en <strong>Cuernavaca</strong>.
                 </p>
                 <Link href="#precios-promociones" className="inline-flex">
                   <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
