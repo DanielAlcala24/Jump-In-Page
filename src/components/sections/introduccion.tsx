@@ -6,7 +6,7 @@ export default function Introduccion() {
     return (
       <section id="introduccion" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
-          <div className="rounded-lg border bg-white text-card-foreground shadow-sm overflow-hidden">
+          <div className="rounded-lg border bg-white text-card-foreground shadow-lg overflow-hidden">
             <div className="grid md:grid-cols-2 items-center">
                 <div className="p-6 md:p-8 order-2 md:order-1">
                     <div className="space-y-4 text-center">
