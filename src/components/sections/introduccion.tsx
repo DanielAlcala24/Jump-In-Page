@@ -32,7 +32,7 @@ export default function Introduccion() {
                 </div>
                 <div className="relative aspect-video pointer-events-none order-1 md:order-2 p-6 md:p-12">
                     <iframe
-                        className="absolute inset-0 w-full h-full"
+                        className="absolute inset-6 md:inset-12 w-[calc(100%-2*1.5rem)] md:w-[calc(100%-2*3rem)] h-[calc(100%-2*1.5rem)] md:h-[calc(100%-2*3rem)]"
                         src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
                         title="YouTube video player"
                         frameBorder="0"
