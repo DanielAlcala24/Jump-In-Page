@@ -12,7 +12,7 @@ import WhatsappButton from '@/components/whatsapp-button';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen">
       <VideoBackground />
       <Header />
       <SocialIcons />
