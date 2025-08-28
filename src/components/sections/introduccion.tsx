@@ -30,7 +30,7 @@ export default function Introduccion() {
                         </Link>
                     </div>
                 </div>
-                <div className="relative aspect-video pointer-events-none order-1 md:order-2">
+                <div className="relative aspect-video pointer-events-none order-1 md:order-2 p-6 md:p-12">
                     <iframe
                         className="absolute inset-0 w-full h-full"
                         src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
