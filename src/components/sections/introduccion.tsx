@@ -9,7 +9,7 @@ export default function Introduccion() {
           <div className="rounded-lg border bg-white text-card-foreground shadow-sm overflow-hidden">
             <div className="grid md:grid-cols-2 items-center">
                 <div className="p-6 md:p-8 order-2 md:order-1">
-                    <div className="space-y-4 text-center md:text-left">
+                    <div className="space-y-4 text-center">
                         <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                         ¿Quiénes Somos?
                         </div>
