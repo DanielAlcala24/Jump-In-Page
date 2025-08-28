@@ -102,7 +102,7 @@ export default function Testimonios() {
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className={cn("h-full text-background border flex flex-col justify-between shadow-lg transition-shadow duration-300 hover:shadow-2xl", cardColors[index % cardColors.length])}>
+                  <Card className={cn("h-full text-background border flex flex-col justify-between", cardColors[index % cardColors.length])}>
                     <CardContent className="p-6 text-center flex flex-col justify-center items-center flex-grow">
                       <Avatar className="w-20 h-20 mx-auto border-2 border-background/50 mb-4">
                           <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
