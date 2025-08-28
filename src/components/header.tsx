@@ -4,7 +4,7 @@ import Link from "next/link";
 import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
@@ -28,6 +28,7 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<typeof navLinks>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchTerm.trim() !== '') {
@@ -39,6 +40,12 @@ export default function Header() {
       setSuggestions([]);
     }
   }, [searchTerm]);
+
+  useEffect(() => {
+    if (!isSheetOpen && searchInputRef.current) {
+        searchInputRef.current.blur();
+    }
+  }, [isSheetOpen]);
 
   const handleSuggestionClick = (href: string) => {
     const element = document.querySelector(href);
@@ -88,6 +95,7 @@ export default function Header() {
                   className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  ref={searchInputRef}
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
                 {suggestions.length > 0 && (
@@ -127,7 +135,7 @@ export default function Header() {
                     <span className="sr-only">Toggle navigation menu</span>
                 </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0">
+                <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
                   <ScrollArea className="h-full w-full">
                     <div className="flex flex-col gap-6 p-6 pt-12 h-full">
                         <div className="relative w-full mb-4">
