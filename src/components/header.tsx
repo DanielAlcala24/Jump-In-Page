@@ -20,7 +20,7 @@ const navLinks = [
   { href: "/#registro-digital", label: "Registro digital" },
   { href: "/#menu-alimentos", label: "Menú de alimentos" },
   { href: "/#galeria", label: "Galería" },
-  { href: "/#galeria", label: "Blog" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function Header() {
