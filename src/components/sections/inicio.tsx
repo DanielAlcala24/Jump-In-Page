@@ -12,7 +12,7 @@ export default function Inicio() {
         <h1 className="text-5xl font-extrabold tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-9xl font-headline">
           ¡Salta a la Diversión!
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-background/90 md:text-xl">
+        <p className="mt-4 max-w-2xl text-lg text-white md:text-xl">
           Jump-In: El Primer Trampoline Park en México. Diversión, ejercicio y deporte para toda la familia.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
