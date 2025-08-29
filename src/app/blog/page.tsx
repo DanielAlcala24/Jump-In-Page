@@ -7,7 +7,7 @@ import VideoBackground from '@/components/video-background';
 
 export default function BlogPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen">
       <VideoBackground />
       <Header />
       <SocialIcons />
