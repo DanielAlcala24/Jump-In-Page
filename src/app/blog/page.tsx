@@ -11,7 +11,7 @@ export default function BlogPage() {
       <VideoBackground />
       <Header />
       <SocialIcons />
-      <main className="flex-1 pt-24">
+      <main className="flex-1">
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
