@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "../ui/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 const images = [
     { src: "https://picsum.photos/800/600?random=1", alt: "Diversión en trampolines", hint: "trampoline fun" },
@@ -24,6 +25,7 @@ const blogPosts = [
         imageSrc: "https://picsum.photos/800/600?random=9",
         imageHint: "health fitness",
         href: "#",
+        colorClass: "bg-sky-500 hover:bg-sky-600",
     },
     {
         title: "Ideas Creativas para tu Próxima Fiesta de Cumpleaños",
@@ -31,6 +33,7 @@ const blogPosts = [
         imageSrc: "https://picsum.photos/800/600?random=10",
         imageHint: "party ideas",
         href: "#",
+        colorClass: "bg-pink-500 hover:bg-pink-600",
     },
     {
         title: "Team Building en Jump-In: ¡Una Experiencia Única!",
@@ -38,6 +41,7 @@ const blogPosts = [
         imageSrc: "https://picsum.photos/800/600?random=11",
         imageHint: "team building",
         href: "#",
+        colorClass: "bg-purple-500 hover:bg-purple-600",
     }
 ];
 
@@ -97,7 +101,7 @@ export default function Galeria() {
                                         <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">{post.title}</h3>
                                         <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400">{post.description}</p>
                                         <Link href={post.href}>
-                                        <Button className="mt-auto w-full text-white transition-transform group-hover:scale-105 bg-green-500 hover:bg-green-600">
+                                        <Button className={cn("mt-auto w-full text-white transition-transform group-hover:scale-105", post.colorClass)}>
                                             Leer Más
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
