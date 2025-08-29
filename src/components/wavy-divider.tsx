@@ -7,7 +7,7 @@ export default function WavyDivider() {
         <div className="bg-white">
             <div className="relative h-20 w-full overflow-hidden bg-gray-50 dark:bg-gray-900">
                 <svg
-                    className="absolute bottom-0 left-0 w-full h-auto text-sky-500"
+                    className="absolute bottom-0 left-0 w-full h-auto text-gray-900 dark:text-gray-50"
                     viewBox="0 0 1440 100"
                     preserveAspectRatio="none"
                     fill="currentColor"
