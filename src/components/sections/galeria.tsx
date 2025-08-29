@@ -1,8 +1,8 @@
 "use client"
 import * as React from "react"
 import Image from "next/image"
-import { Button } from "../ui/button"
-import Link from "next/link"
+import BlogPosts from "./blog-posts"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const images = [
     { src: "https://picsum.photos/800/600?random=1", alt: "Diversión en trampolines", hint: "trampoline fun" },
@@ -19,40 +19,48 @@ export default function Galeria() {
     return (
         <section id="galeria" className="w-full py-12 bg-white">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
-                <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                    <div className="space-y-2">
-                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
-                            Nuestros Momentos
+                <Tabs defaultValue="galeria" className="w-full">
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                        <div className="space-y-2">
+                            <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
+                                Nuestros Momentos y Noticias
+                            </div>
+                            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
+                                Explora Nuestra Comunidad
+                            </h2>
+                            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                                Desde sonrisas en nuestra galería hasta consejos en nuestro blog, sumérgete en el universo Jump-In.
+                            </p>
                         </div>
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                            Galería de Sonrisas
-                        </h2>
-                        <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                            Un vistazo a la diversión y energía que se vive en Jump-In.
-                        </p>
+                        <TabsList className="grid w-full max-w-md grid-cols-2">
+                            <TabsTrigger value="galeria">Galería</TabsTrigger>
+                            <TabsTrigger value="blog">Blog</TabsTrigger>
+                        </TabsList>
                     </div>
-                </div>
-                <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-12">
-                    {images.map((image, index) => (
-                        <div key={index} className="overflow-hidden rounded-lg group">
-                            <Image
-                                src={image.src}
-                                alt={image.alt}
-                                width={600}
-                                height={800}
-                                data-ai-hint={image.hint}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
+
+                    <TabsContent value="galeria">
+                        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8">
+                            {images.map((image, index) => (
+                                <div key={index} className="overflow-hidden rounded-lg group">
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        width={600}
+                                        height={800}
+                                        data-ai-hint={image.hint}
+                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-                <div className="text-center mt-8">
-                    <Link href="/blog">
-                        <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white">
-                            Visita Nuestro Blog
-                        </Button>
-                    </Link>
-                </div>
+                    </TabsContent>
+
+                    <TabsContent value="blog">
+                        <div className="mt-8">
+                            <BlogPosts />
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </section>
     )
