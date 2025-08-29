@@ -31,7 +31,7 @@ export default function Introduccion() {
                     </div>
                 </div>
                 <div className="order-1 md:order-2 flex flex-col items-center">
-                    <div className="relative aspect-video pointer-events-none w-full overflow-hidden md:rounded-lg">
+                    <div className="relative aspect-video pointer-events-none w-full overflow-hidden rounded-lg">
                         <iframe
                             className="absolute inset-0 w-full h-full"
                             src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
