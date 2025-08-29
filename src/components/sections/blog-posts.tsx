@@ -64,7 +64,7 @@ const blogPosts = [
 
 export default function BlogPosts() {
   return (
-    <section id="blog" className="w-full py-12">
+    <section id="blog" className="w-full py-12 bg-white">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
