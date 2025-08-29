@@ -4,6 +4,8 @@ import Header from '@/components/header';
 import SocialIcons from '@/components/social-icons';
 import WhatsappButton from '@/components/whatsapp-button';
 import Footer from '@/components/footer';
+import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 
 export default function BlogPage() {
   return (
@@ -17,6 +19,11 @@ export default function BlogPage() {
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
               Nuestro Blog
             </h1>
+          </div>
+          <div className="absolute bottom-10 z-10 flex flex-col items-center">
+            <Link href="#blog" aria-label="Scroll down">
+              <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
+            </Link>
           </div>
         </section>
         <BlogPosts />
