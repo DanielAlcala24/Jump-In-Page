@@ -12,15 +12,15 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 
 const navLinks = [
-  { href: "#introduccion", label: "Nosotros" },
-  { href: "#eventos", label: "Fiestas y eventos" },
-  { href: "#atracciones", label: "Atracciones" },
-  { href: "#sucursales", label: "Sucursales" },
-  { href: "#precios-promociones", label: "Precios y promociones" },
-  { href: "#registro-digital", label: "Registro digital" },
-  { href: "#menu-alimentos", label: "Menú de alimentos" },
-  { href: "#galeria", label: "Galería" },
-  { href: "#blog", label: "Blog" },
+  { href: "/#introduccion", label: "Nosotros" },
+  { href: "/#eventos", label: "Fiestas y eventos" },
+  { href: "/#atracciones", label: "Atracciones" },
+  { href: "/#sucursales", label: "Sucursales" },
+  { href: "/#precios-promociones", label: "Precios y promociones" },
+  { href: "/#registro-digital", label: "Registro digital" },
+  { href: "/#menu-alimentos", label: "Menú de alimentos" },
+  { href: "/#galeria", label: "Galería" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function Header() {
@@ -48,10 +48,8 @@ export default function Header() {
   }, [isSheetOpen]);
 
   const handleSuggestionClick = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    // For now, we just navigate. Smooth scrolling only works for on-page links.
+    window.location.href = href;
     setSearchTerm('');
     setSuggestions([]);
     setIsSheetOpen(false); 
@@ -60,7 +58,7 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-4 left-4 z-50 flex items-center h-10">
-         <Link href="#inicio" className="flex items-center gap-2">
+         <Link href="/" className="flex items-center gap-2">
           <Image 
             src="/assets/logojumpin.png"
             alt="Jump-in Trampoline Park Logo"
