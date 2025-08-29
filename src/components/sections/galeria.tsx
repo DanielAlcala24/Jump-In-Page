@@ -35,7 +35,7 @@ export default function Galeria() {
 
                 <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8">
                     {images.map((image, index) => (
-                        <div key={index} className="overflow-hidden rounded-lg group">
+                        <div key={index} className="overflow-hidden rounded-lg group shadow-lg transition-all hover:shadow-2xl">
                             <Image
                                 src={image.src}
                                 alt={image.alt}
