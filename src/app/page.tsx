@@ -23,6 +23,7 @@ export default function Home() {
         <Eventos />
         <WavyDivider />
         <Galeria />
+        <WavyDivider />
         <Testimonios />
         <Faq />
       </main>
