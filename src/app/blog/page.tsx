@@ -12,7 +12,7 @@ export default function BlogPage() {
       <Header />
       <SocialIcons />
       <main className="flex-1">
-        <section className="relative flex h-96 w-full flex-col items-center justify-center text-center text-white">
+        <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white md:h-96">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <h1 className="text-5xl font-extrabold tracking-tighter text-background sm:text-7xl md:text-8xl font-headline">
               Nuestro Blog
