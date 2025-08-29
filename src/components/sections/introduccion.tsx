@@ -6,9 +6,9 @@ export default function Introduccion() {
     return (
       <section id="introduccion" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
-          <div className="rounded-lg border bg-white text-card-foreground shadow-lg overflow-hidden">
-            <div className="grid md:grid-cols-2 items-center">
-                <div className="p-6 md:p-0 order-2 md:order-1 flex flex-col items-center">
+          <div className="rounded-lg border bg-white text-card-foreground shadow-lg overflow-hidden p-6 md:p-8">
+            <div className="grid md:grid-cols-2 items-center gap-6 md:gap-8">
+                <div className="order-2 md:order-1 flex flex-col items-center">
                     <div className="space-y-4 text-center">
                         <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                         ¿Quiénes Somos?
@@ -31,9 +31,9 @@ export default function Introduccion() {
                     </div>
                 </div>
                 <div className="order-1 md:order-2 flex flex-col items-center">
-                    <div className="relative aspect-video pointer-events-none w-full md:p-4">
+                    <div className="relative aspect-video pointer-events-none w-full">
                         <iframe
-                            className="absolute inset-0 w-full h-full md:w-[calc(100%-2rem)] md:h-[calc(100%-2rem)] md:inset-auto"
+                            className="absolute inset-0 w-full h-full"
                             src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
                             title="YouTube video player"
                             frameBorder="0"
