@@ -2,10 +2,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const faqs = [
     {
-        question: "¿Necesito reservar antes de ir?",
-        answer: "No es obligatorio, pero te recomendamos reservar en línea, especialmente durante los fines de semana y días festivos, para asegurar tu lugar y evitar esperas."
-    },
-    {
         question: "¿Hay un límite de edad para saltar?",
         answer: "¡La diversión no tiene edad! Tenemos áreas designadas para los más pequeños (menores de 6 años) para garantizar su seguridad, y el resto de las instalaciones son para todas las edades."
     },
