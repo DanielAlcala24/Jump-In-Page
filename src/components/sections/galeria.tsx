@@ -5,14 +5,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 const images = [
-    { src: "https://picsum.photos/800/600?random=1", alt: "Diversión en trampolines", hint: "trampoline fun" },
-    { src: "https://picsum.photos/600/800?random=2", alt: "Saltos y piruetas", hint: "jumping tricks" },
-    { src: "https://picsum.photos/800/600?random=3", alt: "Celebrando un cumpleaños", hint: "birthday party" },
-    { src: "https://picsum.photos/600/800?random=4", alt: "Zona de espuma", hint: "foam pit" },
-    { src: "https://picsum.photos/800/600?random=5", alt: "Amigos saltando juntos", hint: "friends jumping" },
-    { src: "https://picsum.photos/600/800?random=6", alt: "Escalando el muro", hint: "climbing wall" },
-    { src: "https://picsum.photos/800/600?random=7", alt: "Evento corporativo", hint: "corporate event" },
-    { src: "https://picsum.photos/600/800?random=8", alt: "Risas y alegría", hint: "kids laughing" },
+    { src: "/assets/g1.jpg", alt: "Diversión en trampolines", hint: "trampoline fun" },
+    { src: "/assets/g2.jpg", alt: "Saltos y piruetas", hint: "jumping tricks" },
+    { src: "/assets/g3.jpg", alt: "Celebrando un cumpleaños", hint: "birthday party" },
+    { src: "/assets/g4.jpg", alt: "Zona de espuma", hint: "foam pit" },
+    { src: "/assets/g5.jpg", alt: "Amigos saltando juntos", hint: "friends jumping" },
+    { src: "/assets/g6.jpg", alt: "Escalando el muro", hint: "climbing wall" },
+    { src: "/assets/g7.jpg", alt: "Evento corporativo", hint: "corporate event" },
+    { src: "/assets/g8.jpg", alt: "Risas y alegría", hint: "kids laughing" },
 ];
 
 export default function Galeria() {
