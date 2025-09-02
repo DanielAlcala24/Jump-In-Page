@@ -79,7 +79,7 @@ export default function MenuPosts() {
               </div>
 
               <div className="relative text-center flex-1 flex flex-col justify-between">
-                <div>
+                <div className='flex-1'>
                     <h3 className="mb-2 text-2xl font-bold font-headline text-gray-900 dark:text-gray-50">
                         {item.title}
                     </h3>
@@ -87,15 +87,8 @@ export default function MenuPosts() {
                         {item.description}
                     </p>
                 </div>
-                <div className="mt-4 flex flex-col items-center gap-4 w-full">
+                <div className="mt-auto">
                     <p className="text-2xl font-bold text-primary dark:text-orange-400">{item.price}</p>
-                    <Button
-                        className={cn(
-                        'w-full bg-gradient-to-r from-orange-500 to-accent text-white transition-all duration-300 transform-gpu group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-accent/50 hover:from-orange-600 hover:to-accent'
-                        )}
-                    >
-                        Ordenar
-                    </Button>
                 </div>
               </div>
             </div>
