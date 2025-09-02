@@ -19,7 +19,7 @@ const navLinks = [
   { href: "/#precios-promociones", label: "Precios y promociones" },
   { href: "/#registro-digital", label: "Registro digital" },
   { href: "/#menu-alimentos", label: "Menú de alimentos" },
-  { href: "/#galeria", label: "Galería" },
+  { href: "/galeria", label: "Galería" },
   { href: "/blog", label: "Blog" },
 ];
 
