@@ -7,7 +7,7 @@ const faqs = [
     },
     {
         question: "¿Es obligatorio usar calcetines especiales?",
-        answer: "Sí, por razones de seguridad e higiene, todos los participantes deben usar nuestros calcetines antideslizantes especiales. Puedes comprarlos en recepción y son reutilizables."
+        answer: "Sí, por razones de seguridad e higiene, todos los participantes deben usar calcetines antideslizantes especiales. Puedes comprarlos en recepción y son reutilizables."
     },
     {
         question: "¿Puedo llevar mi propia comida y bebida?",
@@ -16,6 +16,18 @@ const faqs = [
     {
         question: "¿Ofrecen paquetes para fiestas de cumpleaños?",
         answer: "¡Claro que sí! Tenemos varios paquetes de fiesta que incluyen tiempo de salto, comida, un anfitrión dedicado y un área de celebración privada. Visita nuestra sección de eventos para más detalles."
+    },
+    {
+        question: "¿Cuentan con lockers para guardar mis pertenencias?",
+        answer: "Sí, en nuestras sucursales encontrarás lockers disponibles para que guardes tus pertenencias de forma segura mientras disfrutas de los trampolines."
+    },
+    {
+        question: "¿Qué tarjetas de crédito y débito aceptan?",
+        answer: "En la mayoría de nuestras sucursales aceptamos tarjetas de crédito y débito Visa y Mastercard. American Express únicamente está disponible en nuestras sucursales de Interlomas y Cúspide."
+    },
+    {
+        question: "¿Cuáles son sus horarios de apertura?",
+        answer: "De lunes a viernes abrimos de 2:00 p.m. a 8:00 p.m. y los sábados y domingos de 11:00 a.m. a 8:00 p.m.. Durante temporadas vacacionales nuestros horarios pueden variar, así que te recomendamos revisar nuestras redes sociales o visitar la sección de tu sucursal de interés."
     }
 ]
 
