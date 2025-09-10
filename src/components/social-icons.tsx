@@ -4,10 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const socialLinks = [
-  { href: '#', icon: <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} />, label: 'TikTok' },
-  { href: '#', icon: <Instagram />, label: 'Instagram' },
-  { href: '#', icon: <Facebook />, label: 'Facebook' },
-  { href: '#', icon: <Youtube />, label: 'YouTube' },
+  { href: 'https://www.tiktok.com/@jumpin_mx', icon: <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} />, label: 'TikTok' },
+  { href: 'https://www.instagram.com/jumpin_mx', icon: <Instagram />, label: 'Instagram' },
+  { href: 'https://www.facebook.com/JumpInMX/?locale=es_LA', icon: <Facebook />, label: 'Facebook' },
+  { href: 'https://www.youtube.com/channel/UCQ0A6bqmDR1EThKl1o0l1Zg', icon: <Youtube />, label: 'YouTube' },
 ];
 
 export default function SocialIcons() {
