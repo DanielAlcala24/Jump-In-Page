@@ -34,7 +34,7 @@ export default function SocialCommitment() {
     <section id="commitment" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-4xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden">
-          <CardHeader className="text-center bg-gray-100 dark:bg-gray-800 p-8">
+          <CardHeader className="text-center p-8">
             <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline mx-auto">
               Nuestra Misión
             </div>
