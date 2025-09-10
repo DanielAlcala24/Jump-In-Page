@@ -6,6 +6,7 @@ import WhatsappButton from '@/components/whatsapp-button';
 import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import CommitmentGallery from '@/components/sections/commitment-gallery';
 
 export default function CompromisoSocialPage() {
   return (
@@ -27,6 +28,7 @@ export default function CompromisoSocialPage() {
           </div>
         </section>
         <SocialCommitment />
+        <CommitmentGallery />
       </main>
       <WhatsappButton />
       <Footer />
