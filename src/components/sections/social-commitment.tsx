@@ -16,6 +16,14 @@ export default function SocialCommitment() {
     <section id="commitment" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-4xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden bg-white">
+          <Image
+            src="https://picsum.photos/1200/400"
+            alt="Compromiso Social"
+            width={1200}
+            height={400}
+            data-ai-hint="social commitment"
+            className="w-full h-auto object-cover"
+          />
           <CardHeader className="text-center p-8 bg-white">
             <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline mx-auto">
               Nuestra Misión
@@ -27,7 +35,7 @@ export default function SocialCommitment() {
               En Jump-In creemos que cada salto puede transformar vidas. Por eso, además de ser el primer trampoline park en México, nos sumamos a causas que generan un cambio positivo en la sociedad.
             </p>
           </CardHeader>
-          <CardContent className="p-8 bg-white">
+          <CardContent className="p-8 pt-0 bg-white">
             <h3 className="text-2xl font-bold font-headline text-center mb-6">
               Fundaciones y Causas que Apoyamos
             </h3>
