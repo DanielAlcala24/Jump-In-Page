@@ -95,7 +95,7 @@ export default function MenuPosts() {
   return (
     <section id="menu" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="sticky top-20 z-30 bg-gray-50/90 dark:bg-gray-900/90 backdrop-blur-sm py-4 mb-8 text-center rounded-xl shadow-md">
+        <div className="sticky top-14 z-30 py-4 mb-8 text-center">
           <div className="flex justify-center flex-wrap gap-2">
             {categories.map((category) => (
               <Button
