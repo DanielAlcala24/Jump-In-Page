@@ -3,9 +3,10 @@ import Header from '@/components/header';
 import SocialIcons from '@/components/social-icons';
 import WhatsappButton from '@/components/whatsapp-button';
 import Footer from '@/components/footer';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Cake, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import FiestasEventosIntro from '@/components/sections/fiestas-eventos-intro';
+import { Button } from '@/components/ui/button';
 
 export default function FiestasYEventosPage() {
   return (
@@ -19,6 +20,20 @@ export default function FiestasYEventosPage() {
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
               Fiestas y Eventos
             </h1>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link href="/fiestas-cumpleanos">
+                <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-pink-500/30 hover:bg-pink-500/40">
+                  <Cake className="mr-2 h-5 w-5" />
+                  Cotiza tu Cumpleaños
+                </Button>
+              </Link>
+              <Link href="/eventos-empresariales">
+                <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-green-500/30 hover:bg-green-500/40">
+                  <Briefcase className="mr-2 h-5 w-5" />
+                  Cotiza tu Evento
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="absolute bottom-10 z-10 flex flex-col items-center">
             <Link href="#events-intro" aria-label="Scroll down">
