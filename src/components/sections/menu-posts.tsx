@@ -96,30 +96,32 @@ export default function MenuPosts() {
   return (
     <section id="menu" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="sticky top-14 z-30 py-4 mb-8 text-center">
-          <div className="inline-flex justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-sm">
-            {categories.map((category, index) => (
-              <>
-                <Button
-                  key={category}
-                  variant="ghost"
-                  className={cn(
-                    'transition-colors duration-300 text-base font-medium h-auto py-2 px-6',
-                    'focus-visible:ring-transparent',
-                    selectedCategory === category
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'text-primary hover:bg-primary/10',
-                    'rounded-full'
+        <div className="sticky top-14 z-30 py-4 mb-8">
+           <div className="w-full overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="inline-flex justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-sm mx-auto">
+              {categories.map((category, index) => (
+                <>
+                  <Button
+                    key={category}
+                    variant="ghost"
+                    className={cn(
+                      'transition-colors duration-300 text-base font-medium h-auto py-2 px-6',
+                      'focus-visible:ring-transparent whitespace-nowrap',
+                      selectedCategory === category
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : 'text-primary hover:bg-primary/10',
+                      'rounded-full'
+                    )}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                  {index < categories.length - 1 && (
+                    <Separator orientation="vertical" className="h-6 bg-gray-200" />
                   )}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Button>
-                {index < categories.length - 1 && (
-                   <Separator orientation="vertical" className="h-6 bg-gray-200" />
-                )}
-              </>
-            ))}
+                </>
+              ))}
+            </div>
           </div>
         </div>
 
