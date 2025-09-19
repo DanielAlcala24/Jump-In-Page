@@ -1,5 +1,8 @@
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const menuItems = [
   {
@@ -8,6 +11,7 @@ const menuItems = [
     price: '$180.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=1',
     imageHint: 'pepperoni pizza',
+    category: 'Alimentos',
   },
   {
     title: 'Hamburguesa Jump-In',
@@ -16,6 +20,7 @@ const menuItems = [
     price: '$150.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=2',
     imageHint: 'classic burger',
+    category: 'Alimentos',
   },
   {
     title: 'Hot Dog Especial',
@@ -23,6 +28,7 @@ const menuItems = [
     price: '$90.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=3',
     imageHint: 'special hotdog',
+    category: 'Alimentos',
   },
   {
     title: 'Nuggets de Pollo',
@@ -31,6 +37,15 @@ const menuItems = [
     price: '$120.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=4',
     imageHint: 'chicken nuggets',
+    category: 'Snacks',
+  },
+  {
+    title: 'Palomitas de Maíz',
+    description: 'Recién hechas, con el toque justo de mantequilla y sal.',
+    price: '$60.00 MXN',
+    imageSrc: 'https://picsum.photos/400/400?random=7',
+    imageHint: 'popcorn bucket',
+    category: 'Snacks',
   },
   {
     title: 'Malteada de Chocolate',
@@ -39,6 +54,7 @@ const menuItems = [
     price: '$70.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=5',
     imageHint: 'chocolate milkshake',
+    category: 'Bebidas',
   },
   {
     title: 'Refresco de Sabores',
@@ -47,18 +63,64 @@ const menuItems = [
     price: '$40.00 MXN',
     imageSrc: 'https://picsum.photos/400/400?random=6',
     imageHint: 'soda drink',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Gomitas Acidas',
+    description: 'Una explosión de sabor que te hará hacer caras divertidas.',
+    price: '$50.00 MXN',
+    imageSrc: 'https://picsum.photos/400/400?random=8',
+    imageHint: 'sour gummies',
+    category: 'Dulces',
+  },
+  {
+    title: 'Barra de Chocolate',
+    description: 'El clásico que nunca falla para un antojo dulce.',
+    price: '$35.00 MXN',
+    imageSrc: 'https://picsum.photos/400/400?random=9',
+    imageHint: 'chocolate bar',
+    category: 'Dulces',
   },
 ];
 
+const categories = ['Todos', 'Alimentos', 'Bebidas', 'Snacks', 'Dulces'];
+
 export default function MenuPosts() {
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+
+  const filteredItems =
+    selectedCategory === 'Todos'
+      ? menuItems
+      : menuItems.filter((item) => item.category === selectedCategory);
+
   return (
     <section id="menu" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          {menuItems.map((item, index) => (
+        <div className="sticky top-24 z-30 bg-gray-50/90 dark:bg-gray-900/90 backdrop-blur-sm py-4 mb-8 text-center rounded-xl shadow-md">
+          <div className="flex justify-center flex-wrap gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
+                className={cn(
+                  'rounded-full transition-colors duration-300',
+                  selectedCategory === category
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-white text-primary border-primary hover:bg-primary/10'
+                )}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredItems.map((item, index) => (
             <div
               key={index}
-              className="group flex flex-col items-center overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center p-6"
+              className="group flex flex-col items-center overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center p-6 hover:-translate-y-2"
             >
               <div className="relative w-40 h-40 mb-4 transition-transform duration-300 group-hover:scale-110">
                 <Image
@@ -78,9 +140,9 @@ export default function MenuPosts() {
                   {item.description}
                 </p>
                 <div className="mt-auto">
-                    <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base text-primary font-headline">
-                        {item.price}
-                    </div>
+                  <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline">
+                    {item.price}
+                  </div>
                 </div>
               </div>
             </div>
