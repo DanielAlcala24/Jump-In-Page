@@ -1,17 +1,9 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
 import { Gift, ShieldCheck, Sparkles } from "lucide-react"
+import Script from "next/script";
 
 const offerItems = [
     {
@@ -38,38 +30,8 @@ const galleryImages = [
     { src: 'https://picsum.photos/600/800?random=44', alt: 'Decoración de fiesta', hint: 'party decoration' },
 ]
 
-const formSchema = z.object({
-    name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
-    email: z.string().email({ message: "Por favor, introduce un email válido." }),
-    phone: z.string().min(10, { message: "El teléfono debe tener al menos 10 dígitos." }),
-    branch: z.string().min(1, { message: "Por favor, selecciona una sucursal." }),
-    guests: z.coerce.number().min(1, { message: "Debe haber al menos 1 invitado." }),
-    message: z.string().optional(),
-})
 
 export default function FiestasCumpleanosContent() {
-    const { toast } = useToast()
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: "",
-            email: "",
-            phone: "",
-            branch: "",
-            guests: 10,
-            message: "",
-        },
-    })
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
-        toast({
-          title: "¡Solicitud Enviada!",
-          description: "Gracias por tu interés. Nos pondremos en contacto contigo pronto.",
-        })
-        form.reset();
-    }
-
     return (
         <section id="birthday-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-5xl px-4 md:px-6 space-y-16">
@@ -128,106 +90,8 @@ export default function FiestasCumpleanosContent() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <FormField
-                                        control={form.control}
-                                        name="name"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Nombre Completo</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Tu nombre" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Email</FormLabel>
-                                                <FormControl>
-                                                    <Input type="email" placeholder="tu@email.com" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="phone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Teléfono</FormLabel>
-                                                <FormControl>
-                                                    <Input type="tel" placeholder="55 1234 5678" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="branch"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Sucursal</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Elige una sucursal" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="interlomas">Interlomas</SelectItem>
-                                                        <SelectItem value="cuspide">La Cúspide</SelectItem>
-                                                        <SelectItem value="miramontes">Miramontes</SelectItem>
-                                                        <SelectItem value="churubusco">Churubusco</SelectItem>
-                                                        <SelectItem value="cuernavaca">Cuernavaca</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="guests"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Número de Invitados</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" min="1" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <FormField
-                                    control={form.control}
-                                    name="message"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Mensaje Adicional</FormLabel>
-                                            <FormControl>
-                                                <Textarea placeholder="Cuéntanos más sobre tu evento..." {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="text-center">
-                                    <Button type="submit" size="lg" className="bg-pink-500 hover:bg-pink-600 text-white w-full md:w-auto">
-                                        Solicitar Cotización
-                                    </Button>
-                                </div>
-                            </form>
-                        </Form>
+                        <Script src="https://js.hsforms.net/forms/embed/48545315.js" defer></Script>
+                        <div className="hs-form-frame" data-region="na1" data-form-id="ef6c0690-915a-47c1-84e9-5308f1284fd7" data-portal-id="48545315"></div>
                     </CardContent>
                 </Card>
             </div>
