@@ -105,7 +105,7 @@ export default function MenuPosts() {
                     key={category}
                     variant="ghost"
                     className={cn(
-                      'transition-colors duration-300 text-base font-medium h-auto py-2 px-6',
+                      'transition-colors duration-300 text-base font-medium h-auto py-1 px-2',
                       'focus-visible:ring-transparent whitespace-nowrap',
                       selectedCategory === category
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
