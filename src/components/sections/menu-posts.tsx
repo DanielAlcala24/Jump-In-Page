@@ -94,9 +94,9 @@ export default function MenuPosts() {
   );
 
   return (
-    <section id="menu" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="sticky top-16 z-30 py-4 mb-8">
+    <section id="menu" className="w-full py-8 bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto max-w-7xl px-2 md:px-6">
+        <div className="sticky top-14 z-30 py-4 mb-8">
            <div className="flex justify-center">
             <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-sm">
               {categories.map((category, index) => (
@@ -105,7 +105,7 @@ export default function MenuPosts() {
                     key={category}
                     variant="ghost"
                     className={cn(
-                      'transition-colors duration-300 text-base font-medium h-auto py-1 px-2',
+                      'transition-colors duration-300 text-base font-medium h-auto py-2 px-2',
                       'focus-visible:ring-transparent whitespace-nowrap',
                       selectedCategory === category
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'

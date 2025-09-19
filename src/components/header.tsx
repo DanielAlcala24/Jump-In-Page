@@ -14,7 +14,7 @@ import { Input } from "./ui/input";
 const navLinks = [
   { href: "/nosotros", label: "Nosotros" },
   { href: "/compromiso-social", label: "Compromiso Social" },
-  { href: "/#eventos", label: "Fiestas y eventos empresariales" },
+  { href: "/fiestas-y-eventos", label: "Fiestas y eventos empresariales" },
   { href: "/#atracciones", label: "Atracciones" },
   { href: "/#sucursales", label: "Sucursales" },
   { href: "/#precios-promociones", label: "Precios y promociones" },
