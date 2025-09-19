@@ -83,15 +83,14 @@ const menuItems = [
   },
 ];
 
-const categories = ['Todos', 'Alimentos', 'Bebidas', 'Snacks', 'Dulces'];
+const categories = ['Alimentos', 'Bebidas', 'Snacks', 'Dulces'];
 
 export default function MenuPosts() {
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedCategory, setSelectedCategory] = useState('Alimentos');
 
-  const filteredItems =
-    selectedCategory === 'Todos'
-      ? menuItems
-      : menuItems.filter((item) => item.category === selectedCategory);
+  const filteredItems = menuItems.filter(
+    (item) => item.category === selectedCategory
+  );
 
   return (
     <section id="menu" className="w-full py-12 bg-gray-50 dark:bg-gray-900">
