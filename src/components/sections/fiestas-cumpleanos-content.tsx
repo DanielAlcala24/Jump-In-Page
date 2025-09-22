@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Gift, ShieldCheck, Sparkles } from "lucide-react"
 import Script from "next/script";
+import WavyDivider from "../wavy-divider";
 
 const offerItems = [
     {
@@ -80,6 +81,8 @@ export default function FiestasCumpleanosContent() {
                         ))}
                     </div>
                 </div>
+
+                <WavyDivider />
 
                 {/* Booking Form Section */}
                 <Card className="shadow-2xl rounded-2xl overflow-hidden">
