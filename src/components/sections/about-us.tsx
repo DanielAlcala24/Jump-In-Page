@@ -38,24 +38,20 @@ export default function AboutUs() {
 
         <div className="grid md:grid-cols-2 gap-8">
           <Card className="shadow-lg rounded-2xl">
-            <CardHeader>
-              <div className="flex items-center gap-4">
+            <CardHeader className="flex flex-col items-center gap-4">
                 <Target className="w-10 h-10 text-primary" />
                 <CardTitle className="text-2xl font-bold font-headline">Misión</CardTitle>
-              </div>
             </CardHeader>
-            <CardContent className="text-muted-foreground">
+            <CardContent className="text-muted-foreground text-center">
               <p>"Crear momentos inolvidables de felicidad a través de una experiencia de entretenimiento única e innovadora generada por nuestro equipo para todas las familias que nos visitan".</p>
             </CardContent>
           </Card>
           <Card className="shadow-lg rounded-2xl">
-            <CardHeader>
-              <div className="flex items-center gap-4">
+            <CardHeader className="flex flex-col items-center gap-4">
                 <Eye className="w-10 h-10 text-primary" />
                 <CardTitle className="text-2xl font-bold font-headline">Visión</CardTitle>
-              </div>
             </CardHeader>
-            <CardContent className="text-muted-foreground">
+            <CardContent className="text-muted-foreground text-center">
               <p>"Seguir siendo el 1er Trampoline Park de México, con un crecimiento sustentable con la mayor cantidad de sonrisas generadas".</p>
             </CardContent>
           </Card>
