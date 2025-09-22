@@ -23,7 +23,7 @@ const sucursalesData = [
     ],
   },
   {
-    category: 'Foránea',
+    category: 'Morelos',
     locations: [
       { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '#' },
     ],

@@ -21,13 +21,13 @@ export default function FiestasYEventosPage() {
               Fiestas y Eventos
             </h1>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/fiestas-cumpleanos">
+              <Link href="/fiestas-y-eventos/fiestas-cumpleanos">
                 <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-pink-500/30 hover:bg-pink-500/40">
                   <Cake className="mr-2 h-5 w-5" />
                   Cotiza tu Cumpleaños
                 </Button>
               </Link>
-              <Link href="/eventos-empresariales">
+              <Link href="/fiestas-y-eventos/eventos-empresariales">
                 <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-green-500/30 hover:bg-green-500/40">
                   <Briefcase className="mr-2 h-5 w-5" />
                   Cotiza tu Evento
