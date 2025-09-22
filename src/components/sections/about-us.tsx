@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building, Target, Eye, ShieldCheck, Heart } from 'lucide-react';
+import Image from 'next/image';
 
 const values = [
   { name: 'Diversión', color: 'text-pink-500' },
@@ -14,6 +15,14 @@ export default function AboutUs() {
     <section id="about" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-4xl px-4 md:px-6 space-y-12">
         <Card className="shadow-lg rounded-2xl overflow-hidden">
+          <Image
+            src="https://picsum.photos/1200/400?random=50"
+            alt="Nosotros"
+            width={1200}
+            height={400}
+            data-ai-hint="team fun"
+            className="w-full h-auto object-cover"
+          />
           <CardHeader>
             <div className="flex items-center gap-4">
               <Building className="w-10 h-10 text-primary" />
