@@ -16,7 +16,7 @@ const navLinks = [
   { href: "/compromiso-social", label: "Compromiso Social" },
   { href: "/fiestas-y-eventos", label: "Fiestas y eventos empresariales" },
   { href: "/#atracciones", label: "Atracciones" },
-  { href: "/#sucursales", label: "Sucursales" },
+  { href: "/sucursales", label: "Sucursales" },
   { href: "/#precios-promociones", label: "Precios y promociones" },
   { href: "/#registro-digital", label: "Registro digital" },
   { href: "/menu-alimentos", label: "Menú de alimentos" },
