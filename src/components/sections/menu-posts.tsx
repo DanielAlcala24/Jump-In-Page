@@ -98,7 +98,7 @@ export default function MenuPosts() {
       <div className="container mx-auto max-w-7xl px-2 md:px-6">
         <div className="sticky top-14 z-30 py-4 mb-8">
            <div className="flex justify-center">
-            <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-sm">
+            <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-lg">
               {categories.map((category, index) => (
                 <>
                   <Button
