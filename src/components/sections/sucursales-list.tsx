@@ -44,11 +44,11 @@ export default function SucursalesList() {
                     Encuéntranos en {group.category}
                 </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex flex-wrap justify-center gap-8">
               {group.locations.map((sucursal, index) => (
                 <div
                   key={index}
-                  className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center"
+                  className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]"
                 >
                   <Link href={sucursal.link} className="block overflow-hidden">
                     <Image
