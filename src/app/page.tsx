@@ -9,7 +9,6 @@ import Testimonios from '@/components/sections/testimonios';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
-import WavyDivider from '@/components/wavy-divider';
 
 export default function Home() {
   return (
@@ -21,9 +20,7 @@ export default function Home() {
         <Inicio />
         <Introduccion />
         <Eventos />
-        <WavyDivider />
         <Galeria />
-        <WavyDivider />
         <Testimonios />
         <Faq />
       </main>
