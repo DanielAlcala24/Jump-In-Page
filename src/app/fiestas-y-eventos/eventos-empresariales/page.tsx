@@ -20,7 +20,7 @@ export default function EventosEmpresarialesPage() {
               Eventos Empresariales
             </h1>
           </div>
-          <div className="absolute bottom-10 z-10 flex flex-col items-center">
+          <div className="absolute bottom-0 z-10 flex flex-col items-center">
             <Link href="#corporate-content" aria-label="Scroll down">
               <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
             </Link>

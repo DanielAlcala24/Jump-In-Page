@@ -1,5 +1,11 @@
+
 'use client';
-import Image from "next/image"
+import Image from "next/image";
+import { useState } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const images = [
     { src: "/assets/g1.jpg", alt: "Diversión en trampolines", hint: "trampoline fun" },
@@ -13,12 +19,37 @@ const images = [
 ];
 
 export default function GalleryPosts() {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  const openLightbox = (index: number) => {
+    setSelectedImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+
+  const goToPrevious = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+
   return (
     <section id="gallery" className="w-full py-12 bg-white">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8">
             {images.map((image, index) => (
-                <div key={index} className="overflow-hidden rounded-lg group shadow-lg transition-all hover:shadow-2xl">
+                <div key={index} className="overflow-hidden rounded-lg group shadow-lg transition-all hover:shadow-2xl cursor-pointer" onClick={() => openLightbox(index)}>
                     <Image
                         src={image.src}
                         alt={image.alt}
@@ -31,6 +62,52 @@ export default function GalleryPosts() {
             ))}
         </div>
       </div>
+      {lightboxOpen && (
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="bg-black/80 border-none p-0 max-w-none w-screen h-screen flex items-center justify-center">
+            <div className="relative w-full h-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full"
+                onClick={closeLightbox}
+              >
+                <X className="h-8 w-8" />
+                <span className="sr-only">Cerrar</span>
+              </Button>
+              <div className="flex items-center justify-center h-full w-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': images.length <= 1 })}
+                  onClick={goToPrevious}
+                >
+                  <ChevronLeft className="h-10 w-10" />
+                  <span className="sr-only">Anterior</span>
+                </Button>
+                <div className="relative w-full max-w-4xl h-full max-h-[80vh]">
+                  <Image
+                    src={images[selectedImageIndex].src}
+                    alt={images[selectedImageIndex].alt}
+                    fill
+                    className="object-contain"
+                    quality={100}
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': images.length <= 1 })}
+                  onClick={goToNext}
+                >
+                  <ChevronRight className="h-10 w-10" />
+                  <span className="sr-only">Siguiente</span>
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </section>
   );
 }
