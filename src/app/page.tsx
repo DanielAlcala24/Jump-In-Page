@@ -9,6 +9,7 @@ import Testimonios from '@/components/sections/testimonios';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
+import WavyDivider from '@/components/wavy-divider';
 
 export default function Home() {
   return (
@@ -19,8 +20,10 @@ export default function Home() {
       <main className="flex-1">
         <Inicio />
         <Introduccion />
+        <WavyDivider fromColor="bg-gray-50" toColor="text-gray-100" />
         <Eventos />
         <Galeria />
+        <WavyDivider fromColor="bg-gray-50" toColor="text-gray-100" />
         <Testimonios />
         <Faq />
       </main>

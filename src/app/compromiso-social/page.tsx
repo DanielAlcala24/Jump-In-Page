@@ -7,6 +7,7 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import CommitmentGallery from '@/components/sections/commitment-gallery';
+import WavyDivider from '@/components/wavy-divider';
 
 export default function CompromisoSocialPage() {
   return (
@@ -28,6 +29,7 @@ export default function CompromisoSocialPage() {
           </div>
         </section>
         <SocialCommitment />
+        <WavyDivider fromColor="bg-gray-50" toColor="text-white" />
         <CommitmentGallery />
       </main>
       <WhatsappButton />
