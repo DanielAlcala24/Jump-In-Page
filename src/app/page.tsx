@@ -20,10 +20,10 @@ export default function Home() {
       <main className="flex-1">
         <Inicio />
         <Introduccion />
-        <WavyDivider fromColor="bg-gray-50" toColor="text-gray-100" />
+        <WavyDivider fromColor="bg-gray-50" />
         <Eventos />
         <Galeria />
-        <WavyDivider fromColor="bg-gray-50" toColor="text-gray-100" />
+        <WavyDivider fromColor="bg-gray-50" />
         <Testimonios />
         <Faq />
       </main>

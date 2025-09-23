@@ -29,7 +29,7 @@ export default function CompromisoSocialPage() {
           </div>
         </section>
         <SocialCommitment />
-        <WavyDivider fromColor="bg-gray-50" toColor="text-white" />
+        <WavyDivider fromColor="bg-gray-50" />
         <CommitmentGallery />
       </main>
       <WhatsappButton />

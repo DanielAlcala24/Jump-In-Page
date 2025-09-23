@@ -1,13 +1,12 @@
 interface WavyDividerProps {
   fromColor: string;
-  toColor: string;
 }
 
-export default function WavyDivider({ fromColor, toColor }: WavyDividerProps) {
+export default function WavyDivider({ fromColor }: WavyDividerProps) {
   return (
     <div className={`relative ${fromColor}`}>
       <svg
-        className={`absolute bottom-0 left-0 w-full h-auto ${toColor} dark:text-gray-900`}
+        className={`absolute bottom-0 left-0 w-full h-auto text-black dark:text-black`}
         viewBox="0 0 1440 100"
         preserveAspectRatio="none"
         fill="currentColor"

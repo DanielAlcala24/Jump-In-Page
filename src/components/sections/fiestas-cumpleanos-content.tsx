@@ -82,7 +82,7 @@ export default function FiestasCumpleanosContent() {
                     </div>
                 </div>
 
-                <WavyDivider fromColor="bg-gray-50" toColor="text-white" />
+                <WavyDivider fromColor="bg-gray-50" />
 
                 {/* Booking Form Section */}
                 <Card className="shadow-2xl rounded-2xl overflow-hidden">
