@@ -25,7 +25,7 @@ const sucursal = {
   attractions: [
     { name: "Salto de Altura", image: "https://picsum.photos/seed/attr1-ecatepec/400/300" },
     { name: "Dodgeball", image: "https://picsum.photos/seed/attr2-ecatepec/400/300" },
-    { nameAlberca: "Foam Pit", image: "https://picsum.photos/seed/attr3-ecatepec/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/attr3-ecatepec/400/300" },
     { name: "Zona Kids", image: "https://picsum.photos/seed/attr4-ecatepec/400/300" }
   ],
   gallery: [
@@ -39,7 +39,7 @@ const sucursal = {
 
 export default function SucursalEcatepecPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen">
       <VideoBackground />
       <Header />
       <SocialIcons />
@@ -57,7 +57,7 @@ export default function SucursalEcatepecPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -123,7 +123,7 @@ export default function SucursalEcatepecPage() {
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
                         <div key={index} className="relative group overflow-hidden rounded-lg">
-                           <Image src={attr.image} alt={attr.name} width={400} height={300} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
+                           <Image src={attr.image} alt={attr.name as string} width={400} height={300} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                <h4 className="text-white text-xl font-bold font-headline">{attr.name}</h4>
                            </div>
@@ -186,3 +186,5 @@ export default function SucursalEcatepecPage() {
     </div>
   );
 }
+
+    

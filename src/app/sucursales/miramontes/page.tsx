@@ -39,7 +39,7 @@ const sucursal = {
 
 export default function SucursalMiramontesPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen">
       <VideoBackground />
       <Header />
       <SocialIcons />
@@ -57,7 +57,7 @@ export default function SucursalMiramontesPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -167,7 +167,7 @@ export default function SucursalMiramontesPage() {
             {/* Galería */}
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader className="text-center">
-                    <CardTitle className="font-headline text-3xl">Galería de {sucursal.name}</CardTitle>_
+                    <CardTitle className="font-headline text-3xl">Galería de {sucursal.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.gallery.map((img, index) => (
@@ -186,3 +186,5 @@ export default function SucursalMiramontesPage() {
     </div>
   );
 }
+
+    
