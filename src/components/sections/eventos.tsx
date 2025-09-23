@@ -9,7 +9,7 @@ const eventItems = [
     description: 'Celebra un día inolvidable con saltos, risas y pastel. ¡Nos encargamos de todo para que tú solo te diviertas!',
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Cotizar Fiesta',
-    href: '#',
+    href: '/fiestas-y-eventos/fiestas-cumpleanos',
     colorClass: 'bg-pink-500 hover:bg-pink-600 border-pink-600',
   },
   {
@@ -17,7 +17,7 @@ const eventItems = [
     description: 'Fomenta el trabajo en equipo y desestresa a tu personal con una jornada llena de energía y actividades únicas.',
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Ver Paquetes',
-    href: '#',
+    href: '/fiestas-y-eventos/eventos-empresariales',
     colorClass: 'bg-green-500 hover:bg-green-600 border-green-600',
   },
   {
@@ -25,7 +25,7 @@ const eventItems = [
     description: 'Encuentra el Jump-In más cercano y prepárate para la acción. ¡Siempre hay uno cerca de ti esperándote!',
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Encontrar Sucursal',
-    href: '#',
+    href: '/sucursales',
     colorClass: 'bg-purple-500 hover:bg-purple-600 border-purple-600',
   },
   {
