@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,24 +9,24 @@ const sucursalesData = [
   {
     category: 'Estado de México',
     locations: [
-      { name: 'Coacalco', image: 'https://picsum.photos/seed/coacalco/600/400', link: '#' },
-      { name: 'Ecatepec', image: 'https://picsum.photos/seed/ecatepec/600/400', link: '#' },
-      { name: 'Interlomas', image: 'https://picsum.photos/seed/interlomas/600/400', link: '#' },
-      { name: 'La Cúspide', image: 'https://picsum.photos/seed/cuspide/600/400', link: '#' },
+      { name: 'Coacalco', image: 'https://picsum.photos/seed/coacalco/600/400', link: '/sucursales/coacalco' },
+      { name: 'Ecatepec', image: 'https://picsum.photos/seed/ecatepec/600/400', link: '/sucursales/ecatepec' },
+      { name: 'Interlomas', image: 'https://picsum.photos/seed/interlomas/600/400', link: '/sucursales/interlomas' },
+      { name: 'La Cúspide', image: 'https://picsum.photos/seed/cuspide/600/400', link: '/sucursales/cuspide' },
     ],
   },
   {
     category: 'CDMX',
     locations: [
-      { name: 'Churubusco', image: 'https://picsum.photos/seed/churubusco/600/400', link: '#' },
-      { name: 'Miramontes', image: 'https://picsum.photos/seed/miramontes/600/400', link: '#' },
-      { name: 'Vallejo', image: 'https://picsum.photos/seed/vallejo/600/400', link: '#' },
+      { name: 'Churubusco', image: 'https://picsum.photos/seed/churubusco/600/400', link: '/sucursales/churubusco' },
+      { name: 'Miramontes', image: 'https://picsum.photos/seed/miramontes/600/400', link: '/sucursales/miramontes' },
+      { name: 'Vallejo', image: 'https://picsum.photos/seed/vallejo/600/400', link: '/sucursales/vallejo' },
     ],
   },
   {
     category: 'Morelos',
     locations: [
-      { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '#' },
+      { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '/sucursales/cuernavaca' },
     ],
   },
 ];
