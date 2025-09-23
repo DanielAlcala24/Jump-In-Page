@@ -18,7 +18,7 @@ const navLinks = [
   { href: "/#atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
   { href: "/#precios-promociones", label: "Precios y promociones" },
-  { href: "/#registro-digital", label: "Registro digital" },
+  { href: "http://decmanager.com:140", label: "Registro digital", external: true },
   { href: "/menu-alimentos", label: "Menú de alimentos" },
   { href: "/galeria", label: "Galería" },
   { href: "/blog", label: "Blog" },
@@ -115,6 +115,8 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
                   className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110 text-center"
                 >
                   {link.label}
@@ -169,6 +171,8 @@ export default function Header() {
                             <SheetClose asChild key={link.href}>
                                 <Link
                                 href={link.href}
+                                target={link.external ? "_blank" : undefined}
+                                rel={link.external ? "noopener noreferrer" : undefined}
                                 className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
                                 >
                                 {link.label}
