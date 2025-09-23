@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
@@ -135,6 +135,10 @@ export default function Header() {
                 </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+                  <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Navega por las diferentes secciones del sitio web de Jump-In.
+                  </SheetDescription>
                   <ScrollArea className="h-full w-full">
                     <div className="flex flex-col gap-6 p-6 pt-12 h-full">
                         <div className="relative w-full mb-4">
@@ -174,12 +178,12 @@ export default function Header() {
                         </div>
                         <Separator className="my-4 bg-background/20"/>
                         <div className="flex justify-center gap-4">
-                            <Link href="#" aria-label="TikTok" className="text-background hover:text-white transition-colors">
+                            <Link href="https://www.tiktok.com/@jumpin_mx" aria-label="TikTok" className="text-background hover:text-white transition-colors">
                                 <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} className="h-6 w-6" />
                             </Link>
-                            <Link href="#" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
-                            <Link href="#" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>
-                            <Link href="#" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6"/></Link>
+                            <Link href="https://www.instagram.com/jumpin_mx" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
+                            <Link href="https://www.facebook.com/JumpInMX/?locale=es_LA" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>
+                            <Link href="https://www.youtube.com/channel/UCQ0A6bqmDR1EThKl1o0l1Zg" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6"/></Link>
                         </div>
                     </div>
                   </ScrollArea>
