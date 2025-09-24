@@ -26,7 +26,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Encontrar Sucursal',
     href: '/sucursales',
-    colorClass: 'bg-purple-500 hover:bg-purple-600 border-purple-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
   },
   {
     title: 'Nuestras Atracciones',
