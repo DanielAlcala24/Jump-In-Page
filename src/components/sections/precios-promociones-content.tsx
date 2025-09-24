@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Ticket, Calendar, Users, PartyPopper } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const prices = [
   {
@@ -42,26 +43,30 @@ const promotions = [
   {
     title: 'Martes 2x1',
     description: '¡Los martes son de amigos! Compra una hora de salto y obtén la segunda gratis para un acompañante.',
-    icon: <Users className="h-10 w-10 text-pink-500" />,
-    color: 'bg-pink-500/10'
+    image: 'https://picsum.photos/seed/promo1/600/400',
+    hint: 'friends jumping',
+    availableIn: ['Todas las sucursales']
   },
   {
     title: 'Jueves de Estudiantes',
     description: 'Presenta tu credencial de estudiante vigente y obtén un 20% de descuento en tu entrada.',
-    icon: <Ticket className="h-10 w-10 text-green-500" />,
-    color: 'bg-green-500/10'
+    image: 'https://picsum.photos/seed/promo2/600/400',
+    hint: 'student discount',
+    availableIn: ['Coacalco', 'Ecatepec', 'Vallejo']
   },
   {
     title: 'Domingo Familiar',
     description: 'Paquete familiar (2 adultos, 2 niños) por solo $750 la hora. ¡El plan perfecto para el fin de semana!',
-    icon: <Calendar className="h-10 w-10 text-sky-500" />,
-    color: 'bg-sky-500/10'
+    image: 'https://picsum.photos/seed/promo3/600/400',
+    hint: 'family fun',
+    availableIn: ['Todas las sucursales']
   },
   {
     title: 'Promo Cumpleañero',
     description: '¿Es tu mes de cumpleaños? Presenta tu INE y salta ¡GRATIS! en la compra de 3 accesos para tus amigos.',
-    icon: <PartyPopper className="h-10 w-10 text-orange-500" />,
-    color: 'bg-orange-500/10'
+    image: 'https://picsum.photos/seed/promo4/600/400',
+    hint: 'birthday person',
+    availableIn: ['Interlomas', 'La Cúspide', 'Cuernavaca']
   },
 ];
 
@@ -106,11 +111,11 @@ export default function PreciosPromocionesContent() {
         {selectedCategory === 'Precios' && (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {prices.map((item, index) => (
-                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
                         <CardHeader className="p-0">
                             <Image src={item.image} alt={item.title} width={600} height={400} data-ai-hint={item.hint} className="w-full h-48 object-cover"/>
                         </CardHeader>
-                        <CardContent className="p-6">
+                        <CardContent className="p-6 flex-grow">
                             <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
                             <p className="text-2xl font-bold text-primary my-2">{item.price}</p>
                             <CardDescription>{item.description}</CardDescription>
@@ -126,15 +131,23 @@ export default function PreciosPromocionesContent() {
         {selectedCategory === 'Promociones' && (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {promotions.map((promo, index) => (
-                    <Card key={index} className="flex flex-col text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <CardHeader className="items-center">
-                            <div className={cn("p-4 rounded-full", promo.color)}>{promo.icon}</div>
-                            <CardTitle className="font-headline">{promo.title}</CardTitle>
+                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                        <CardHeader className="p-0">
+                            <Image src={promo.image} alt={promo.title} width={600} height={400} data-ai-hint={promo.hint} className="w-full h-48 object-cover"/>
                         </CardHeader>
-                        <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">{promo.description}</p>
+                        <CardContent className="p-6 flex-grow">
+                            <CardTitle className="font-headline text-xl">{promo.title}</CardTitle>
+                            <CardDescription className="my-2">{promo.description}</CardDescription>
+                            <div className="mt-4">
+                              <h4 className="text-sm font-semibold flex items-center mb-2"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {promo.availableIn.map(sucursal => (
+                                  <Badge key={sucursal} variant="secondary">{sucursal}</Badge>
+                                ))}
+                              </div>
+                            </div>
                         </CardContent>
-                        <CardFooter>
+                         <CardFooter>
                             <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                                 Ver detalles
                             </Button>
