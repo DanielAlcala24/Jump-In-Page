@@ -17,7 +17,7 @@ const navLinks = [
   { href: "/fiestas-y-eventos", label: "Fiestas y eventos empresariales" },
   { href: "/#atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
-  { href: "/#precios-promociones", label: "Precios y promociones" },
+  { href: "/precios-y-promociones", label: "Precios y promociones" },
   { href: "http://decmanager.com:140", label: "Registro digital", external: true },
   { href: "/menu-alimentos", label: "Menú de alimentos" },
   { href: "/galeria", label: "Galería" },
