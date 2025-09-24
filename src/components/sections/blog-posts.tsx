@@ -13,7 +13,7 @@ const blogPosts = [
     imageSrc: 'https://picsum.photos/800/600?random=9',
     imageHint: 'health fitness',
     href: '#',
-    colorClass: 'bg-sky-500 hover:bg-sky-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600',
   },
   {
     title: 'Ideas Creativas para tu Próxima Fiesta de Cumpleaños',
@@ -22,7 +22,7 @@ const blogPosts = [
     imageSrc: 'https://picsum.photos/800/600?random=10',
     imageHint: 'party ideas',
     href: '#',
-    colorClass: 'bg-pink-500 hover:bg-pink-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600',
   },
   {
     title: 'Team Building en Jump-In: ¡Una Experiencia Única!',
@@ -31,7 +31,7 @@ const blogPosts = [
     imageSrc: 'https://picsum.photos/800/600?random=11',
     imageHint: 'team building',
     href: '#',
-    colorClass: 'bg-purple-500 hover:bg-purple-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600',
   },
   {
     title: 'La Seguridad es Primero: Nuestras Medidas en Jump-In',
@@ -40,7 +40,7 @@ const blogPosts = [
     imageSrc: 'https://picsum.photos/800/600?random=12',
     imageHint: 'safety measures',
     href: '#',
-    colorClass: 'bg-green-500 hover:bg-green-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600',
   },
   {
     title: '¿Por Qué Saltar es el Mejor Remedio Contra el Estrés?',
@@ -58,7 +58,7 @@ const blogPosts = [
     imageSrc: 'https://picsum.photos/800/600?random=14',
     imageHint: 'healthy food',
     href: '#',
-    colorClass: 'bg-red-500 hover:bg-red-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600',
   },
 ];
 
