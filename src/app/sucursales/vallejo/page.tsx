@@ -23,10 +23,12 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Trampolín Olímpico", image: "https://picsum.photos/seed/attr1-vallejo/400/300" },
-    { name: "Batalla de Gladiadores", image: "https://picsum.photos/seed/attr2-vallejo/400/300" },
-    { name: "Muro de Escalada", image: "https://picsum.photos/seed/attr3-vallejo/400/300" },
-    { name: "Foam Pit", image: "https://picsum.photos/seed/attr4-vallejo/400/300" }
+    { name: "Climbing Wall", image: "https://picsum.photos/seed/climbing/400/300" },
+    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
+    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
+    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
+    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" }
   ],
   gallery: [
     { src: 'https://picsum.photos/seed/gal1-vallejo/600/400', alt: 'Interior Vallejo' },
@@ -57,7 +59,7 @@ export default function SucursalVallejoPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-transparent">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -186,5 +188,3 @@ export default function SucursalVallejoPage() {
     </div>
   );
 }
-
-    

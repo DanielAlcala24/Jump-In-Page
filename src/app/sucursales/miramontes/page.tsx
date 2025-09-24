@@ -23,10 +23,15 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Dodgeball Extremo", image: "https://picsum.photos/seed/attr1-miramontes/400/300" },
-    { name: "Alberca de Espuma", image: "https://picsum.photos/seed/attr2-miramontes/400/300" },
-    { name: "Muro de Escalada", image: "https://picsum.photos/seed/attr3-miramontes/400/300" },
-    { name: "Slam Dunk Zone", image: "https://picsum.photos/seed/attr4-miramontes/400/300" }
+    { name: "Arena Futbol", image: "https://picsum.photos/seed/futbol/400/300" },
+    { name: "Escape Room", image: "https://picsum.photos/seed/escape/400/300" },
+    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
+    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
+    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
+    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" },
+    { name: "Kid Zone", image: "https://picsum.photos/seed/kidzone/400/300" },
+    { name: "Rope Course Kids", image: "https://picsum.photos/seed/ropekids/400/300" }
   ],
   gallery: [
     { src: 'https://picsum.photos/seed/gal1-miramontes/600/400', alt: 'Interior Miramontes' },
@@ -57,7 +62,7 @@ export default function SucursalMiramontesPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-transparent">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -186,5 +191,3 @@ export default function SucursalMiramontesPage() {
     </div>
   );
 }
-
-    

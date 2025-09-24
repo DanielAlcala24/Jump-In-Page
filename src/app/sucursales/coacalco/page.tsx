@@ -23,10 +23,13 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Dodgeball Extremo", image: "https://picsum.photos/seed/attr1-coacalco/400/300" },
-    { name: "Alberca de Espuma", image: "https://picsum.photos/seed/attr2-coacalco/400/300" },
-    { name: "Kids Zone", image: "https://picsum.photos/seed/attr3-coacalco/400/300" },
-    { name: "Basket-Tramp", image: "https://picsum.photos/seed/attr4-coacalco/400/300" }
+    { name: "Climbing Wall", image: "https://picsum.photos/seed/climbing/400/300" },
+    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
+    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
+    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
+    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" },
+    { name: "Spider Tower", image: "https://picsum.photos/seed/spider/400/300" }
   ],
   gallery: [
     { src: 'https://picsum.photos/seed/gal1-coacalco/600/400', alt: 'Interior Coacalco' },
@@ -57,7 +60,7 @@ export default function SucursalCoacalcoPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-transparent">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -186,5 +189,3 @@ export default function SucursalCoacalcoPage() {
     </div>
   );
 }
-
-    

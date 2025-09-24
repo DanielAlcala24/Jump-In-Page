@@ -23,10 +23,17 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 9 PM | Sábados y Domingos: 11 AM - 9 PM",
   attractions: [
-    { name: "Mega Trampolín", image: "https://picsum.photos/seed/attr1-cuspide/400/300" },
-    { name: "Circuito Ninja", image: "https://picsum.photos/seed/attr2-cuspide/400/300" },
-    { name: "Salto Libre", image: "https://picsum.photos/seed/attr3-cuspide/400/300" },
-    { name: "Torre de Salto", image: "https://picsum.photos/seed/attr4-cuspide/400/300" }
+    { name: "Arena Futbol", image: "https://picsum.photos/seed/futbol/400/300" },
+    { name: "Camino al Cielo", image: "https://picsum.photos/seed/cielo/400/300" },
+    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
+    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
+    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
+    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" },
+    { name: "Laberinto de obstáculos", image: "https://picsum.photos/seed/laberinto/400/300" },
+    { name: "Spider Tower", image: "https://picsum.photos/seed/spider/400/300" },
+    { name: "Kid Zone", image: "https://picsum.photos/seed/kidzone/400/300" },
+    { name: "Rope Course Kids", image: "https://picsum.photos/seed/ropekids/400/300" }
   ],
   gallery: [
     { src: 'https://picsum.photos/seed/gal1-cuspide/600/400', alt: 'Interior La Cúspide' },
@@ -57,7 +64,7 @@ export default function SucursalCuspidePage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-transparent">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -186,5 +193,3 @@ export default function SucursalCuspidePage() {
     </div>
   );
 }
-
-    

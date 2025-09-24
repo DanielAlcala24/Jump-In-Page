@@ -23,10 +23,18 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Salto de Altura", image: "https://picsum.photos/seed/attr1-ecatepec/400/300" },
-    { name: "Dodgeball", image: "https://picsum.photos/seed/attr2-ecatepec/400/300" },
-    { name: "Foam Pit", image: "https://picsum.photos/seed/attr3-ecatepec/400/300" },
-    { name: "Zona Kids", image: "https://picsum.photos/seed/attr4-ecatepec/400/300" }
+    { name: "Climbing Wall", image: "https://picsum.photos/seed/climbing/400/300" },
+    { name: "Drope slide", image: "https://picsum.photos/seed/slide/400/300" },
+    { name: "Camino al Cielo", image: "https://picsum.photos/seed/cielo/400/300" },
+    { name: "Ball Blaster", image: "https://picsum.photos/seed/blaster/400/300" },
+    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
+    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
+    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
+    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
+    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" },
+    { name: "Laberinto de obstáculos", image: "https://picsum.photos/seed/laberinto/400/300" },
+    { name: "Spider Tower", image: "https://picsum.photos/seed/spider/400/300" },
+    { name: "Kid Zone", image: "https://picsum.photos/seed/kidzone/400/300" }
   ],
   gallery: [
     { src: 'https://picsum.photos/seed/gal1-ecatepec/600/400', alt: 'Interior Ecatepec' },
@@ -57,7 +65,7 @@ export default function SucursalEcatepecPage() {
           </div>
         </section>
 
-        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-gray-50 dark:bg-gray-900">
+        <section id="info-sucursal" className="py-16 px-4 md:px-6 bg-transparent">
           <div className="container mx-auto max-w-6xl space-y-16">
 
             {/* Dirección y Mapa */}
@@ -186,5 +194,3 @@ export default function SucursalEcatepecPage() {
     </div>
   );
 }
-
-    
