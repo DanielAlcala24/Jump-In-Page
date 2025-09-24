@@ -18,7 +18,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Ver Paquetes',
     href: '/fiestas-y-eventos/eventos-empresariales',
-    colorClass: 'bg-green-500 hover:bg-green-600 border-green-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
   },
   {
     title: 'Nuestras Sucursales',
@@ -33,7 +33,7 @@ const eventItems = [
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Explorar Atracciones',
-    href: '#',
+    href: '/atracciones',
     colorClass: 'bg-sky-500 hover:bg-sky-600 border-sky-600',
   },
 ];
