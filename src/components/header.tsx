@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -15,7 +16,7 @@ const navLinks = [
   { href: "/nosotros", label: "Nosotros" },
   { href: "/compromiso-social", label: "Compromiso Social" },
   { href: "/fiestas-y-eventos", label: "Fiestas y eventos empresariales" },
-  { href: "/#atracciones", label: "Atracciones" },
+  { href: "/atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
   { href: "/precios-y-promociones", label: "Precios y promociones" },
   { href: "http://decmanager.com:140", label: "Registro digital", external: true },
