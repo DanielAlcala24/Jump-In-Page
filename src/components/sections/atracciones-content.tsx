@@ -48,7 +48,7 @@ export default function AtraccionesContent() {
         <section id="attractions-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
                 
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 sticky top-16 z-20 py-4 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 sticky top-16 z-20 py-4">
                     <Select onValueChange={setSelectedSucursal} defaultValue="Todas">
                         <SelectTrigger className="w-full sm:w-[280px] shadow-lg">
                             <SelectValue placeholder="Selecciona una sucursal" />
