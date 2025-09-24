@@ -5,38 +5,19 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
-const prices = [
-  {
-    title: 'Salto Individual (1 Hora)',
-    price: '$250 MXN',
-    description: 'Acceso completo a todas las áreas de trampolines. ¡Ideal para una dosis rápida de diversión!',
-    image: 'https://picsum.photos/seed/price1/600/400',
-    hint: 'person jumping'
-  },
-  {
-    title: 'Pase de Día Completo',
-    price: '$500 MXN',
-    description: 'Salta sin límites durante todo el día. ¡La mejor opción para los verdaderos entusiastas!',
-    image: 'https://picsum.photos/seed/price2/600/400',
-    hint: 'group jumping'
-  },
-  {
-    title: 'Paquete Amigos (4 Personas)',
-    price: '$800 MXN / hora',
-    description: 'Trae a tu squad y ahorren juntos. Más amigos, más diversión, mejor precio.',
-    image: 'https://picsum.photos/seed/price3/600/400',
-    hint: 'friends fun'
-  },
-  {
-    title: 'Pase Anual VIP',
-    price: '$3,500 MXN',
-    description: 'Acceso ilimitado por todo un año, descuentos en alimentos y eventos especiales.',
-    image: 'https://picsum.photos/seed/price4/600/400',
-    hint: 'vip pass'
-  },
+const sucursales = [
+    { name: 'Coacalco', image: 'https://picsum.photos/seed/coacalco/600/400', link: '/sucursales/coacalco', hint: 'trampoline park' },
+    { name: 'Ecatepec', image: 'https://picsum.photos/seed/ecatepec/600/400', link: '/sucursales/ecatepec', hint: 'trampoline park' },
+    { name: 'Interlomas', image: 'https://picsum.photos/seed/interlomas/600/400', link: '/sucursales/interlomas', hint: 'trampoline park' },
+    { name: 'La Cúspide', image: 'https://picsum.photos/seed/cuspide/600/400', link: '/sucursales/cuspide', hint: 'trampoline park' },
+    { name: 'Churubusco', image: 'https://picsum.photos/seed/churubusco/600/400', link: '/sucursales/churubusco', hint: 'trampoline park' },
+    { name: 'Miramontes', image: 'https://picsum.photos/seed/miramontes/600/400', link: '/sucursales/miramontes', hint: 'trampoline park' },
+    { name: 'Vallejo', image: 'https://picsum.photos/seed/vallejo/600/400', link: '/sucursales/vallejo', hint: 'trampoline park' },
+    { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '/sucursales/cuernavaca', hint: 'trampoline park' },
 ];
 
 const promotions = [
@@ -109,19 +90,22 @@ export default function PreciosPromocionesContent() {
         </div>
 
         {selectedCategory === 'Precios' && (
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {prices.map((item, index) => (
-                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {sucursales.map((sucursal, index) => (
+                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group">
                         <CardHeader className="p-0">
-                            <Image src={item.image} alt={item.title} width={600} height={400} data-ai-hint={item.hint} className="w-full h-48 object-cover"/>
+                            <Image src={sucursal.image} alt={`Sucursal ${sucursal.name}`} width={600} height={400} data-ai-hint={sucursal.hint} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"/>
                         </CardHeader>
-                        <CardContent className="p-6 flex-grow">
-                            <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
-                            <p className="text-2xl font-bold text-primary my-2">{item.price}</p>
-                            <CardDescription>{item.description}</CardDescription>
+                        <CardContent className="p-6 flex-grow flex flex-col items-center text-center">
+                            <CardTitle className="font-headline text-xl">{sucursal.name}</CardTitle>
                         </CardContent>
-                         <CardFooter>
-                            <Button className="w-full bg-orange-500 hover:bg-orange-600">Comprar Ahora</Button>
+                         <CardFooter className="p-4">
+                            <Button asChild className="w-full bg-orange-500 hover:bg-orange-600">
+                              <Link href={sucursal.link}>
+                                Checar Precios
+                                <ArrowRight className="ml-2 h-4 w-4"/>
+                              </Link>
+                            </Button>
                         </CardFooter>
                     </Card>
                 ))}
