@@ -34,7 +34,7 @@ const eventItems = [
     videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
     buttonText: 'Explorar Atracciones',
     href: '/atracciones',
-    colorClass: 'bg-sky-500 hover:bg-sky-600 border-sky-600',
+    colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
   },
 ];
 
