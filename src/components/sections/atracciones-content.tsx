@@ -27,7 +27,7 @@ const attractionsData = [
     // Atracciones para los más pequeños
     { name: 'Laberinto de Obstáculos', availableIn: ['La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco'], category: 'Atracciones para los más pequeños', image: 'https://picsum.photos/seed/laberinto/400/300', hint: 'kids labyrinth' },
     { name: 'Spider Tower', availableIn: ['Coacalco', 'Cuernavaca', 'La Cúspide', 'Ecatepec'], category: 'Atracciones para los más pequeños', image: 'https://picsum.photos/seed/spider/400/300', hint: 'spider tower' },
-    { name: 'Kid Zone', availableIn: ['Cuernavaca', 'La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco'], category: 'Atracciones para los más pequeños', image: 'https://picsum.photos/seed/kidzone/400/300', hint: 'kids zone' },
+    { name: 'Kid Zone', availableIn: ['Cuernavaca', 'La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco', 'Miramontes'], category: 'Atracciones para los más pequeños', image: 'https://picsum.photos/seed/kidzone/400/300', hint: 'kids zone' },
     { name: 'Rope Course Kids', availableIn: ['Cuernavaca', 'Churubusco', 'La Cúspide', 'Interlomas', 'Miramontes'], category: 'Atracciones para los más pequeños', image: 'https://picsum.photos/seed/ropekids/400/300', hint: 'kids ropes' },
 ];
 
@@ -45,7 +45,7 @@ export default function AtraccionesContent() {
     );
 
     return (
-        <section id="attractions-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
+        <section id="attractions-content" className="w-full py-6 md:py-6 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
                 
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 sticky top-16 z-20 py-4">

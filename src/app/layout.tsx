@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Jump-In',
-  description: 'The ultimate trampoline park experience.',
+  description: 'El primer Trampoline Park en México.',
 };
 
 export default function RootLayout({
