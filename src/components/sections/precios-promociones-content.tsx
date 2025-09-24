@@ -131,11 +131,6 @@ export default function PreciosPromocionesContent() {
                               </div>
                             </div>
                         </CardContent>
-                         <CardFooter>
-                            <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                                Ver detalles
-                            </Button>
-                        </CardFooter>
                     </Card>
                 ))}
            </div>
