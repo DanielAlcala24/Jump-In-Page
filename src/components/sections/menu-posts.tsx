@@ -98,14 +98,13 @@ export default function MenuPosts() {
               key={index}
               className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <div className="relative w-full h-56">
+              <div className="relative w-full aspect-square">
                 <Image
                   src={item.imageSrc}
                   alt={item.title}
-                  width={400}
-                  height={300}
+                  fill
                   data-ai-hint={item.imageHint}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="flex flex-1 flex-col p-6 text-center">
