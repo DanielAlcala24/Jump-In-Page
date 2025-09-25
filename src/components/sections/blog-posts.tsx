@@ -10,7 +10,7 @@ const blogPosts = [
     title: '5 Beneficios de Saltar en Trampolín para tu Salud',
     description:
       'Descubre cómo saltar no solo es divertido, sino también una excelente forma de ejercicio cardiovascular que mejora tu equilibrio y fortalece tus músculos.',
-    imageSrc: 'https://picsum.photos/800/600?random=9',
+    imageSrc: '/assets/g1.jpg',
     imageHint: 'health fitness',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',
@@ -19,7 +19,7 @@ const blogPosts = [
     title: 'Ideas Creativas para tu Próxima Fiesta de Cumpleaños',
     description:
       'Desde fiestas temáticas hasta competencias amistosas, te damos ideas originales para que la próxima celebración de cumpleaños en Jump-In sea inolvidable.',
-    imageSrc: 'https://picsum.photos/800/600?random=10',
+    imageSrc: '/assets/g3.jpeg',
     imageHint: 'party ideas',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',
@@ -28,7 +28,7 @@ const blogPosts = [
     title: 'Team Building en Jump-In: ¡Una Experiencia Única!',
     description:
       'Rompe la rutina de la oficina y fomenta la colaboración y la comunicación en tu equipo con nuestras actividades de team building llenas de energía y diversión.',
-    imageSrc: 'https://picsum.photos/800/600?random=11',
+    imageSrc: '/assets/g7.jpeg',
     imageHint: 'team building',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',
@@ -37,7 +37,7 @@ const blogPosts = [
     title: 'La Seguridad es Primero: Nuestras Medidas en Jump-In',
     description:
       'Conoce todas las medidas de seguridad que implementamos para garantizar que tu única preocupación sea divertirte al máximo.',
-    imageSrc: 'https://picsum.photos/800/600?random=12',
+    imageSrc: '/assets/g4.jpeg',
     imageHint: 'safety measures',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',
@@ -46,7 +46,7 @@ const blogPosts = [
     title: '¿Por Qué Saltar es el Mejor Remedio Contra el Estrés?',
     description:
       'Libera tensiones y mejora tu estado de ánimo con una buena sesión de saltos. Te explicamos la ciencia detrás de este divertido antiestrés.',
-    imageSrc: 'https://picsum.photos/800/600?random=13',
+    imageSrc: '/assets/g2.jpg',
     imageHint: 'stress relief',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',
@@ -55,7 +55,7 @@ const blogPosts = [
     title: 'Alimentación y Energía: ¿Qué Comer Antes de Saltar?',
     description:
       'Te damos algunos consejos sobre qué alimentos y bebidas te darán la energía que necesitas para una jornada de saltos sin parar.',
-    imageSrc: 'https://picsum.photos/800/600?random=14',
+    imageSrc: 'https://picsum.photos/400/400?random=2',
     imageHint: 'healthy food',
     href: '#',
     colorClass: 'bg-orange-500 hover:bg-orange-600',

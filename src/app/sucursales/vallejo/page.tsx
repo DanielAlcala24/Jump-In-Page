@@ -17,24 +17,24 @@ const sucursal = {
   whatsapp: "525589012345",
   phone: "55 8901 2345",
   prices: [
-    { title: "Salto Individual", price: "$195/hr", description: "Acceso a todas las áreas de trampolines.", image: "https://picsum.photos/seed/price1/300/200" },
-    { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "https://picsum.photos/seed/price2/300/200" },
-    { title: "Pase Anual", price: "$2450", description: "Salta todo el año sin límites.", image: "https://picsum.photos/seed/price3/300/200" }
+    { title: "Salto Individual", price: "$195/hr", description: "Acceso a todas las áreas de trampolines.", image: "/assets/g1.jpg" },
+    { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
+    { title: "Pase Anual", price: "$2450", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Climbing Wall", image: "https://picsum.photos/seed/climbing/400/300" },
-    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
-    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
-    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
-    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
-    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" }
+    { name: "Climbing Wall", image: "/assets/g6.jpeg" },
+    { name: "Juegos de Destreza", image: "/assets/g4.jpeg" },
+    { name: "Main Court", image: "/assets/g1.jpg" },
+    { name: "Jump Jam", image: "/assets/g2.jpg" },
+    { name: "Dodge Ball", image: "/assets/g5.jpeg" },
+    { name: "Foam Pit", image: "/assets/g4.jpeg" }
   ],
   gallery: [
-    { src: 'https://picsum.photos/seed/gal1-vallejo/600/400', alt: 'Interior Vallejo' },
-    { src: 'https://picsum.photos/seed/gal2-vallejo/600/400', alt: 'Gente saltando' },
-    { src: 'https://picsum.photos/seed/gal3-vallejo/600/400', alt: 'Fiesta de cumpleaños' },
-    { src: 'https://picsum.photos/seed/gal4-vallejo/600/400', alt: 'Exterior de la sucursal' }
+    { src: '/assets/g1.jpg', alt: 'Interior Vallejo' },
+    { src: '/assets/g2.jpg', alt: 'Gente saltando' },
+    { src: '/assets/g3.jpeg', alt: 'Fiesta de cumpleaños' },
+    { src: '/assets/g4.jpeg', alt: 'Exterior de la sucursal' }
   ]
 };
 

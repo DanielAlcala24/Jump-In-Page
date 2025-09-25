@@ -2,11 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 
 const logos = [
-  { src: 'https://picsum.photos/150/80?random=1', alt: 'Mundo Imayina Logo', hint: 'Mundo Imayina' },
-  { src: 'https://picsum.photos/150/80?random=2', alt: 'FUCAM Logo', hint: 'FUCAM logo' },
-  { src: 'https://picsum.photos/150/80?random=3', alt: 'Juguetón Logo', hint: 'Jugueton logo' },
-  { src: 'https://picsum.photos/150/80?random=4', alt: 'Antes de Partir Logo', hint: 'Antes Partir' },
-  { src: 'https://picsum.photos/150/80?random=5', alt: 'Iluminemos Logo', hint: 'Iluminemos logo' },
+  { src: '/assets/g1.jpg', alt: 'Mundo Imayina Logo', hint: 'Mundo Imayina' },
+  { src: '/assets/g2.jpg', alt: 'FUCAM Logo', hint: 'FUCAM logo' },
+  { src: '/assets/g3.jpeg', alt: 'Juguetón Logo', hint: 'Jugueton logo' },
+  { src: '/assets/g4.jpeg', alt: 'Antes de Partir Logo', hint: 'Antes Partir' },
+  { src: '/assets/g5.jpeg', alt: 'Iluminemos Logo', hint: 'Iluminemos logo' },
 ];
 
 export default function SocialCommitment() {
@@ -17,7 +17,7 @@ export default function SocialCommitment() {
       <div className="container mx-auto max-w-4xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden bg-white">
           <Image
-            src="https://picsum.photos/1200/400"
+            src="/assets/g7.jpeg"
             alt="Compromiso Social"
             width={1200}
             height={400}

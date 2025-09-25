@@ -24,10 +24,10 @@ const offerItems = [
   ];
 
 const galleryImages = [
-    { src: 'https://picsum.photos/600/800?random=41', alt: 'Niños saltando en fiesta', hint: 'kids jumping party' },
-    { src: 'https://picsum.photos/600/800?random=42', alt: 'Pastel de cumpleaños en Jump-In', hint: 'birthday cake' },
-    { src: 'https://picsum.photos/600/800?random=43', alt: 'Grupo de amigos celebrando', hint: 'friends celebrating' },
-    { src: 'https://picsum.photos/600/800?random=44', alt: 'Decoración de fiesta', hint: 'party decoration' },
+    { src: '/assets/g3.jpeg', alt: 'Niños saltando en fiesta', hint: 'kids jumping party' },
+    { src: '/assets/g8.jpeg', alt: 'Pastel de cumpleaños en Jump-In', hint: 'birthday cake' },
+    { src: '/assets/g5.jpeg', alt: 'Grupo de amigos celebrando', hint: 'friends celebrating' },
+    { src: '/assets/g7.jpeg', alt: 'Decoración de fiesta', hint: 'party decoration' },
 ]
 
 

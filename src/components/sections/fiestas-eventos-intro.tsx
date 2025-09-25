@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Cake, Briefcase } from "lucide-react";
 
 const images = [
-  { src: 'https://picsum.photos/600/800?random=31', alt: 'Fiesta de cumpleaños en Jump-In', hint: 'birthday party' },
-  { src: 'https://picsum.photos/600/800?random=32', alt: 'Evento empresarial en Jump-In', hint: 'corporate event' },
-  { src: 'https://picsum.photos/600/800?random=33', alt: 'Amigos divirtiéndose en trampolines', hint: 'friends jumping' },
-  { src: 'https://picsum.photos/600/800?random=34', alt: 'Niños celebrando', hint: 'kids celebrating' },
+  { src: '/assets/g3.jpeg', alt: 'Fiesta de cumpleaños en Jump-In', hint: 'birthday party' },
+  { src: '/assets/g7.jpeg', alt: 'Evento empresarial en Jump-In', hint: 'corporate event' },
+  { src: '/assets/g5.jpeg', alt: 'Amigos divirtiéndose en trampolines', hint: 'friends jumping' },
+  { src: '/assets/g8.jpeg', alt: 'Niños celebrando', hint: 'kids celebrating' },
 ];
 
 export default function FiestasEventosIntro() {
@@ -17,7 +17,7 @@ export default function FiestasEventosIntro() {
       <div className="container mx-auto max-w-5xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden bg-white">
           <Image
-              src="https://picsum.photos/seed/fiestas/1200/400"
+              src="/assets/g3.jpeg"
               alt="Fiestas y Eventos"
               width={1200}
               height={400}

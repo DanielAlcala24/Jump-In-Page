@@ -2,9 +2,9 @@ import Image from "next/image";
 
 const media = [
     { type: 'video', src: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M', alt: 'Video de apoyo social' },
-    { type: 'image', src: 'https://picsum.photos/600/800?random=21', alt: 'Evento benéfico', hint: 'charity event' },
+    { type: 'image', src: '/assets/g7.jpeg', alt: 'Evento benéfico', hint: 'charity event' },
     { type: 'video', src: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M', alt: 'Video de voluntariado' },
-    { type: 'image', src: 'https://picsum.photos/600/800?random=22', alt: 'Niños sonriendo', hint: 'children smiling' },
+    { type: 'image', src: '/assets/g8.jpeg', alt: 'Niños sonriendo', hint: 'children smiling' },
 ];
 
 export default function CommitmentGallery() {

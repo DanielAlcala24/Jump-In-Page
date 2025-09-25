@@ -17,27 +17,27 @@ const sucursal = {
   whatsapp: "525534567890",
   phone: "55 3456 7890",
   prices: [
-    { title: "Salto Individual", price: "$190/hr", description: "Acceso a todas las áreas de trampolines.", image: "https://picsum.photos/seed/price1/300/200" },
-    { title: "Paquete Amigos", price: "$680/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "https://picsum.photos/seed/price2/300/200" },
-    { title: "Pase Anual", price: "$2400", description: "Salta todo el año sin límites.", image: "https://picsum.photos/seed/price3/300/200" }
+    { title: "Salto Individual", price: "$190/hr", description: "Acceso a todas las áreas de trampolines.", image: "/assets/g1.jpg" },
+    { title: "Paquete Amigos", price: "$680/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
+    { title: "Pase Anual", price: "$2400", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Ball Blaster", image: "https://picsum.photos/seed/blaster/400/300" },
-    { name: "Juegos de Destreza", image: "https://picsum.photos/seed/destreza/400/300" },
-    { name: "Main Court", image: "https://picsum.photos/seed/maincourt/400/300" },
-    { name: "Jump Jam", image: "https://picsum.photos/seed/jumpjam/400/300" },
-    { name: "Dodge Ball", image: "https://picsum.photos/seed/dodgeball/400/300" },
-    { name: "Foam Pit", image: "https://picsum.photos/seed/foampit/400/300" },
-    { name: "Spider Tower", image: "https://picsum.photos/seed/spider/400/300" },
-    { name: "Kid Zone", image: "https://picsum.photos/seed/kidzone/400/300" },
-    { name: "Rope Course Kids", image: "https://picsum.photos/seed/ropekids/400/300" }
+    { name: "Ball Blaster", image: "/assets/g4.jpeg" },
+    { name: "Juegos de Destreza", image: "/assets/g4.jpeg" },
+    { name: "Main Court", image: "/assets/g1.jpg" },
+    { name: "Jump Jam", image: "/assets/g2.jpg" },
+    { name: "Dodge Ball", image: "/assets/g5.jpeg" },
+    { name: "Foam Pit", image: "/assets/g4.jpeg" },
+    { name: "Spider Tower", image: "/assets/g8.jpeg" },
+    { name: "Kid Zone", image: "/assets/g8.jpeg" },
+    { name: "Rope Course Kids", image: "/assets/g6.jpeg" }
   ],
   gallery: [
-    { src: 'https://picsum.photos/seed/gal1-cuernavaca/600/400', alt: 'Interior Cuernavaca' },
-    { src: 'https://picsum.photos/seed/gal2-cuernavaca/600/400', alt: 'Gente saltando' },
-    { src: 'https://picsum.photos/seed/gal3-cuernavaca/600/400', alt: 'Fiesta de cumpleaños' },
-    { src: 'https://picsum.photos/seed/gal4-cuernavaca/600/400', alt: 'Exterior de la sucursal' }
+    { src: '/assets/g1.jpg', alt: 'Interior Cuernavaca' },
+    { src: '/assets/g2.jpg', alt: 'Gente saltando' },
+    { src: '/assets/g3.jpeg', alt: 'Fiesta de cumpleaños' },
+    { src: '/assets/g4.jpeg', alt: 'Exterior de la sucursal' }
   ]
 };
 

@@ -10,42 +10,42 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
 const sucursales = [
-    { name: 'Coacalco', image: 'https://picsum.photos/seed/coacalco/600/400', link: '/sucursales/coacalco', hint: 'trampoline park' },
-    { name: 'Ecatepec', image: 'https://picsum.photos/seed/ecatepec/600/400', link: '/sucursales/ecatepec', hint: 'trampoline park' },
-    { name: 'Interlomas', image: 'https://picsum.photos/seed/interlomas/600/400', link: '/sucursales/interlomas', hint: 'trampoline park' },
-    { name: 'La Cúspide', image: 'https://picsum.photos/seed/cuspide/600/400', link: '/sucursales/cuspide', hint: 'trampoline park' },
-    { name: 'Churubusco', image: 'https://picsum.photos/seed/churubusco/600/400', link: '/sucursales/churubusco', hint: 'trampoline park' },
-    { name: 'Miramontes', image: 'https://picsum.photos/seed/miramontes/600/400', link: '/sucursales/miramontes', hint: 'trampoline park' },
-    { name: 'Vallejo', image: 'https://picsum.photos/seed/vallejo/600/400', link: '/sucursales/vallejo', hint: 'trampoline park' },
-    { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '/sucursales/cuernavaca', hint: 'trampoline park' },
+    { name: 'Coacalco', image: '/assets/g1.jpg', link: '/sucursales/coacalco', hint: 'trampoline park' },
+    { name: 'Ecatepec', image: '/assets/g2.jpg', link: '/sucursales/ecatepec', hint: 'trampoline park' },
+    { name: 'Interlomas', image: '/assets/g3.jpeg', link: '/sucursales/interlomas', hint: 'trampoline park' },
+    { name: 'La Cúspide', image: '/assets/g4.jpeg', link: '/sucursales/cuspide', hint: 'trampoline park' },
+    { name: 'Churubusco', image: '/assets/g5.jpeg', link: '/sucursales/churubusco', hint: 'trampoline park' },
+    { name: 'Miramontes', image: '/assets/g6.jpeg', link: '/sucursales/miramontes', hint: 'trampoline park' },
+    { name: 'Vallejo', image: '/assets/g7.jpeg', link: '/sucursales/vallejo', hint: 'trampoline park' },
+    { name: 'Cuernavaca', image: '/assets/g8.jpeg', link: '/sucursales/cuernavaca', hint: 'trampoline park' },
 ];
 
 const promotions = [
   {
     title: 'Martes 2x1',
     description: '¡Los martes son de amigos! Compra una hora de salto y obtén la segunda gratis para un acompañante.',
-    image: 'https://picsum.photos/seed/promo1/600/400',
+    image: '/assets/g5.jpeg',
     hint: 'friends jumping',
     availableIn: ['Todas las sucursales']
   },
   {
     title: 'Jueves de Estudiantes',
     description: 'Presenta tu credencial de estudiante vigente y obtén un 20% de descuento en tu entrada.',
-    image: 'https://picsum.photos/seed/promo2/600/400',
+    image: '/assets/g2.jpg',
     hint: 'student discount',
     availableIn: ['Coacalco', 'Ecatepec', 'Vallejo']
   },
   {
     title: 'Domingo Familiar',
     description: 'Paquete familiar (2 adultos, 2 niños) por solo $750 la hora. ¡El plan perfecto para el fin de semana!',
-    image: 'https://picsum.photos/seed/promo3/600/400',
+    image: '/assets/g8.jpeg',
     hint: 'family fun',
     availableIn: ['Todas las sucursales']
   },
   {
     title: 'Promo Cumpleañero',
     description: '¿Es tu mes de cumpleaños? Presenta tu INE y salta ¡GRATIS! en la compra de 3 accesos para tus amigos.',
-    image: 'https://picsum.photos/seed/promo4/600/400',
+    image: '/assets/g3.jpeg',
     hint: 'birthday person',
     availableIn: ['Interlomas', 'La Cúspide', 'Cuernavaca']
   },
