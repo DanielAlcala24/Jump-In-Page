@@ -2,11 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 
 const logos = [
-  { src: '/assets/g1.jpg', alt: 'Mundo Imayina Logo', hint: 'Mundo Imayina' },
-  { src: '/assets/g2.jpg', alt: 'FUCAM Logo', hint: 'FUCAM logo' },
-  { src: '/assets/g3.jpeg', alt: 'Juguetón Logo', hint: 'Jugueton logo' },
-  { src: '/assets/g4.jpeg', alt: 'Antes de Partir Logo', hint: 'Antes Partir' },
-  { src: '/assets/g5.jpeg', alt: 'Iluminemos Logo', hint: 'Iluminemos logo' },
+  { src: '/assets/fundaciones/mundoImayina.png', alt: 'Mundo Imayina Logo', hint: 'Mundo Imayina' },
+  { src: '/assets/fundaciones/fucam.png', alt: 'FUCAM Logo', hint: 'FUCAM logo' },
+  { src: '/assets/fundaciones/jugueton.png', alt: 'Juguetón Logo', hint: 'Jugueton logo' },
+  { src: '/assets/fundaciones/antesDePartir.png', alt: 'Antes de Partir Logo', hint: 'Antes Partir' },
+  { src: '/assets/fundaciones/iluminemos.png', alt: 'Iluminemos Logo', hint: 'Iluminemos logo' },
 ];
 
 export default function SocialCommitment() {

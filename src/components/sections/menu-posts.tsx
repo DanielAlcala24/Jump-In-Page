@@ -100,9 +100,8 @@ export default function MenuPosts() {
            <div className="flex justify-center">
             <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-lg">
               {categories.map((category, index) => (
-                <>
+                <React.Fragment key={category}>
                   <Button
-                    key={category}
                     variant="ghost"
                     className={cn(
                       'transition-colors duration-300 text-base font-medium h-auto py-2 px-2',
@@ -119,7 +118,7 @@ export default function MenuPosts() {
                   {index < categories.length - 1 && (
                     <Separator orientation="vertical" className="h-6 bg-gray-200 last-of-type:hidden" />
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
           </div>
