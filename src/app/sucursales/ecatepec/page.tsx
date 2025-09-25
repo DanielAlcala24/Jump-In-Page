@@ -23,18 +23,20 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Climbing Wall", image: "/assets/g6.jpeg" },
-    { name: "Drope slide", image: "/assets/g4.jpeg" },
-    { name: "Camino al Cielo", image: "/assets/g6.jpeg" },
-    { name: "Ball Blaster", image: "/assets/g4.jpeg" },
-    { name: "Juegos de Destreza", image: "/assets/g4.jpeg" },
-    { name: "Main Court", image: "/assets/g1.jpg" },
-    { name: "Jump Jam", image: "/assets/g2.jpg" },
-    { name: "Dodge Ball", image: "/assets/g5.jpeg" },
-    { name: "Foam Pit", image: "/assets/g4.jpeg" },
-    { name: "Laberinto de obstáculos", image: "/assets/g8.jpeg" },
-    { name: "Spider Tower", image: "/assets/g8.jpeg" },
-    { name: "Kid Zone", image: "/assets/g8.jpeg" }
+    { name: "Climbing Wall", image: "/assets/atracciones/exclusivas/climbingwall.jpg" },
+    { name: "Drope Slide", image: "/assets/atracciones/exclusivas/dropSlide.jpg" },
+    { name: "Camino al Cielo", image: "/assets/atracciones/exclusivas/caminoAlCielo.png" },
+    { name: "Ball Blaster", image: "/assets/atracciones/exclusivas/ballBlaster.png" },
+    { name: "Juegos de Destreza", image: "/assets/atracciones/exclusivas/destreza.jpg" },
+    { name: 'Main Court', image: '/assets/atracciones/trampolines/mainCourt.jpg'},
+    { name: 'Jump Jam', image: '/assets/atracciones/trampolines/JumpJam.jpg'},
+    { name: 'Dodge Ball', image: '/assets/atracciones/trampolines/dodgeBall.jpg'},
+    { name: 'Foam Pit', image: '/assets/atracciones/trampolines/foamPit.jpg'},
+    { name: 'Laberinto de Obstáculos', image: '/assets/atracciones/menores/laberinto.jpg' },
+    { name: 'Spider Tower', image: '/assets/atracciones/menores/spiderTower.jpg' },
+    { name: 'Kid Zone', image: '/assets/atracciones/menores/kidsZone.jpg' },
+    { name: 'Ninja', image: '/assets/atracciones/extremas/ninja.jpg'},
+    { name: 'Ropes Course', image: '/assets/atracciones/extremas/ropes.jpg'},
   ],
   gallery: [
     { src: '/assets/g1.jpg', alt: 'Interior Ecatepec' },
@@ -130,10 +132,10 @@ export default function SucursalEcatepecPage() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
-                        <div key={index} className="relative group overflow-hidden rounded-lg">
-                           <Image src={attr.image} alt={attr.name as string} width={400} height={300} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
+                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3]">
+                           <Image src={attr.image} alt={attr.name as string} fill className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                               <h4 className="text-white text-xl font-bold font-headline">{attr.name}</h4>
+                               <h4 className="text-white text-xl font-bold font-headline text-center">{attr.name}</h4>
                            </div>
                         </div>
                     ))}
@@ -194,3 +196,5 @@ export default function SucursalEcatepecPage() {
     </div>
   );
 }
+
+    

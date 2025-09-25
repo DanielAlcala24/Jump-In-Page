@@ -23,17 +23,18 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 9 PM | Sábados y Domingos: 11 AM - 9 PM",
   attractions: [
-    { name: "Arena Futbol", image: "/assets/g5.jpeg" },
-    { name: "Camino al Cielo", image: "/assets/g6.jpeg" },
-    { name: "Juegos de Destreza", image: "/assets/g4.jpeg" },
-    { name: "Main Court", image: "/assets/g1.jpg" },
-    { name: "Jump Jam", image: "/assets/g2.jpg" },
-    { name: "Dodge Ball", image: "/assets/g5.jpeg" },
-    { name: "Foam Pit", image: "/assets/g4.jpeg" },
-    { name: "Laberinto de obstáculos", image: "/assets/g8.jpeg" },
-    { name: "Spider Tower", image: "/assets/g8.jpeg" },
-    { name: "Kid Zone", image: "/assets_g8.jpeg" },
-    { name: "Rope Course Kids", image: "/assets/g6.jpeg" }
+    { name: "Arena Futbol", image: "/assets/atracciones/exclusivas/arenaFutbol.jpg" },
+    { name: "Camino al Cielo", image: "/assets/atracciones/exclusivas/caminoAlCielo.png" },
+    { name: "Juegos de Destreza", image: "/assets/atracciones/exclusivas/destreza.jpg" },
+    { name: 'Main Court', image: '/assets/atracciones/trampolines/mainCourt.jpg'},
+    { name: 'Jump Jam', image: '/assets/atracciones/trampolines/JumpJam.jpg'},
+    { name: 'Dodge Ball', image: '/assets/atracciones/trampolines/dodgeBall.jpg'},
+    { name: 'Foam Pit', image: '/assets/atracciones/trampolines/foamPit.jpg'},
+    { name: 'Laberinto de Obstáculos', image: '/assets/atracciones/menores/laberinto.jpg' },
+    { name: 'Spider Tower', image: '/assets/atracciones/menores/spiderTower.jpg' },
+    { name: 'Kid Zone', image: '/assets/atracciones/menores/kidsZone.jpg' },
+    { name: 'Rope Course Kids', image: '/assets/atracciones/menores/ropesKids.jpg' },
+    { name: 'Ropes Course', image: '/assets/atracciones/extremas/ropes.jpg'},
   ],
   gallery: [
     { src: '/assets/g1.jpg', alt: 'Interior La Cúspide' },
@@ -129,10 +130,10 @@ export default function SucursalCuspidePage() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
-                        <div key={index} className="relative group overflow-hidden rounded-lg">
-                           <Image src={attr.image} alt={attr.name} width={400} height={300} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
+                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3]">
+                           <Image src={attr.image} alt={attr.name} fill className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                               <h4 className="text-white text-xl font-bold font-headline">{attr.name}</h4>
+                               <h4 className="text-white text-xl font-bold font-headline text-center">{attr.name}</h4>
                            </div>
                         </div>
                     ))}
@@ -193,3 +194,5 @@ export default function SucursalCuspidePage() {
     </div>
   );
 }
+
+    

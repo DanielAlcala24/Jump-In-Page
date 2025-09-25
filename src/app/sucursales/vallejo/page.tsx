@@ -23,12 +23,12 @@ const sucursal = {
   ],
   horarios: "Lunes a Viernes: 2 PM - 8 PM | Sábados y Domingos: 11 AM - 8 PM",
   attractions: [
-    { name: "Climbing Wall", image: "/assets/g6.jpeg" },
-    { name: "Juegos de Destreza", image: "/assets/g4.jpeg" },
-    { name: "Main Court", image: "/assets/g1.jpg" },
-    { name: "Jump Jam", image: "/assets/g2.jpg" },
-    { name: "Dodge Ball", image: "/assets/g5.jpeg" },
-    { name: "Foam Pit", image: "/assets/g4.jpeg" }
+    { name: 'Climbing Wall', image: '/assets/atracciones/exclusivas/climbingwall.jpg' },
+    { name: "Juegos de Destreza", image: "/assets/atracciones/exclusivas/destreza.jpg" },
+    { name: 'Main Court', image: '/assets/atracciones/trampolines/mainCourt.jpg'},
+    { name: 'Jump Jam', image: '/assets/atracciones/trampolines/JumpJam.jpg'},
+    { name: 'Dodge Ball', image: '/assets/atracciones/trampolines/dodgeBall.jpg'},
+    { name: 'Foam Pit', image: '/assets/atracciones/trampolines/foamPit.jpg'}
   ],
   gallery: [
     { src: '/assets/g1.jpg', alt: 'Interior Vallejo' },
@@ -124,10 +124,10 @@ export default function SucursalVallejoPage() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
-                        <div key={index} className="relative group overflow-hidden rounded-lg">
-                           <Image src={attr.image} alt={attr.name} width={400} height={300} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
+                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3]">
+                           <Image src={attr.image} alt={attr.name} fill className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                               <h4 className="text-white text-xl font-bold font-headline">{attr.name}</h4>
+                               <h4 className="text-white text-xl font-bold font-headline text-center">{attr.name}</h4>
                            </div>
                         </div>
                     ))}
@@ -188,3 +188,5 @@ export default function SucursalVallejoPage() {
     </div>
   );
 }
+
+    
