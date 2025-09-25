@@ -1,14 +1,18 @@
 
+'use client';
+import { useState } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SocialIcons from '@/components/social-icons';
 import WhatsappButton from '@/components/whatsapp-button';
 import VideoBackground from '@/components/video-background';
 import Link from 'next/link';
-import { ChevronDown, MapPin, Clock, Phone, Ticket, Calendar, Utensils, PartyPopper, Users, ArrowRight } from 'lucide-react';
+import { ChevronDown, MapPin, Clock, Phone, Ticket, Calendar, Utensils, PartyPopper, Users, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 const sucursal = {
   name: "Ecatepec",
@@ -48,6 +52,29 @@ const sucursal = {
 
 
 export default function SucursalEcatepecPage() {
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+    const openLightbox = (index: number) => {
+        setSelectedImageIndex(index);
+        setLightboxOpen(true);
+    };
+
+    const closeLightbox = () => {
+        setLightboxOpen(false);
+    };
+
+    const goToPrevious = () => {
+        setSelectedImageIndex((prevIndex) =>
+        prevIndex === 0 ? sucursal.attractions.length - 1 : prevIndex - 1
+        );
+    };
+
+    const goToNext = () => {
+        setSelectedImageIndex((prevIndex) =>
+        prevIndex === sucursal.attractions.length - 1 ? 0 : prevIndex + 1
+        );
+    };
   return (
     <div className="flex flex-col min-h-screen">
       <VideoBackground />
@@ -132,7 +159,7 @@ export default function SucursalEcatepecPage() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
-                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3]">
+                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3] cursor-pointer" onClick={() => openLightbox(index)}>
                            <Image src={attr.image} alt={attr.name as string} fill className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                <h4 className="text-white text-xl font-bold font-headline text-center">{attr.name}</h4>
@@ -191,10 +218,58 @@ export default function SucursalEcatepecPage() {
           </div>
         </section>
       </main>
+      {lightboxOpen && (
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="bg-black/80 border-none p-0 max-w-none w-screen h-screen flex items-center justify-center">
+            <div className="relative w-full h-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full"
+                onClick={closeLightbox}
+              >
+                <X className="h-8 w-8" />
+                <span className="sr-only">Cerrar</span>
+              </Button>
+              <div className="flex items-center justify-center h-full w-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': sucursal.attractions.length <= 1 })}
+                  onClick={goToPrevious}
+                >
+                  <ChevronLeft className="h-10 w-10" />
+                  <span className="sr-only">Anterior</span>
+                </Button>
+                <div className="relative w-full max-w-4xl h-full max-h-[80vh]">
+                  <Image
+                    src={sucursal.attractions[selectedImageIndex].image}
+                    alt={sucursal.attractions[selectedImageIndex].name}
+                    fill
+                    className="object-contain"
+                    quality={100}
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': sucursal.attractions.length <= 1 })}
+                  onClick={goToNext}
+                >
+                  <ChevronRight className="h-10 w-10" />
+                  <span className="sr-only">Siguiente</span>
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       <WhatsappButton />
       <Footer />
     </div>
   );
 }
+
+    
 
     
