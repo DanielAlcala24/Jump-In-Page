@@ -136,7 +136,7 @@ function PreciosPromocionesContentComponent() {
                               <h4 className="text-sm font-semibold flex items-center mb-2"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
                               <div className="flex flex-wrap gap-2">
                                 {promo.availableIn.map(sucursal => (
-                                  <Badge key={sucursal} variant="secondary">{sucursal}</Badge>
+                                  <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
                                 ))}
                               </div>
                             </div>

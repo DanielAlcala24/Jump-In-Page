@@ -90,7 +90,7 @@ export default function AtraccionesContent() {
                                                 <h4 className="text-sm font-semibold text-muted-foreground mb-2">Disponible en:</h4>
                                                 <div className="flex flex-wrap gap-2">
                                                     {attraction.availableIn.map(sucursal => (
-                                                        <Badge key={sucursal} variant="secondary" className="font-normal">{sucursal}</Badge>
+                                                        <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
                                                     ))}
                                                 </div>
                                             </div>
