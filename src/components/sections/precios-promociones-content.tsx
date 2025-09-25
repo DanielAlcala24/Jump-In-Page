@@ -131,11 +131,11 @@ function PreciosPromocionesContentComponent() {
                             <Image src={promo.image} alt={promo.title} width={600} height={400} data-ai-hint={promo.hint} className="w-full h-48 object-cover"/>
                         </CardHeader>
                         <CardContent className="p-6 flex-grow">
-                            <CardTitle className="font-headline text-xl">{promo.title}</CardTitle>
-                            <CardDescription className="my-2">{promo.description}</CardDescription>
+                            <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
+                            <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
                             <div className="mt-4">
-                              <h4 className="text-sm font-semibold flex items-center mb-2"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
-                              <div className="flex flex-wrap gap-2">
+                              <h4 className="text-sm font-semibold flex items-center mb-2 justify-center"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
+                              <div className="flex flex-wrap gap-2 justify-center">
                                 {promo.availableIn.map(sucursal => (
                                   <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
                                 ))}

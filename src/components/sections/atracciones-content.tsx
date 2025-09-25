@@ -88,11 +88,11 @@ export default function AtraccionesContent() {
                                         <CardContent className="p-6 flex-grow flex flex-col">
                                             <CardTitle className="font-headline text-2xl text-center mb-4">{attraction.name}</CardTitle>
                                             <div className="flex-grow">
-                                                <h4 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
+                                                <h4 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-center">
                                                     <MapPin className="mr-1 h-4 w-4"/>
                                                     Disponible en:
                                                 </h4>
-                                                <div className="flex flex-wrap gap-2">
+                                                <div className="flex flex-wrap gap-2 justify-center">
                                                     {attraction.availableIn.map(sucursal => (
                                                         <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
                                                     ))}
