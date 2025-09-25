@@ -25,14 +25,6 @@ const menuItems = [
     category: 'Alimentos',
   },
   {
-    title: 'Hot Dog Especial',
-    description: 'Salchicha jumbo, pan artesanal y tus toppings favoritos.',
-    price: '$90.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'special hotdog',
-    category: 'Alimentos',
-  },
-  {
     title: 'Nuggets de Pollo',
     description:
       'Crujientes por fuera, tiernos por dentro. Acompañados de papas a la francesa.',
@@ -42,29 +34,12 @@ const menuItems = [
     category: 'Snacks',
   },
   {
-    title: 'Palomitas de Maíz',
-    description: 'Recién hechas, con el toque justo de mantequilla y sal.',
-    price: '$60.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'popcorn bucket',
-    category: 'Snacks',
-  },
-  {
-    title: 'Malteada de Chocolate',
+    title: 'Agua',
     description:
-      'Cremosa y refrescante, el postre perfecto después de tanto saltar.',
-    price: '$70.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'chocolate milkshake',
-    category: 'Bebidas',
-  },
-  {
-    title: 'Refresco de Sabores',
-    description:
-      'La bebida ideal para recargar energías y seguir la diversión.',
-    price: '$40.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'soda drink',
+      '600 ml',
+    price: '$30.00 MXN',
+    imageSrc: '/assets/menu/bebidas/agua600.png',
+    imageHint: 'agua600ml',
     category: 'Bebidas',
   },
   {
@@ -73,14 +48,6 @@ const menuItems = [
     price: '$50.00 MXN',
     imageSrc: '/assets/g3.jpeg',
     imageHint: 'sour gummies',
-    category: 'Dulces',
-  },
-  {
-    title: 'Barra de Chocolate',
-    description: 'El clásico que nunca falla para un antojo dulce.',
-    price: '$35.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'chocolate bar',
     category: 'Dulces',
   },
 ];
@@ -129,19 +96,19 @@ export default function MenuPosts() {
           {filteredItems.map((item, index) => (
             <div
               key={index}
-              className="group flex flex-col items-center overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center p-6 hover:-translate-y-2"
+              className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <div className="relative w-40 h-40 mb-4 transition-transform duration-300 group-hover:scale-110">
+              <div className="relative w-full h-56">
                 <Image
                   src={item.imageSrc}
                   alt={item.title}
                   width={400}
-                  height={400}
+                  height={300}
                   data-ai-hint={item.imageHint}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col p-6 text-center">
                 <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">
                   {item.title}
                 </h3>
