@@ -28,7 +28,7 @@ export default function Inicio() {
               Eventos Empresariales
             </Button>
           </Link>
-          <Link href="/precios-y-promociones">
+          <Link href="/precios-y-promociones?tab=Promociones">
             <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-orange-500/30 hover:bg-orange-500/40">
               <Ticket className="mr-2 h-5 w-5" />
               Promociones

@@ -10,29 +10,29 @@ const sucursales = ['Todas', 'Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec',
 
 const attractionsData = [
     // Atracciones exclusivas
-    { name: 'Climbing Wall', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo'], category: 'Atracciones Exclusivas', image: '/assets/g6.jpeg', hint: 'climbing wall' },
-    { name: 'Arena Futbol', availableIn: ['La Cúspide', 'Miramontes', 'Interlomas'], category: 'Atracciones Exclusivas', image: '/assets/g5.jpeg', hint: 'soccer arena' },
-    { name: 'Escape Room', availableIn: ['Miramontes'], category: 'Atracciones Exclusivas', image: '/assets/g7.jpeg', hint: 'escape room' },
-    { name: 'Drope Slide', availableIn: ['Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/g4.jpeg', hint: 'drop slide' },
-    { name: 'Camino al Cielo', availableIn: ['La Cúspide', 'Interlomas', 'Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/g6.jpeg', hint: 'heaven path' },
-    { name: 'Ball Blaster', availableIn: ['Cuernavaca', 'Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/g4.jpeg', hint: 'ball blaster' },
-    { name: 'Juegos de Destreza', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Atracciones Exclusivas', image: '/assets/g4.jpeg', hint: 'skill games' },
+    { name: 'Climbing Wall', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/climbingwall.jpg', hint: 'climbing wall' },
+    { name: 'Arena Futbol', availableIn: ['La Cúspide', 'Miramontes', 'Interlomas'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/arenaFutbol.jpg', hint: 'soccer arena' },
+    { name: 'Escape Room', availableIn: ['Miramontes'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/escapeRoom.png', hint: 'escape room' },
+    { name: 'Drope Slide', availableIn: ['Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/dropSlide.jpg', hint: 'drop slide' },
+    { name: 'Camino al Cielo', availableIn: ['La Cúspide', 'Interlomas', 'Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/caminoAlCielo.png', hint: 'heaven path' },
+    { name: 'Ball Blaster', availableIn: ['Cuernavaca', 'Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/ballBlaster.png', hint: 'ball blaster' },
+    { name: 'Juegos de Destreza', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/destreza.jpg', hint: 'skill games' },
 
     // Trampolines
-    { name: 'Main Court', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/g1.jpg', hint: 'trampoline court' },
-    { name: 'Jump Jam', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/g2.jpg', hint: 'basketball trampoline' },
-    { name: 'Dodge Ball', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/g5.jpeg', hint: 'dodgeball game' },
-    { name: 'Foam Pit', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/g4.jpeg', hint: 'foam pit' },
+    { name: 'Main Court', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/atracciones/trampolines/mainCourt.jpg', hint: 'trampoline court' },
+    { name: 'Jump Jam', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/atracciones/trampolines/JumpJam.jpg', hint: 'basketball trampoline' },
+    { name: 'Dodge Ball', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/atracciones/trampolines/dodgeBall.jpg', hint: 'dodgeball game' },
+    { name: 'Foam Pit', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'], category: 'Trampolines', image: '/assets/atracciones/trampolines/foamPit.jpg', hint: 'foam pit' },
 
     // Atracciones para los más pequeños
-    { name: 'Laberinto de Obstáculos', availableIn: ['La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco'], category: 'Atracciones para los más pequeños', image: '/assets/g8.jpeg', hint: 'kids labyrinth' },
-    { name: 'Spider Tower', availableIn: ['Coacalco', 'Cuernavaca', 'La Cúspide', 'Ecatepec'], category: 'Atracciones para los más pequeños', image: '/assets/g8.jpeg', hint: 'spider tower' },
-    { name: 'Kid Zone', availableIn: ['Cuernavaca', 'La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco', 'Miramontes'], category: 'Atracciones para los más pequeños', image: '/assets/g8.jpeg', hint: 'kids zone' },
-    { name: 'Rope Course Kids', availableIn: ['Cuernavaca', 'Churubusco', 'La Cúspide', 'Interlomas', 'Miramontes'], category: 'Atracciones para los más pequeños', image: '/assets/g6.jpeg', hint: 'kids ropes' },
+    { name: 'Laberinto de Obstáculos', availableIn: ['La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco'], category: 'Atracciones para los más pequeños', image: '/assets/atracciones/menores/laberinto.jpg', hint: 'kids labyrinth' },
+    { name: 'Spider Tower', availableIn: ['Coacalco', 'Cuernavaca', 'La Cúspide', 'Ecatepec'], category: 'Atracciones para los más pequeños', image: '/assets/atracciones/menores/spiderTower.jpg', hint: 'spider tower' },
+    { name: 'Kid Zone', availableIn: ['Cuernavaca', 'La Cúspide', 'Interlomas', 'Ecatepec', 'Churubusco', 'Miramontes'], category: 'Atracciones para los más pequeños', image: '/assets/atracciones/menores/kidsZone.jpg', hint: 'kids zone' },
+    { name: 'Rope Course Kids', availableIn: ['Cuernavaca', 'Churubusco', 'La Cúspide', 'Interlomas', 'Miramontes'], category: 'Atracciones para los más pequeños', image: '/assets/atracciones/menores/ropesKids.jpg', hint: 'kids ropes' },
 
     // Atracciones extremas
-    { name: 'Ninja', availableIn: ['Ecatepec'], category: 'Atracciones extremas', image: '/assets/g6.jpeg', hint: 'Ninja'},
-    { name: 'Ropes Course', availableIn: ['Ecatepec', 'Interlomas', 'La Cúspide', 'Miramontes', 'Churubusco'], category: 'Atracciones extremas', image: '/assets/g6.jpeg', hint: 'Ropes Course'},
+    { name: 'Ninja', availableIn: ['Ecatepec'], category: 'Atracciones extremas', image: '/assets/atracciones/extremas/ninja.jpg', hint: 'Ninja'},
+    { name: 'Ropes Course', availableIn: ['Ecatepec', 'Interlomas', 'La Cúspide', 'Miramontes', 'Churubusco'], category: 'Atracciones extremas', image: '/assets/atracciones/extremas/ropes.jpg', hint: 'Ropes Course'},
 ];
 
 const categories = [

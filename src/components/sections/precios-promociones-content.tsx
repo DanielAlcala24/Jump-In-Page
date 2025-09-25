@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { MapPin, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 const sucursales = [
     { name: 'Coacalco', image: '/assets/g1.jpg', link: '/sucursales/coacalco', hint: 'trampoline park' },
@@ -54,8 +55,17 @@ const promotions = [
 
 const categories = ['Precios', 'Promociones'];
 
-export default function PreciosPromocionesContent() {
-  const [selectedCategory, setSelectedCategory] = useState('Precios');
+function PreciosPromocionesContentComponent() {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'Promociones' ? 'Promociones' : 'Precios';
+  const [selectedCategory, setSelectedCategory] = useState(initialTab);
+
+  useEffect(() => {
+    const newTab = searchParams.get('tab');
+    if (newTab && categories.includes(newTab)) {
+      setSelectedCategory(newTab);
+    }
+  }, [searchParams]);
 
   return (
     <section id="content" className="w-full py-8 bg-gray-50 dark:bg-gray-900">
@@ -137,5 +147,13 @@ export default function PreciosPromocionesContent() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function PreciosPromocionesContent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PreciosPromocionesContentComponent />
+    </Suspense>
   );
 }

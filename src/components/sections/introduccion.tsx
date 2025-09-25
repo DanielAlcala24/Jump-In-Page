@@ -22,7 +22,7 @@ export default function Introduccion() {
                         <p className="text-muted-foreground md:text-lg/relaxed">
                             Contamos con sucursales en <strong>CDMX</strong>, <strong>Estado de México</strong> y nuestra sucursal foránea en <strong>Cuernavaca</strong>.
                         </p>
-                        <Link href="/precios-y-promociones" className="inline-flex md:hidden">
+                        <Link href="/precios-y-promociones?tab=Promociones" className="inline-flex md:hidden">
                         <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
                             <Ticket className="mr-2 h-5 w-5" />
                             Precios y Promociones
@@ -42,7 +42,7 @@ export default function Introduccion() {
                         ></iframe>
                         <div className="absolute inset-0 w-full h-full bg-transparent"></div>
                     </div>
-                    <Link href="/precios-y-promociones" className="hidden md:inline-flex mt-4">
+                    <Link href="/precios-y-promociones?tab=Promociones" className="hidden md:inline-flex mt-4">
                         <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
                             <Ticket className="mr-2 h-5 w-5" />
                             Precios y Promociones
