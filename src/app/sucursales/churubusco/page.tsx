@@ -21,7 +21,7 @@ const sucursal = {
   whatsapp: "525512345678",
   phone: "55 1234 5678",
   prices: [
-    { title: "1 hora", price: "$220/", description: "Acceso a todas las áreas de trampolines y atracciones por 2 horas.", image: "/assets/g1.jpg" },
+    { title: "1 hora", price: "$220", description: "Acceso a todas las áreas de trampolines y atracciones por 2 horas.", image: "/assets/g1.jpg" },
     { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
     { title: "Pase Anual", price: "$2500", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
   ],
