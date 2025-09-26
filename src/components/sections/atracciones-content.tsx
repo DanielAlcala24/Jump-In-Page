@@ -11,7 +11,7 @@ const sucursales = ['Todas', 'Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec',
 
 const attractionsData = [
     // Atracciones exclusivas
-    { name: 'Climbing Wall', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/climbingwall.jpg', hint: 'climbing wall' },
+    { name: 'Climbing Wall', availableIn: ['Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'Miramontes'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/climbingwall.jpg', hint: 'climbing wall' },
     { name: 'Arena Futbol', availableIn: ['La Cúspide', 'Miramontes', 'Interlomas'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/arenaFutbol.jpg', hint: 'soccer arena' },
     { name: 'Escape Room', availableIn: ['Miramontes'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/escapeRoom.png', hint: 'escape room' },
     { name: 'Drope Slide', availableIn: ['Ecatepec'], category: 'Atracciones Exclusivas', image: '/assets/atracciones/exclusivas/dropSlide.jpg', hint: 'drop slide' },
