@@ -76,6 +76,24 @@ export default function AvisoDePrivacidadPage() {
                          <p>Los Datos serán tratados de conformidad con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, su Reglamento y Lineamientos adicionales.</p>
                          <p className="mt-4">La confidencialidad de los Datos está garantizada y los mismos están protegidos por medidas de seguridad administrativas, técnicas y físicas, para evitar su daño, pérdida, alteración, destrucción, uso, acceso o divulgación indebida.</p>
                        </div>
+                       <div>
+                        <p>Únicamente las personas autorizadas tendrán acceso a sus Datos.</p>
+                       </div>
+                       <div>
+                        <p>En caso de existir alguna modificación al presente Aviso de Privacidad se hará de su conocimiento en nuestro sitio de Internet: https://www.jumpin.com.mx/avisodeprivacidad</p>
+                       </div>
+                       <div>
+                        <p>Para el ejercicio de sus derechos ARCO (acceso, rectificación, cancelación u oposición) al tratamiento de sus Datos Personales, así como para revocar el consentimiento que nos ha otorgado, deberá presentar su solicitud a través del correo electrónico: privacidadjump-in@gmail.com, proporcionando al efecto los siguientes datos personales de identificación: nombre, domicilio o medio de contacto, dirección de correo electrónico, documento que acredite su personalidad, descripción clara y precisa de los datos personales motivo de dicha petición y número de membresía o adscripción a JUMP-IN, cuando así proceda.</p>
+                       </div>
+                        <div>
+                        <p>JUMP-IN emitirá la respuesta correspondiente en un plazo máximo de 20 días hábiles, prorrogable, en caso necesario en otros 20 días hábiles adicionales.</p>
+                        </div>
+                       <div>
+                        <p>JUMP-IN se reserva como periodo de bloqueo para la cancelación de los datos personales, el término de seis meses posteriores al agotamiento o extinción de los efectos de la relación jurídica vinculante con el titular de los mismos.</p>
+                       </div>
+                       <div>
+                        <p className="mt-4 font-bold text-foreground">Fecha de Actualización: 14 de Diciembre de 2017</p>
+                       </div>
                     </CardContent>
                 </Card>
             </div>
