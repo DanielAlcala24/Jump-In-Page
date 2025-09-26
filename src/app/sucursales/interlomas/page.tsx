@@ -9,7 +9,7 @@ import VideoBackground from '@/components/video-background';
 import Link from 'next/link';
 import { ChevronDown, MapPin, Clock, Phone, Ticket, Calendar, Utensils, PartyPopper, Users, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
@@ -115,37 +115,39 @@ export default function SucursalInterlomasPage() {
               </CardContent>
             </Card>
 
-            {/* Precios y Horarios */}
             <div className="grid md:grid-cols-2 gap-8">
+                {/* Horarios y Contacto */}
                 <Card className="shadow-lg rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Ticket className="text-primary"/> Precios</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {sucursal.prices.map((price, index) => (
-                           <div key={index} className="flex items-center gap-4">
-                                <Image src={price.image} alt={price.title} width={150} height={100} className="rounded-md object-cover"/>
-                                <div>
-                                    <h4 className="font-bold">{price.title} - <span className="text-primary">{price.price}</span></h4>
-                                    <p className="text-sm text-muted-foreground">{price.description}</p>
-                                </div>
-                           </div>
-                        ))}
-                    </CardContent>
-                </Card>
-                <Card className="shadow-lg rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios de Operación</CardTitle>
+                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-lg text-muted-foreground">{sucursal.horarios}</p>
-                        <CardTitle className="flex items-center gap-2 font-headline text-2xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
+                        <CardTitle className="flex items-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
                         <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
                         <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
                             <Link href={`https://wa.me/${sucursal.whatsapp}`} target="_blank">
                                 WhatsApp: {sucursal.phone}
                             </Link>
                         </Button>
+                    </CardContent>
+                </Card>
+                
+                {/* Precios */}
+                 <Card className="shadow-lg rounded-2xl">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Ticket className="text-primary"/> Precios</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-6">
+                        {sucursal.prices.map((price, index) => (
+                           <Card key={index} className="overflow-hidden">
+                                <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
+                                <div className="p-4">
+                                    <h4 className="font-bold text-lg">{price.title} - <span className="text-primary">{price.price}</span></h4>
+                                    <p className="text-sm text-muted-foreground mt-1">{price.description}</p>
+                                </div>
+                           </Card>
+                        ))}
                     </CardContent>
                 </Card>
             </div>
@@ -267,7 +269,5 @@ export default function SucursalInterlomasPage() {
     </div>
   );
 }
-
-    
 
     
