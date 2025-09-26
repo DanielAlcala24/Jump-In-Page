@@ -50,6 +50,10 @@ export default function AtraccionesContent() {
         selectedSucursal === 'Todas' || attraction.availableIn.includes(selectedSucursal)
     );
 
+    const renderedCategories = categories.filter(category => 
+        filteredAttractions.some(attr => attr.category === category)
+    );
+
     return (
         <section id="attractions-content" className="w-full py-6 md:py-6 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
@@ -67,12 +71,12 @@ export default function AtraccionesContent() {
                     </Select>
                 </div>
                 
-                {categories.map(category => {
+                {renderedCategories.map((category, index) => {
                     const attractionsInCategory = filteredAttractions.filter(attr => attr.category === category);
                     if (attractionsInCategory.length === 0) return null;
                     
                     return (
-                        <div key={category} className="mb-16">
+                        <div key={category}>
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
                                     {category}
@@ -102,6 +106,9 @@ export default function AtraccionesContent() {
                                     </Card>
                                 ))}
                             </div>
+                             {index < renderedCategories.length - 1 && (
+                                <hr className="my-16 border-gray-200 dark:border-gray-700" />
+                            )}
                         </div>
                     );
                 })}
