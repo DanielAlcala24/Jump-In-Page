@@ -147,8 +147,11 @@ export default function SucursalCoacalcoPage() {
                         {sucursal.prices.map((price, index) => (
                            <Card key={index} className="overflow-hidden">
                                 <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
-                                <div className="p-4">
-                                    <h4 className="font-bold text-lg">{price.title} - <span className="text-primary">{price.price}</span></h4>
+                                <div className="p-4 text-center">
+                                    <h4 className="font-bold text-xl mb-2">{price.title}</h4>
+                                    <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
+                                        {price.price}
+                                    </div>
                                     <p className="text-sm text-muted-foreground mt-1">{price.description}</p>
                                 </div>
                            </Card>
@@ -274,5 +277,3 @@ export default function SucursalCoacalcoPage() {
     </div>
   );
 }
-
-    

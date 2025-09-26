@@ -16,12 +16,12 @@ import { cn } from '@/lib/utils';
 
 const sucursal = {
   name: "Churubusco",
-  address: "Canal de Miramontes 2053, Coapa, Girasoles III, Coyoacán, 04920 Ciudad de México, CDMX",
-  mapLink: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.044530095874!2d-99.13679888509501!3d19.32415128694665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1fe8d8c6b75f7%3A0x2616a24f5c9a7c5c!2sJump-in%20Miramontes!5e0!3m2!1ses!2smx!4v1624387840123!5m2!1ses!2smx",
+  address: "Cto Interior Avenida Río Churubusco 1072-11-B, Nueva Rosita, Iztapalapa, 09420 Ciudad de México, CDMX",
+  mapLink: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.7625313842454!2d-99.10438992606528!3d19.379432381888588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1fe787b482b93%3A0x2223fa341e4646c9!2sJump-In%20Churubusco!5e0!3m2!1ses-419!2smx!4v1758929403953!5m2!1ses-419!2smx",
   whatsapp: "525512345678",
   phone: "55 1234 5678",
   prices: [
-    { title: "Salto Individual", price: "$200/hr", description: "Acceso a todas las áreas de trampolines.", image: "/assets/g1.jpg" },
+    { title: "1 hora", price: "$220/", description: "Acceso a todas las áreas de trampolines y atracciones por 2 horas.", image: "/assets/g1.jpg" },
     { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
     { title: "Pase Anual", price: "$2500", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
   ],
@@ -150,8 +150,11 @@ export default function SucursalChurubuscoPage() {
                         {sucursal.prices.map((price, index) => (
                            <Card key={index} className="overflow-hidden">
                                 <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
-                                <div className="p-4">
-                                    <h4 className="font-bold text-lg">{price.title} - <span className="text-primary">{price.price}</span></h4>
+                                <div className="p-4 text-center">
+                                    <h4 className="font-bold text-xl mb-2">{price.title}</h4>
+                                    <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
+                                        {price.price}
+                                    </div>
                                     <p className="text-sm text-muted-foreground mt-1">{price.description}</p>
                                 </div>
                            </Card>
@@ -277,5 +280,3 @@ export default function SucursalChurubuscoPage() {
     </div>
   );
 }
-
-    
