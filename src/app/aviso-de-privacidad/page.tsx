@@ -54,6 +54,28 @@ export default function AvisoDePrivacidadPage() {
                          <p className="font-bold text-foreground mb-2">ADICIONALES:</p>
                          <p>Conocer sus necesidades de servicios y ofrecerle los que más se adecuen a sus requerimientos y preferencias; integrar el expediente de identificación de clientes y proveedores, dar avisos de actividades vulnerables en términos de la ley aplicable, comunicarle informes, actualizaciones y publicidad en general, convocarlo a eventos de acuerdo a su perfil, atender quejas y aclaraciones, solventar sus necesidades y requerimientos vinculados a nuestros servicios, contactarlo vía telefónica, telegráfica o por correo postal o electrónico, pago de nómina y emisión de cartas de recomendación, publicitar y anunciar nuestros juegos y eventos, así como material promocional.</p>
                        </div>
+                       <div>
+                         <h3 className="font-bold text-foreground mb-2">JUMP–IN recaba los siguientes datos personales:</h3>
+                         <p>Nombre, domicilio, RFC, CURP, número de seguridad social, correo electrónico, estado civil, edad, nacionalidad, fecha y lugar de nacimiento, teléfono, fijo y móvil, datos de documentos de identificación, nombre del cónyuge, nombre de los hijos, educación, información comercial, corporativa, financiera y contable.</p>
+                       </div>
+                       <div>
+                         <h3 className="font-bold text-foreground mb-2">Datos sensibles recabados:</h3>
+                         <p>JUMP–IN recaba los siguientes datos considerados como sensibles, de acuerdo a la ley de la materia: estado de salud presente o futuro, información genética (tipo de sangre) y afiliación sindical.</p>
+                       </div>
+                       <div>
+                         <h3 className="font-bold text-foreground mb-2">Formas de recabar datos personales:</h3>
+                         <p>Para las finalidades señaladas en el presente aviso de privacidad, JUMP–IN recaba sus datos personales de distintas formas: cuando Usted los proporciona directamente; cuando visita nuestro sitio de Internet o utiliza nuestros servicios en línea; y cuando obtenemos información a través de otras fuentes permitidas por la ley, tales como alianzas, directorios telefónicos o laborales, entre otras, así como por conducto de nuestra pagina electrónica, mediante web – beacons, (Google analyties), únicamente para monitoreo de la misma.</p>
+                       </div>
+                       <div>
+                         <h3 className="font-bold text-foreground mb-2">Transferencia de datos:</h3>
+                         <p>Los Datos pueden ser transferidos a terceros o proveedores de JUMP–IN o autoridades gubernamentales, tanto dentro de territorio nacional, como en el extranjero, para los mismos fines, con el objeto de cumplir con disposiciones legales aplicables o coadyuvar en la prestación de nuestros servicios, de acuerdo a los fines previstos en este aviso de privacidad.</p>
+                         <p className="mt-4">Si Usted no manifiesta su oposición para que sus datos personales sean transferidos, se entenderá que otorga su consentimiento para ello.</p>
+                       </div>
+                       <div>
+                         <h3 className="font-bold text-foreground mb-2">Tratamiento y protección de datos:</h3>
+                         <p>Los Datos serán tratados de conformidad con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, su Reglamento y Lineamientos adicionales.</p>
+                         <p className="mt-4">La confidencialidad de los Datos está garantizada y los mismos están protegidos por medidas de seguridad administrativas, técnicas y físicas, para evitar su daño, pérdida, alteración, destrucción, uso, acceso o divulgación indebida.</p>
+                       </div>
                     </CardContent>
                 </Card>
             </div>
