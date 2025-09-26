@@ -17,7 +17,7 @@ export default function FiestasEventosIntro() {
       <div className="container mx-auto max-w-5xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden bg-white">
           <Image
-              src="/assets/g3.jpeg"
+              src="/assets/g8-1.jpeg"
               alt="Fiestas y Eventos"
               width={1200}
               height={400}

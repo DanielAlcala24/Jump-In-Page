@@ -28,6 +28,14 @@ const faqs = [
     {
         question: "¿Cuáles son sus horarios de apertura?",
         answer: "De lunes a viernes abrimos de 2:00 p.m. a 8:00 p.m. y los sábados y domingos de 11:00 a.m. a 8:00 p.m.. Durante temporadas vacacionales nuestros horarios pueden variar, así que te recomendamos revisar nuestras redes sociales o visitar la sección de tu sucursal de interés."
+    },
+    {
+        question: "¿Puedo ingresar con mi mascota a las sucursales?",
+        answer: "Por seguridad y comodidad de todos nuestros visitantes, no está permitido el ingreso de mascotas a nuestras instalaciones."
+    },
+    {
+        question: "¿Hay alguna promoción especial para cumpleañeros?",
+        answer: "¡Sí! Si cumples años, puedes visitarnos un día de la semana de tu cumpleaños presentando una copia impresa de tu CURP, INE o acta de nacimiento, y recibirás acceso ilimitado por ese día para que celebres a lo grande.⚠️ Importante: la promoción no incluye calcetines y solo puede usarse un día, no toda la semana."
     }
 ]
 

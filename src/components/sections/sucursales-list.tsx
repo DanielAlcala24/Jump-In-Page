@@ -45,7 +45,7 @@ export default function SucursalesList() {
         : sucursalesData;
 
   return (
-    <section id="sucursales-list" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
+    <section id="sucursales-list" className="w-full py-6 md:py-6 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="sticky top-16 z-30 py-4 mb-10">
            <div className="flex justify-center">
