@@ -1,54 +1,96 @@
 
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 const sucursalesData = [
   {
     category: 'Estado de México',
     locations: [
-      { name: 'Coacalco', image: 'https://picsum.photos/seed/coacalco/600/400', link: '/sucursales/coacalco' },
-      { name: 'Ecatepec', image: 'https://picsum.photos/seed/ecatepec/600/400', link: '/sucursales/ecatepec' },
-      { name: 'Interlomas', image: 'https://picsum.photos/seed/interlomas/600/400', link: '/sucursales/interlomas' },
-      { name: 'La Cúspide', image: 'https://picsum.photos/seed/cuspide/600/400', link: '/sucursales/cuspide' },
+      { name: 'Coacalco', image: '/assets/g1.jpg', link: '/sucursales/coacalco' },
+      { name: 'Ecatepec', image: '/assets/g2.jpg', link: '/sucursales/ecatepec' },
+      { name: 'Interlomas', image: '/assets/g3.jpeg', link: '/sucursales/interlomas' },
+      { name: 'La Cúspide', image: '/assets/g4.jpeg', link: '/sucursales/cuspide' },
     ],
   },
   {
     category: 'CDMX',
     locations: [
-      { name: 'Churubusco', image: 'https://picsum.photos/seed/churubusco/600/400', link: '/sucursales/churubusco' },
-      { name: 'Miramontes', image: 'https://picsum.photos/seed/miramontes/600/400', link: '/sucursales/miramontes' },
-      { name: 'Vallejo', image: 'https://picsum.photos/seed/vallejo/600/400', link: '/sucursales/vallejo' },
+      { name: 'Churubusco', image: '/assets/g5.jpeg', link: '/sucursales/churubusco' },
+      { name: 'Miramontes', image: '/assets/g6.jpeg', link: '/sucursales/miramontes' },
+      { name: 'Vallejo', image: '/assets/g7.jpeg', link: '/sucursales/vallejo' },
     ],
   },
   {
     category: 'Morelos',
     locations: [
-      { name: 'Cuernavaca', image: 'https://picsum.photos/seed/cuernavaca/600/400', link: '/sucursales/cuernavaca' },
+      { name: 'Cuernavaca', image: '/assets/g8.jpeg', link: '/sucursales/cuernavaca' },
     ],
   },
 ];
 
+const categories = ['Todas', ...sucursalesData.map(g => g.category)];
+
 export default function SucursalesList() {
+    const [selectedCategory, setSelectedCategory] = useState('Todas');
+    
+    const filteredSucursales = selectedCategory === 'Todas'
+        ? sucursalesData
+        : sucursalesData.filter(group => group.category === selectedCategory);
+
   return (
     <section id="sucursales-list" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        {sucursalesData.map((group, groupIndex) => (
-          <div key={groupIndex} className="mb-16">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
-                    {group.category}
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                    Encuéntranos en {group.category}
-                </h2>
+        <div className="sticky top-16 z-30 py-4 mb-10">
+           <div className="flex justify-center">
+            <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-lg">
+              {categories.map((category, index) => (
+                <React.Fragment key={category}>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      'transition-colors duration-300 text-base font-medium h-auto py-2 px-4',
+                      'focus-visible:ring-transparent whitespace-nowrap',
+                      selectedCategory === category
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : 'text-primary hover:bg-primary/10',
+                      'rounded-full'
+                    )}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                  {index < categories.length - 1 && (
+                    <Separator orientation="vertical" className="h-6 bg-gray-200 last-of-type:hidden" />
+                  )}
+                </React.Fragment>
+              ))}
             </div>
+          </div>
+        </div>
+
+        {filteredSucursales.map((group) => (
+          <div key={group.category} className="mb-16">
+            {selectedCategory === 'Todas' && (
+                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
+                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
+                        {group.category}
+                    </div>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
+                        Encuéntranos en {group.category}
+                    </h2>
+                </div>
+            )}
             <div className="flex flex-wrap justify-center gap-8">
-              {group.locations.map((sucursal, index) => (
+              {group.locations.map((sucursal) => (
                 <div
-                  key={index}
+                  key={sucursal.name}
                   className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]"
                 >
                   <Link href={sucursal.link} className="block overflow-hidden">
@@ -77,6 +119,12 @@ export default function SucursalesList() {
             </div>
           </div>
         ))}
+        {filteredSucursales.length === 0 && selectedCategory !== 'Todas' && (
+            <div className="text-center py-16">
+                <p className="text-2xl font-semibold text-muted-foreground">No se encontraron sucursales en esta zona.</p>
+                <p className="text-muted-foreground mt-2">Prueba seleccionando "Todas" para ver todas las sucursales disponibles.</p>
+            </div>
+        )}
       </div>
     </section>
   );

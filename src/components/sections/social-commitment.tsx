@@ -17,7 +17,7 @@ export default function SocialCommitment() {
       <div className="container mx-auto max-w-4xl px-4 md:px-6">
         <Card className="shadow-2xl rounded-2xl overflow-hidden bg-white">
           <Image
-            src="/assets/g7.jpeg"
+            src="/assets/compromisoSocial.jpg"
             alt="Compromiso Social"
             width={1200}
             height={400}

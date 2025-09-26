@@ -16,7 +16,7 @@ export default function AboutUs() {
       <div className="container mx-auto max-w-4xl px-4 md:px-6 space-y-12">
         <Card className="shadow-lg rounded-2xl overflow-hidden">
           <Image
-            src="/assets/g7.jpeg"
+            src="/assets/nosotros.png"
             alt="Nosotros"
             width={1200}
             height={400}
