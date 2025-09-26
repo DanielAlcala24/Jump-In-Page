@@ -37,7 +37,7 @@ export default function Inicio() {
         </div>
       </div>
       <div className="absolute bottom-5 z-10 flex flex-col items-center">
-          <Link href="#compra" aria-label="Scroll down">
+          <Link href="#introduccion" aria-label="Scroll down">
             <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
           </Link>
         </div>
