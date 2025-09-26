@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Facebook, Youtube, Instagram, Twitter } from 'lucide-react';
 import Image from 'next/image';
@@ -27,7 +28,7 @@ export default function Footer() {
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Contacto</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Trabaja con nosotros</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Aviso de Privacidad</Link></li>
-              <li><Link href="#" className="hover:text-orange-500 transition-colors">Términos y Condiciones</Link></li>
+              <li><Link href="/terminos-y-condiciones" className="hover:text-orange-500 transition-colors">Términos y Condiciones</Link></li>
             </ul>
           </div>
           <div>
