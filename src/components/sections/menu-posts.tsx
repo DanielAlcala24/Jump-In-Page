@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
 const menuItems = [
+  //Alimentos
   {
     title: 'Pizza de Pepperoni',
     description: 'Clásica y deliciosa, con extra queso y pepperoni de primera.',
@@ -15,15 +16,8 @@ const menuItems = [
     imageHint: 'pepperoni pizza',
     category: 'Alimentos',
   },
-  {
-    title: 'Hamburguesa Jump-In',
-    description:
-      'Jugosa carne de res, queso cheddar, tocino crujiente y nuestros aderezos secretos.',
-    price: '$150.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'classic burger',
-    category: 'Alimentos',
-  },
+
+  //Snacks
   {
     title: 'Nuggets de Pollo',
     description:
@@ -33,15 +27,100 @@ const menuItems = [
     imageHint: 'chicken nuggets',
     category: 'Snacks',
   },
+
+  //Bebidas
   {
     title: 'Agua',
     description:
-      '600 ml',
+      '600ml.',
     price: '$30.00 MXN',
     imageSrc: '/assets/menu/bebidas/agua600.png',
     imageHint: 'agua600ml',
     category: 'Bebidas',
   },
+  {
+    title: 'Agua',
+    description:
+      '1L.',
+    price: '$40.00 MXN',
+    imageSrc: '/assets/menu/bebidas/aguaL.png',
+    imageHint: 'agua1l.',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Gatorade',
+    description:
+      '500ml.',
+    price: '$45.00 MXN',
+    imageSrc: '/assets/menu/bebidas/gatorade.png',
+    imageHint: 'Gatorade',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Jumex Fresh',
+    description:
+      '400ml.',
+    price: '$25.00 MXN',
+    imageSrc: '/assets/menu/bebidas/jugo.png',
+    imageHint: 'jumex fresh',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Refresco',
+    description:
+      '355ml. Botella o lata de varios sabores.',
+    price: '$30.00 MXN',
+    imageSrc: '/assets/menu/bebidas/refresco.png',
+    imageHint: 'Refresco',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Soda Pitufo',
+    description:
+      '414ml. Blue berry.',
+    price: '$45.00 MXN',
+    imageSrc: '/assets/menu/bebidas/sodaPitufo.png',
+    imageHint: 'Soda Pitufo',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Soda Pantera Rosa',
+    description:
+      '414ml. Pink Lemonade.',
+    price: '$45.00 MXN',
+    imageSrc: '/assets/menu/bebidas/sodaPanteraRosa.png',
+    imageHint: 'Soda Pantera Rosa',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Soda Wazowski',
+    description:
+      '414ml. Manzana verde.',
+    price: '$45.00 MXN',
+    imageSrc: '/assets/menu/bebidas/sodaWazowski.png',
+    imageHint: 'Soda Wazowski',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Agua',
+    description:
+      '2L. Natural.',
+    price: '$40.00 MXN',
+    imageSrc: '/assets/menu/bebidas/jarraAgua.png',
+    imageHint: 'Agua 2L.',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Agua',
+    description:
+      '2L. Horchata, jamaica, limón ó naranja.',
+    price: '$60.00 MXN',
+    imageSrc: '/assets/menu/bebidas/jarraSabores.png',
+    imageHint: 'Agua 2L Sabores.',
+    category: 'Bebidas',
+  },
+
+  //Dulces
   {
     title: 'Gomitas Acidas',
     description: 'Una explosión de sabor que te hará hacer caras divertidas.',
