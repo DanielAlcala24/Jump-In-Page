@@ -35,14 +35,14 @@ const sucursalesData = [
   },
 ];
 
-const categories = ['Todas', ...sucursalesData.map(g => g.category)];
+const categories = sucursalesData.map(g => g.category);
 
 export default function SucursalesList() {
-    const [selectedCategory, setSelectedCategory] = useState('Todas');
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     
-    const filteredSucursales = selectedCategory === 'Todas'
-        ? sucursalesData
-        : sucursalesData.filter(group => group.category === selectedCategory);
+    const filteredSucursales = selectedCategory
+        ? sucursalesData.filter(group => group.category === selectedCategory)
+        : sucursalesData;
 
   return (
     <section id="sucursales-list" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
@@ -77,7 +77,7 @@ export default function SucursalesList() {
 
         {filteredSucursales.map((group) => (
           <div key={group.category} className="mb-16">
-            {selectedCategory === 'Todas' && (
+            {selectedCategory === null && (
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
                     <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
                         {group.category}
@@ -119,12 +119,6 @@ export default function SucursalesList() {
             </div>
           </div>
         ))}
-        {filteredSucursales.length === 0 && selectedCategory !== 'Todas' && (
-            <div className="text-center py-16">
-                <p className="text-2xl font-semibold text-muted-foreground">No se encontraron sucursales en esta zona.</p>
-                <p className="text-muted-foreground mt-2">Prueba seleccionando "Todas" para ver todas las sucursales disponibles.</p>
-            </div>
-        )}
       </div>
     </section>
   );
