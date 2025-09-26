@@ -75,48 +75,53 @@ export default function SucursalesList() {
           </div>
         </div>
 
-        {filteredSucursales.map((group) => (
-          <div key={group.category} className="mb-16">
-            {selectedCategory === null && (
-                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
-                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
-                        {group.category}
+        {filteredSucursales.map((group, index) => (
+          <div key={group.category}>
+            <div className="mb-16">
+                {selectedCategory === null && (
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
+                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
+                            {group.category}
+                        </div>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
+                            Encuéntranos en {group.category}
+                        </h2>
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                        Encuéntranos en {group.category}
-                    </h2>
-                </div>
-            )}
-            <div className="flex flex-wrap justify-center gap-8">
-              {group.locations.map((sucursal) => (
-                <div
-                  key={sucursal.name}
-                  className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]"
-                >
-                  <Link href={sucursal.link} className="block overflow-hidden">
-                    <Image
-                      src={sucursal.image}
-                      alt={`Sucursal ${sucursal.name}`}
-                      width={600}
-                      height={400}
-                      data-ai-hint="trampoline park"
-                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </Link>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="mb-4 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">
-                      {sucursal.name}
-                    </h3>
-                    <Link href={sucursal.link} className="mt-auto">
-                      <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white transition-transform group-hover:scale-105">
-                        <MapPin className="mr-2 h-4 w-4" />
-                        Ver Detalles
-                      </Button>
+                )}
+                <div className="flex flex-wrap justify-center gap-8">
+                {group.locations.map((sucursal) => (
+                    <div
+                    key={sucursal.name}
+                    className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950 text-center w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]"
+                    >
+                    <Link href={sucursal.link} className="block overflow-hidden">
+                        <Image
+                        src={sucursal.image}
+                        alt={`Sucursal ${sucursal.name}`}
+                        width={600}
+                        height={400}
+                        data-ai-hint="trampoline park"
+                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
                     </Link>
-                  </div>
+                    <div className="flex flex-1 flex-col p-6">
+                        <h3 className="mb-4 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">
+                        {sucursal.name}
+                        </h3>
+                        <Link href={sucursal.link} className="mt-auto">
+                        <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white transition-transform group-hover:scale-105">
+                            <MapPin className="mr-2 h-4 w-4" />
+                            Ver Detalles
+                        </Button>
+                        </Link>
+                    </div>
+                    </div>
+                ))}
                 </div>
-              ))}
             </div>
+            {selectedCategory === null && index < filteredSucursales.length - 1 && (
+                <hr className="my-16" />
+            )}
           </div>
         ))}
       </div>
