@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin } from 'lucide-react';
+import WavyDivider from '../wavy-divider';
 
 const sucursales = ['Todas', 'Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'];
 
@@ -107,7 +108,7 @@ export default function AtraccionesContent() {
                                 ))}
                             </div>
                              {index < renderedCategories.length - 1 && (
-                                <hr className="my-16 border-gray-200 dark:border-gray-700" />
+                                <WavyDivider fromColor="bg-gray-50" />
                             )}
                         </div>
                     );
