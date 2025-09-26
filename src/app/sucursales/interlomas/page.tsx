@@ -25,7 +25,7 @@ const sucursal = {
     { title: "Paquete Amigos", price: "$900/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
     { title: "Pase Anual", price: "$3000", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
   ],
-  horarios: "Lunes a Viernes: 1 PM - 9 PM | Sábados y Domingos: 10 AM - 9 PM",
+  horarios: ["Lunes a Viernes: 1 PM - 9 PM", "Sábados y Domingos: 10 AM - 9 PM"],
   attractions: [
     { name: 'Climbing Wall', image: '/assets/atracciones/exclusivas/climbingwall.jpg' },
     { name: "Arena Futbol", image: "/assets/atracciones/exclusivas/arenaFutbol.jpg" },
@@ -130,7 +130,9 @@ export default function SucursalInterlomasPage() {
                         <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-lg text-muted-foreground">{sucursal.horarios}</p>
+                        {sucursal.horarios.map((horario, index) => (
+                          <p key={index} className="text-lg text-muted-foreground">{horario}</p>
+                        ))}
                         <CardTitle className="flex items-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
                         <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
                         <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
