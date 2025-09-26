@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -124,27 +124,36 @@ function PreciosPromocionesContentComponent() {
         )}
 
         {selectedCategory === 'Promociones' && (
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {promotions.map((promo, index) => (
-                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                        <CardHeader className="p-0">
-                            <Image src={promo.image} alt={promo.title} width={600} height={400} data-ai-hint={promo.hint} className="w-full h-48 object-cover"/>
-                        </CardHeader>
-                        <CardContent className="p-6 flex-grow">
-                            <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
-                            <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
-                            <div className="mt-4">
-                              <h4 className="text-sm font-semibold flex items-center mb-2 justify-center"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
-                              <div className="flex flex-wrap gap-2 justify-center">
-                                {promo.availableIn.map(sucursal => (
-                                  <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
-                                ))}
+          <>
+            <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-md shadow">
+                <div className="flex items-center">
+                    <AlertTriangle className="h-6 w-6 mr-3"/>
+                    <p className="font-bold text-lg">Importante</p>
+                </div>
+                <p className="mt-2 text-base">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {promotions.map((promo, index) => (
+                      <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                          <CardHeader className="p-0">
+                              <Image src={promo.image} alt={promo.title} width={600} height={400} data-ai-hint={promo.hint} className="w-full h-48 object-cover"/>
+                          </CardHeader>
+                          <CardContent className="p-6 flex-grow">
+                              <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
+                              <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
+                              <div className="mt-4">
+                                <h4 className="text-sm font-semibold flex items-center mb-2 justify-center"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
+                                <div className="flex flex-wrap gap-2 justify-center">
+                                  {promo.availableIn.map(sucursal => (
+                                    <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-           </div>
+                          </CardContent>
+                      </Card>
+                  ))}
+            </div>
+          </>
         )}
       </div>
     </section>
