@@ -46,7 +46,7 @@ export default function SocialCommitment() {
                 WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
               }}
             >
-              <div className="flex w-max animate-[scroll_20s_linear_infinite] hover:[animation-play-state:paused]">
+              <div className="flex w-max animate-[scroll_20s_linear_infinite]">
                 {extendedLogos.map((logo, index) => (
                   <div key={index} className="w-52 h-24 flex items-center justify-center mx-4">
                     <Image
