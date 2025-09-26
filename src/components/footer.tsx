@@ -27,19 +27,19 @@ export default function Footer() {
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Facturación</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Contacto</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Trabaja con nosotros</Link></li>
-              <li><Link href="#" className="hover:text-orange-500 transition-colors">Aviso de Privacidad</Link></li>
+              <li><Link href="/aviso-de-privacidad" className="hover:text-orange-500 transition-colors">Aviso de Privacidad</Link></li>
               <li><Link href="/terminos-y-condiciones" className="hover:text-orange-500 transition-colors">Términos y Condiciones</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-bold mb-4 font-headline">Síguenos</h3>
             <div className="flex items-center space-x-4">
-              <Link href="#" aria-label="TikTok" className="text-white hover:text-orange-500 transition-colors">
+              <Link href="https://www.tiktok.com/@jumpin_mx" aria-label="TikTok" className="text-white hover:text-orange-500 transition-colors">
                 <Image src="/assets/svg/tiktok.png" alt="TikTok" width={16} height={16} />
               </Link>
-              <Link href="#" aria-label="Instagram" className="text-white hover:text-orange-500 transition-colors"><Instagram size={16} /></Link>
-              <Link href="#" aria-label="Facebook" className="text-white hover:text-orange-500 transition-colors"><Facebook size={16} /></Link>
-              <Link href="#" aria-label="YouTube" className="text-white hover:text-orange-500 transition-colors"><Youtube size={16} /></Link>
+              <Link href="https://www.instagram.com/jumpin_mx" aria-label="Instagram" className="text-white hover:text-orange-500 transition-colors"><Instagram size={16} /></Link>
+              <Link href="https://www.facebook.com/JumpInMX/?locale=es_LA" aria-label="Facebook" className="text-white hover:text-orange-500 transition-colors"><Facebook size={16} /></Link>
+              <Link href="https://www.youtube.com/channel/UCQ0A6bqmDR1EThKl1o0l1Zg" aria-label="YouTube" className="text-white hover:text-orange-500 transition-colors"><Youtube size={16} /></Link>
             </div>
           </div>
         </div>
