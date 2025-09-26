@@ -7,7 +7,7 @@ import SocialIcons from '@/components/social-icons';
 import WhatsappButton from '@/components/whatsapp-button';
 import VideoBackground from '@/components/video-background';
 import Link from 'next/link';
-import { ChevronDown, MapPin, Clock, Phone, Ticket, Calendar, Utensils, PartyPopper, Users, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, MapPin, Clock, Phone, Ticket, Calendar, Utensils, PartyPopper, Users, ArrowRight, X, ChevronLeft, ChevronRight, Cake } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -81,6 +81,14 @@ export default function SucursalCuernavacaPage() {
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline">
               Jump-In {sucursal.name}
             </h1>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link href="/fiestas-y-eventos/fiestas-cumpleanos">
+                <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-pink-500/30 hover:bg-pink-500/40">
+                  <Cake className="mr-2 h-5 w-5" />
+                  Cotiza tu Cumpleaños
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="absolute bottom-0 z-10 flex flex-col items-center">
             <Link href="#info-sucursal" aria-label="Scroll down">
