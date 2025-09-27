@@ -9,23 +9,23 @@ import { Separator } from '@/components/ui/separator';
 const menuItems = [
   //Alimentos
   {
-    title: 'Alitas',
-    description: '300g. BBQ, Red hot, Mango habanero ó Mix... Por $35 + papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
+    title: 'Alitas (300g)',
+    description: 'BBQ, Red hot, Mango habanero ó Mix... +$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
     price: '$140.00 MXN',
     imageSrc: '/assets/menu/alimentos/alitas.png',
     imageHint: 'Alitas',
     category: 'Alimentos',
   },
   {
-    title: 'Boneless',
-    description: '300g. BBQ, Red hot, Mango habanero ó Mix... Por $35 + papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
+    title: 'Boneless (300g)',
+    description: 'BBQ, Red hot, Mango habanero ó Mix... +$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
     price: '$150.00 MXN',
     imageSrc: '/assets/menu/alimentos/boneless.png',
     imageHint: 'Boneless',
     category: 'Alimentos',
   },{
-    title: 'Hotdog',
-    description: '1pza... Por $35 + papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
+    title: 'Hotdog (1pza)',
+    description: ' +$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
     price: '$60.00 MXN',
     imageSrc: '/assets/menu/alimentos/hotdog.png',
     imageHint: 'Hotdog',
@@ -45,95 +45,114 @@ const menuItems = [
 
   //Bebidas
   {
-    title: 'Agua',
+    title: 'Agua (600ml)',
     description:
-      '600ml.',
+      'Agua natural.',
     price: '$30.00 MXN',
     imageSrc: '/assets/menu/bebidas/agua600.png',
     imageHint: 'agua600ml',
     category: 'Bebidas',
   },
   {
-    title: 'Agua',
+    title: 'Agua (1L)',
     description:
-      '1L.',
+      'Agua natural.',
     price: '$40.00 MXN',
     imageSrc: '/assets/menu/bebidas/aguaL.png',
     imageHint: 'agua1l.',
     category: 'Bebidas',
   },
   {
-    title: 'Gatorade',
+    title: 'Gatorade (500ml)',
     description:
-      '500ml.',
+      'Bebida hidratante.',
     price: '$45.00 MXN',
     imageSrc: '/assets/menu/bebidas/gatorade.png',
     imageHint: 'Gatorade',
     category: 'Bebidas',
   },
   {
-    title: 'Jumex Fresh',
+    title: 'Jumex Fresh (400ml)',
     description:
-      '400ml.',
+      'Jugo.',
     price: '$25.00 MXN',
     imageSrc: '/assets/menu/bebidas/jugo.png',
     imageHint: 'jumex fresh',
     category: 'Bebidas',
   },
   {
-    title: 'Refresco',
+    title: 'Refresco (355ml)',
     description:
-      '355ml. Botella o lata de varios sabores.',
+      'Botella o lata de varios sabores.',
     price: '$30.00 MXN',
     imageSrc: '/assets/menu/bebidas/refresco.png',
     imageHint: 'Refresco',
     category: 'Bebidas',
   },
   {
-    title: 'Soda Pitufo',
+    title: 'Soda Pitufo (414ml)',
     description:
-      '414ml. Blue berry.',
+      'Blue berry.',
     price: '$45.00 MXN',
     imageSrc: '/assets/menu/bebidas/sodaPitufo.png',
     imageHint: 'Soda Pitufo',
     category: 'Bebidas',
   },
   {
-    title: 'Soda Pantera Rosa',
+    title: 'Soda Pantera Rosa (414ml)',
     description:
-      '414ml. Pink Lemonade.',
+      'Pink Lemonade.',
     price: '$45.00 MXN',
     imageSrc: '/assets/menu/bebidas/sodaPanteraRosa.png',
     imageHint: 'Soda Pantera Rosa',
     category: 'Bebidas',
   },
   {
-    title: 'Soda Wazowski',
+    title: 'Soda Wazowski (414ml)',
     description:
-      '414ml. Manzana verde.',
+      'Manzana verde.',
     price: '$45.00 MXN',
     imageSrc: '/assets/menu/bebidas/sodaWazowski.png',
     imageHint: 'Soda Wazowski',
     category: 'Bebidas',
   },
   {
-    title: 'Agua',
+    title: 'Agua (2L)',
     description:
-      '2L. Natural.',
+      'Agua natural.',
     price: '$40.00 MXN',
     imageSrc: '/assets/menu/bebidas/jarraAgua.png',
     imageHint: 'Agua 2L.',
     category: 'Bebidas',
   },
   {
-    title: 'Agua',
+    title: 'Agua (2L)',
     description:
-      '2L. Horchata, jamaica, limón ó naranja.',
+      'Horchata, jamaica, limón ó naranja.',
     price: '$60.00 MXN',
     imageSrc: '/assets/menu/bebidas/jarraSabores.png',
     imageHint: 'Agua 2L Sabores.',
     category: 'Bebidas',
   },
+  {
+    title: 'Cerveza (325ml)',
+    description:
+      'Tecate roja, Tecate light, Tecate ambar, XX lager, XX ambar e indio. + $10 Vaso michelado ó gomi vaso.',
+    price: '$55.00 MXN',
+    imageSrc: '/assets/menu/bebidas/cerveza.png',
+    imageHint: 'Agua 2L Sabores.',
+    category: 'Bebidas',
+  },
+  {
+    title: 'Cerveza (355ml)',
+    description:
+      'Heineken, Bohemia ó Amstel ultra. + $10 Vaso michelado ó gomi vaso.',
+    price: '$65.00 MXN',
+    imageSrc: '/assets/menu/bebidas/cervezaPremium.png',
+    imageHint: 'Agua 2L Sabores.',
+    category: 'Bebidas',
+  },
+
 
   //Dulces
   {
