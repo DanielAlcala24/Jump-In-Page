@@ -117,47 +117,45 @@ export default function SucursalVallejoPage() {
               </CardContent>
             </Card>
 
-            <div className="grid md:grid-cols-2 gap-8">
-                {/* Horarios y Contacto */}
-                <Card className="shadow-lg rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {sucursal.horarios.map((horario, index) => (
-                          <p key={index} className="text-lg text-muted-foreground">{horario}</p>
-                        ))}
-                        <CardTitle className="flex items-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
-                        <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
-                        <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
-                            <Link href={`https://wa.me/${sucursal.whatsapp}`} target="_blank">
-                                WhatsApp: {sucursal.phone}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-                
-                {/* Precios */}
-                 <Card className="shadow-lg rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Ticket className="text-primary"/> Precios</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-6">
-                        {sucursal.prices.map((price, index) => (
-                           <Card key={index} className="overflow-hidden">
-                                <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
-                                <div className="p-4 text-center">
-                                    <h4 className="font-bold text-xl mb-2">{price.title}</h4>
-                                    <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
-                                        {price.price}
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mt-1">{price.description}</p>
+            {/* Horarios y Contacto */}
+            <Card className="shadow-lg rounded-2xl">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {sucursal.horarios.map((horario, index) => (
+                      <p key={index} className="text-lg text-muted-foreground">{horario}</p>
+                    ))}
+                    <CardTitle className="flex items-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
+                    <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
+                    <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
+                        <Link href={`https://wa.me/${sucursal.whatsapp}`} target="_blank">
+                            WhatsApp: {sucursal.phone}
+                        </Link>
+                    </Button>
+                </CardContent>
+            </Card>
+            
+            {/* Precios */}
+              <Card className="shadow-lg rounded-2xl">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Ticket className="text-primary"/> Precios</CardTitle>
+                </CardHeader>
+                <CardContent className="grid md:grid-cols-3 gap-6">
+                    {sucursal.prices.map((price, index) => (
+                        <Card key={index} className="overflow-hidden">
+                            <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
+                            <div className="p-4 text-center">
+                                <h4 className="font-bold text-xl mb-2">{price.title}</h4>
+                                <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
+                                    {price.price}
                                 </div>
-                           </Card>
-                        ))}
-                    </CardContent>
-                </Card>
-            </div>
+                                <p className="text-sm text-muted-foreground mt-1">{price.description}</p>
+                            </div>
+                        </Card>
+                    ))}
+                </CardContent>
+            </Card>
             
             {/* Atracciones */}
             <Card className="shadow-lg rounded-2xl">
