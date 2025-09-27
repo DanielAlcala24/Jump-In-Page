@@ -9,11 +9,11 @@ import { Separator } from '@/components/ui/separator';
 const menuItems = [
   //Alimentos
   {
-    title: 'Pizza de Pepperoni',
-    description: 'Clásica y deliciosa, con extra queso y pepperoni de primera.',
-    price: '$180.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'pepperoni pizza',
+    title: 'Alitas',
+    description: '300g. BBQ, Red hot, Mango habanero ó Mix',
+    price: '$140.00 MXN',
+    imageSrc: '/assets/menu/alimentos/alitas.png',
+    imageHint: 'Alitas',
     category: 'Alimentos',
   },
 
