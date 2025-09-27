@@ -10,7 +10,7 @@ const menuItems = [
   //Alimentos
   {
     title: 'Alitas',
-    description: '300g. BBQ, Red hot, Mango habanero ó Mix',
+    description: '300g. BBQ, Red hot, Mango habanero ó Mix... Por $35 + papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
     price: '$140.00 MXN',
     imageSrc: '/assets/menu/alimentos/alitas.png',
     imageHint: 'Alitas',
@@ -18,7 +18,7 @@ const menuItems = [
   },
   {
     title: 'Boneless',
-    description: '300g. BBQ, Red hot, Mango habanero ó Mix',
+    description: '300g. BBQ, Red hot, Mango habanero ó Mix... Por $35 + papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
     price: '$150.00 MXN',
     imageSrc: '/assets/menu/alimentos/boneless.png',
     imageHint: 'Alitas',
