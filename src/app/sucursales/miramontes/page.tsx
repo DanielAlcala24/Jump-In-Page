@@ -48,29 +48,36 @@ const sucursal = {
 
 
 export default function SucursalMiramontesPage() {
-    const [lightboxOpen, setLightboxOpen] = useState(false);
-    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [attractionsLightbox, setAttractionsLightbox] = useState(false);
+    const [pricesLightbox, setPricesLightbox] = useState(false);
+    const [selectedImage, setSelectedImage] = useState({ list: 'attractions', index: 0 });
 
-    const openLightbox = (index: number) => {
-        setSelectedImageIndex(index);
-        setLightboxOpen(true);
+    const openLightbox = (list: 'attractions' | 'prices', index: number) => {
+        setSelectedImage({ list, index });
+        if (list === 'attractions') setAttractionsLightbox(true);
+        if (list === 'prices') setPricesLightbox(true);
     };
 
-    const closeLightbox = () => {
-        setLightboxOpen(false);
+    const closeLightbox = (list: 'attractions' | 'prices') => {
+        if (list === 'attractions') setAttractionsLightbox(false);
+        if (list === 'prices') setPricesLightbox(false);
     };
 
     const goToPrevious = () => {
-        setSelectedImageIndex((prevIndex) =>
-        prevIndex === 0 ? sucursal.attractions.length - 1 : prevIndex - 1
-        );
+        const { list, index } = selectedImage;
+        const imageList = list === 'attractions' ? sucursal.attractions : sucursal.prices;
+        const newIndex = index === 0 ? imageList.length - 1 : index - 1;
+        setSelectedImage({ list, index: newIndex });
     };
 
     const goToNext = () => {
-        setSelectedImageIndex((prevIndex) =>
-        prevIndex === sucursal.attractions.length - 1 ? 0 : prevIndex + 1
-        );
+        const { list, index } = selectedImage;
+        const imageList = list === 'attractions' ? sucursal.attractions : sucursal.prices;
+        const newIndex = index === imageList.length - 1 ? 0 : index + 1;
+        setSelectedImage({ list, index: newIndex });
     };
+
+    const currentImageList = selectedImage.list === 'attractions' ? sucursal.attractions : sucursal.prices;
   return (
     <div className="flex flex-col min-h-screen">
       <VideoBackground />
@@ -150,7 +157,9 @@ export default function SucursalMiramontesPage() {
                 <CardContent className="grid md:grid-cols-3 gap-6">
                     {sucursal.prices.map((price, index) => (
                         <Card key={index} className="overflow-hidden">
-                            <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
+                            <div className="cursor-pointer" onClick={() => openLightbox('prices', index)}>
+                                <Image src={price.image} alt={price.title} width={400} height={200} className="w-full object-cover aspect-[2/1]"/>
+                            </div>
                             <div className="p-4 text-center">
                                 <h4 className="font-bold text-xl mb-2">{price.title}</h4>
                                 <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
@@ -170,7 +179,7 @@ export default function SucursalMiramontesPage() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {sucursal.attractions.map((attr, index) => (
-                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3] cursor-pointer" onClick={() => openLightbox(index)}>
+                        <div key={index} className="relative group overflow-hidden rounded-lg aspect-[4/3] cursor-pointer" onClick={() => openLightbox('attractions', index)}>
                            <Image src={attr.image} alt={attr.name} fill className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"/>
                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                <h4 className="text-white text-xl font-bold font-headline text-center">{attr.name}</h4>
@@ -229,15 +238,15 @@ export default function SucursalMiramontesPage() {
           </div>
         </section>
       </main>
-      {lightboxOpen && (
-        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+      {(attractionsLightbox || pricesLightbox) && (
+        <Dialog open={attractionsLightbox || pricesLightbox} onOpenChange={() => closeLightbox(selectedImage.list as 'attractions' | 'prices')}>
           <DialogContent className="bg-black/80 border-none p-0 max-w-none w-screen h-screen flex items-center justify-center">
             <div className="relative w-full h-full">
               <Button
                 variant="ghost"
                 size="icon"
                 className="absolute top-4 right-4 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full"
-                onClick={closeLightbox}
+                onClick={() => closeLightbox(selectedImage.list as 'attractions' | 'prices')}
               >
                 <X className="h-8 w-8" />
                 <span className="sr-only">Cerrar</span>
@@ -246,7 +255,7 @@ export default function SucursalMiramontesPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={cn("absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': sucursal.attractions.length <= 1 })}
+                  className={cn("absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': currentImageList.length <= 1 })}
                   onClick={goToPrevious}
                 >
                   <ChevronLeft className="h-10 w-10" />
@@ -254,8 +263,8 @@ export default function SucursalMiramontesPage() {
                 </Button>
                 <div className="relative w-full max-w-4xl h-full max-h-[80vh]">
                   <Image
-                    src={sucursal.attractions[selectedImageIndex].image}
-                    alt={sucursal.attractions[selectedImageIndex].name}
+                    src={currentImageList[selectedImage.index].image}
+                    alt={(currentImageList[selectedImage.index] as any).name || (currentImageList[selectedImage.index] as any).title}
                     fill
                     className="object-contain"
                     quality={100}
@@ -264,7 +273,7 @@ export default function SucursalMiramontesPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={cn("absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': sucursal.attractions.length <= 1 })}
+                  className={cn("absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-white/80 hover:bg-black/50 rounded-full h-12 w-12", { 'hidden': currentImageList.length <= 1 })}
                   onClick={goToNext}
                 >
                   <ChevronRight className="h-10 w-10" />
@@ -280,3 +289,5 @@ export default function SucursalMiramontesPage() {
     </div>
   );
 }
+
+    
