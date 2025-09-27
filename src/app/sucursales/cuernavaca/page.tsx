@@ -121,23 +121,25 @@ export default function SucursalCuernavacaPage() {
             </Card>
 
             {/* Horarios y Contacto */}
-            <Card className="shadow-lg rounded-2xl">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {sucursal.horarios.map((horario, index) => (
-                      <p key={index} className="text-lg text-muted-foreground">{horario}</p>
-                    ))}
-                    <CardTitle className="flex items-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
-                    <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
-                    <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
-                        <Link href={`https://wa.me/${sucursal.whatsapp}`} target="_blank">
-                            WhatsApp: {sucursal.phone}
-                        </Link>
-                    </Button>
-                </CardContent>
-            </Card>
+            <div className="flex justify-center">
+                <Card className="shadow-lg rounded-2xl text-center max-w-md w-full">
+                    <CardHeader className="items-center">
+                        <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Clock className="text-primary"/> Horarios y Contacto</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {sucursal.horarios.map((horario, index) => (
+                        <p key={index} className="text-lg text-muted-foreground">{horario}</p>
+                        ))}
+                        <CardTitle className="flex items-center justify-center gap-2 font-headline text-xl mt-8"><Phone className="text-primary"/> Contacto</CardTitle>
+                        <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
+                        <Button asChild className="mt-2 bg-green-500 hover:bg-green-600">
+                            <Link href={`https://wa.me/${sucursal.whatsapp}`} target="_blank">
+                                WhatsApp: {sucursal.phone}
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
             
             {/* Precios */}
               <Card className="shadow-lg rounded-2xl">
