@@ -23,7 +23,9 @@ const sucursal = {
   prices: [
     { title: "1 hora", price: "$220", description: "Acceso a todas las áreas de trampolines y atracciones por 2 horas.", image: "/assets/g1.jpg" },
     { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
-    { title: "Pase Anual", price: "$2500", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg" }
+    { title: "Pase Anual", price: "$2500", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg"},
+    { title: "Calcetines", price: "$60", description: "Calcetines antiderrapantes", image: "/assets/g3.jpeg"
+    }
   ],
   horarios: ["Lunes a Viernes: 2 PM - 8 PM", "Sábados y Domingos: 11 AM - 8 PM"], 
   attractions: [
