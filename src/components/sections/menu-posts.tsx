@@ -16,6 +16,14 @@ const menuItems = [
     imageHint: 'Alitas',
     category: 'Alimentos',
   },
+  {
+    title: 'Boneless',
+    description: '300g. BBQ, Red hot, Mango habanero ó Mix',
+    price: '$150.00 MXN',
+    imageSrc: '/assets/menu/alimentos/boneless.png',
+    imageHint: 'Alitas',
+    category: 'Alimentos',
+  },
 
   //Snacks
   {
