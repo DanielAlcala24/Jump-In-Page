@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin } from 'lucide-react';
 
-const sucursales = ['Todas', 'Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'];
+const sucursales = ['Todas las sucursales', 'Churubusco', 'Coacalco', 'Interlomas', 'Ecatepec', 'Vallejo', 'La Cúspide', 'Miramontes', 'Cuernavaca'];
 
 const attractionsData = [
     // Atracciones exclusivas
@@ -44,10 +44,10 @@ const categories = [
 ]
 
 export default function AtraccionesContent() {
-    const [selectedSucursal, setSelectedSucursal] = useState('Todas');
+    const [selectedSucursal, setSelectedSucursal] = useState('Todas las sucursales');
 
     const filteredAttractions = attractionsData.filter(attraction => 
-        selectedSucursal === 'Todas' || attraction.availableIn.includes(selectedSucursal)
+        selectedSucursal === 'Todas las sucursales' || attraction.availableIn.includes(selectedSucursal)
     );
 
     const renderedCategories = categories.filter(category => 
@@ -59,7 +59,7 @@ export default function AtraccionesContent() {
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
                 
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 sticky top-16 z-20 py-4">
-                    <Select onValueChange={setSelectedSucursal} defaultValue="Todas">
+                    <Select onValueChange={setSelectedSucursal} defaultValue="Todas las sucursales">
                         <SelectTrigger className="w-full sm:w-[280px] shadow-lg">
                             <SelectValue placeholder="Selecciona una sucursal" />
                         </SelectTrigger>
@@ -112,10 +112,10 @@ export default function AtraccionesContent() {
                         </div>
                     );
                 })}
-                 {filteredAttractions.length === 0 && selectedSucursal !== 'Todas' && (
+                 {filteredAttractions.length === 0 && selectedSucursal !== 'Todas las sucursales' && (
                     <div className="text-center py-16">
                         <p className="text-2xl font-semibold text-muted-foreground">No se encontraron atracciones para la sucursal seleccionada.</p>
-                        <p className="text-muted-foreground mt-2">Prueba seleccionando "Todas" para ver todas las atracciones disponibles.</p>
+                        <p className="text-muted-foreground mt-2">Prueba seleccionando "Todas las sucursales" para ver todas las atracciones disponibles.</p>
                     </div>
                  )}
             </div>
