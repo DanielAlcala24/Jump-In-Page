@@ -1,4 +1,4 @@
-# Firebase Studio
+# Jump-in Page
 
 This is a NextJS web.
 
