@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const faqs = [
     {
         question: "¿Hay un límite de edad para saltar?",
-        answer: "¡La diversión no tiene edad! Tenemos áreas designadas para los más pequeños (menores de 6 años) para garantizar su seguridad, y el resto de las instalaciones son para todas las edades."
+        answer: "¡La diversión no tiene edad! Mientras los menores de 6 años juegan en su zona, tú puedes venir a saltar, reír y pasarla increíble en el resto del parque. ¡Te invitamos a unirte a la diversión!"
     },
     {
         question: "¿Es obligatorio usar calcetines especiales?",
@@ -15,7 +15,7 @@ const faqs = [
     },
     {
         question: "¿Ofrecen paquetes para fiestas de cumpleaños?",
-        answer: "¡Claro que sí! Tenemos varios paquetes de fiesta que incluyen tiempo de salto, comida, un anfitrión dedicado y un área de celebración privada. Visita nuestra sección de eventos para más detalles."
+        answer: "¡Claro que sí! Nuestros paquetes de fiesta incluyen tiempo de salto, comida, un anfitrión exclusivo y un espacio privado para tu celebración. ¡Visita nuestra sección de eventos y reserva tu diversión!"
     },
     {
         question: "¿Cuentan con lockers para guardar mis pertenencias?",
@@ -27,7 +27,7 @@ const faqs = [
     },
     {
         question: "¿Cuáles son sus horarios de apertura?",
-        answer: "De lunes a viernes abrimos de 2:00 p.m. a 8:00 p.m. y los sábados y domingos de 11:00 a.m. a 8:00 p.m.. Durante temporadas vacacionales nuestros horarios pueden variar, así que te recomendamos revisar nuestras redes sociales o visitar la sección de tu sucursal de interés."
+        answer: "¡Ven a disfrutar! De lunes a viernes abrimos de 2:00 p.m. a 8:00 p.m., y los sábados y domingos de 11:00 a.m. a 8:00 p.m. Durante vacaciones nuestros horarios pueden variar, así que revisa nuestras redes sociales o la sección de tu sucursal favorita antes de visitarnos."
     },
     {
         question: "¿Puedo ingresar con mi mascota a las sucursales?",

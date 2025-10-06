@@ -86,7 +86,7 @@ export default function Testimonios() {
                     Lo que Nuestros Clientes Dicen
                 </h2>
                 <p className="max-w-[900px] text-gray-600 dark:text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    La confianza de nuestros visitantes es nuestra mejor carta de presentación.
+                    La confianza de miles de clientes felices es nuestra mejor carta de presentación.
                 </p>
             </div>
         </div>

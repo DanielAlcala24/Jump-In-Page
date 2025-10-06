@@ -13,7 +13,7 @@ export default function Inicio() {
           ¡Salta a la Diversión!
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-white md:text-xl">
-          Jump-In: El Primer Trampoline Park en México. Diversión, ejercicio y deporte para toda la familia.
+          Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link href="/fiestas-y-eventos/fiestas-cumpleanos">

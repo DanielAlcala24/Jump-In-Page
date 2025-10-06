@@ -17,7 +17,7 @@ export default function Introduccion() {
                         Más que Solo Saltar
                         </h2>
                         <p className="text-muted-foreground md:text-lg/relaxed">
-                        Jump-In es un innovador centro de entretenimiento que integra diversión, actividad física y deporte para todas las edades. Nuestro compromiso es ofrecer un entorno seguro con instalaciones de la más alta calidad y personal capacitado para que tu única preocupación sea disfrutar al máximo.
+                        Jump-In es un innovador centro de entretenimiento que integra diversión, entretenimiento y deporte para todas las edades. Nuestro compromiso es ofrecer un entorno seguro y limpio con instalaciones de primer nivel y un equipo altamente capacitado, para que lo único que tengas que hacer sea disfrutar y pasar momentos inolvidables.
                         </p>
                         <p className="text-muted-foreground md:text-lg/relaxed">
                             Contamos con sucursales en <strong>CDMX</strong>, <strong>Estado de México</strong> y nuestra sucursal foránea en <strong>Cuernavaca</strong>.

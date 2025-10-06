@@ -31,7 +31,7 @@ export default function AboutUs() {
           </CardHeader>
           <CardContent className="text-muted-foreground md:text-lg/relaxed">
             <p>
-              Jump-In es el primer trampoline park en México, un centro de entretenimiento innovador que combina diversión, actividad física y deporte para todas las edades. En más de 1,000 m² de trampolines, cuerdas, muros y otras actividades, ofrecemos una experiencia única. La seguridad es nuestro factor primordial, respaldada por rigurosos procesos, instalaciones de primera y personal altamente capacitado.
+            Jump-In, el primer trampoline park de México, es el lugar donde la diversión se eleva al máximo. Con más de 1,000 m² llenos de trampolines, cuerdas, muros y actividades para todas las edades, combinamos entretenimiento, deporte y movimiento sin parar. Todo esto en un entorno seguro, con instalaciones de primera y personal capacitado para que tu único objetivo sea brincar, reír y disfrutar al máximo.
             </p>
           </CardContent>
         </Card>
