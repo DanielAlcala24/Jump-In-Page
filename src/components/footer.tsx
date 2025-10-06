@@ -18,7 +18,7 @@ export default function Footer() {
                 className="h-auto"
               />
              <p className="text-sm text-gray-400">
-                El Primer Trampoline Park en México. Diversión, ejercicio y deporte para toda la familia.
+                El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.
              </p>
           </div>
           <div>
