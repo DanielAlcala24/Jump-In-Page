@@ -19,7 +19,7 @@ export default function NosotrosPage() {
       <main className="flex-1">
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
-             <div className="flex justify-center items-end gap-4 mb-4">
+             <div className="flex justify-center items-center gap-8 mb-4">
               <Image 
                 src="/assets/bongo.png" 
                 alt="Mascota Bongo" 
@@ -27,9 +27,6 @@ export default function NosotrosPage() {
                 height={120}
                 className="h-auto w-24 md:w-32"
               />
-              <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
-                Nosotros
-              </h1>
                <Image 
                 src="/assets/maya.png" 
                 alt="Mascota Maya" 
@@ -38,6 +35,9 @@ export default function NosotrosPage() {
                 className="h-auto w-24 md:w-32"
               />
             </div>
+            <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
+              Nosotros
+            </h1>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/compromiso-social">
                 <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-orange-500/30 hover:bg-orange-500/40">
