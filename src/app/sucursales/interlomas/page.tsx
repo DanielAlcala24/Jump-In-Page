@@ -88,20 +88,20 @@ export default function SucursalInterlomasPage() {
       <main className="flex-1">
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
-            <div className="flex justify-center items-center gap-8 mb-4">
+            <div className="flex justify-center items-center gap-1 mb-2">
               <Image 
                 src="/assets/bongo.png" 
                 alt="Mascota Bongo" 
-                width={120} 
-                height={120}
-                className="h-auto w-24 md:w-32"
+                width={50} 
+                height={50}
+                className="h-auto w-10 md:w-20"
               />
                <Image 
                 src="/assets/maya.png" 
                 alt="Mascota Maya" 
-                width={120} 
-                height={120}
-                className="h-auto w-24 md:w-32"
+                width={50} 
+                height={50}
+                className="h-auto w-10 md:w-20"
               />
             </div>
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline">
@@ -146,7 +146,6 @@ export default function SucursalInterlomasPage() {
               </CardContent>
             </Card>
 
-            {/* Horarios y Contacto */}
             <div className="flex justify-center">
                 <Card className="shadow-lg rounded-2xl text-center max-w-md w-full">
                     <CardHeader className="items-center">
@@ -167,7 +166,6 @@ export default function SucursalInterlomasPage() {
                 </Card>
             </div>
             
-            {/* Precios */}
               <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-headline text-2xl"><Ticket className="text-primary"/> Precios</CardTitle>
@@ -307,5 +305,3 @@ export default function SucursalInterlomasPage() {
     </div>
   );
 }
-
-    
