@@ -24,8 +24,7 @@ const sucursal = {
     { title: "1 hora", price: "$220", description: "Acceso a todas las áreas de trampolines y atracciones por 2 horas.", image: "/assets/g1.jpg" },
     { title: "Paquete Amigos", price: "$700/hr (4 personas)", description: "Diversión en grupo con un precio especial.", image: "/assets/g2.jpg" },
     { title: "Pase Anual", price: "$2500", description: "Salta todo el año sin límites.", image: "/assets/g3.jpeg"},
-    { title: "Calcetines", price: "$60", description: "Calcetines antiderrapantes", image: "/assets/g3.jpeg"
-    }
+    { title: "Calcetines", price: "$60", description: "Calcetines antiderrapantes", image: "/assets/g3.jpeg" }
   ],
   horarios: ["Lunes a Viernes: 2 PM - 8 PM", "Sábados y Domingos: 11 AM - 8 PM"], 
   attractions: [
@@ -89,6 +88,22 @@ export default function SucursalChurubuscoPage() {
       <main className="flex-1">
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
+            <div className="flex justify-center items-center gap-8 mb-4">
+              <Image 
+                src="/assets/bongo.png" 
+                alt="Mascota Bongo" 
+                width={120} 
+                height={120}
+                className="h-auto w-24 md:w-32"
+              />
+               <Image 
+                src="/assets/maya.png" 
+                alt="Mascota Maya" 
+                width={120} 
+                height={120}
+                className="h-auto w-24 md:w-32"
+              />
+            </div>
             <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl font-headline">
               Jump-In {sucursal.name}
             </h1>
@@ -266,7 +281,7 @@ export default function SucursalChurubuscoPage() {
                 </Button>
                 <div className="relative w-full max-w-4xl h-full max-h-[80vh]">
                   <Image
-                    src={currentImageList[selectedImage.index].image}
+                    src={(currentImageList[selectedImage.index] as any).image}
                     alt={(currentImageList[selectedImage.index] as any).name || (currentImageList[selectedImage.index] as any).title}
                     fill
                     className="object-contain"
