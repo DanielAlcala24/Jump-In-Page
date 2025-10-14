@@ -1,4 +1,5 @@
-import { getPostBySlug, getStrapiMedia } from '@/lib/strapi';
+import React from 'react';
+import { getPostBySlug, getPosts, getStrapiMedia } from '@/lib/strapi';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,14 @@ import Header from '@/components/header';
 import SocialIcons from '@/components/social-icons';
 import WhatsappButton from '@/components/whatsapp-button';
 import Footer from '@/components/footer';
+
+// This function tells Next.js which routes to pre-render at build time.
+export async function generateStaticParams() {
+    const posts = await getPosts();
+    return posts.map((post) => ({
+        slug: post.attributes.slug,
+    }));
+}
 
 // This is a basic markdown to HTML converter. 
 // For a production app, you might want a more robust library like 'marked' or 'react-markdown'.
