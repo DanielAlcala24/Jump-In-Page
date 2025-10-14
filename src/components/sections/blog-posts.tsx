@@ -4,65 +4,29 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-
-const blogPosts = [
-  {
-    title: '5 Beneficios de Saltar en Trampolín para tu Salud',
-    description:
-      'Descubre cómo saltar no solo es divertido, sino también una excelente forma de ejercicio cardiovascular que mejora tu equilibrio y fortalece tus músculos.',
-    imageSrc: '/assets/g1.jpg',
-    imageHint: 'health fitness',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-  {
-    title: 'Ideas Creativas para tu Próxima Fiesta de Cumpleaños',
-    description:
-      'Desde fiestas temáticas hasta competencias amistosas, te damos ideas originales para que la próxima celebración de cumpleaños en Jump-In sea inolvidable.',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'party ideas',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-  {
-    title: 'Team Building en Jump-In: ¡Una Experiencia Única!',
-    description:
-      'Rompe la rutina de la oficina y fomenta la colaboración y la comunicación en tu equipo con nuestras actividades de team building llenas de energía y diversión.',
-    imageSrc: '/assets/g7.jpeg',
-    imageHint: 'team building',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-  {
-    title: 'La Seguridad es Primero: Nuestras Medidas en Jump-In',
-    description:
-      'Conoce todas las medidas de seguridad que implementamos para garantizar que tu única preocupación sea divertirte al máximo.',
-    imageSrc: '/assets/g4.jpeg',
-    imageHint: 'safety measures',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-  {
-    title: '¿Por Qué Saltar es el Mejor Remedio Contra el Estrés?',
-    description:
-      'Libera tensiones y mejora tu estado de ánimo con una buena sesión de saltos. Te explicamos la ciencia detrás de este divertido antiestrés.',
-    imageSrc: '/assets/g2.jpg',
-    imageHint: 'stress relief',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-  {
-    title: 'Alimentación y Energía: ¿Qué Comer Antes de Saltar?',
-    description:
-      'Te damos algunos consejos sobre qué alimentos y bebidas te darán la energía que necesitas para una jornada de saltos sin parar.',
-    imageSrc: 'https://picsum.photos/400/400?random=2',
-    imageHint: 'healthy food',
-    href: '#',
-    colorClass: 'bg-orange-500 hover:bg-orange-600',
-  },
-];
+import { getStrapiMedia, type Post } from '@/lib/strapi';
+import { useEffect, useState } from 'react';
 
 export default function BlogPosts() {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch('/api/blog');
+        if (!res.ok) {
+          console.error('Failed to fetch posts');
+          return;
+        }
+        const data = await res.json();
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    }
+    fetchPosts();
+  }, []);
+
   return (
     <section id="blog" className="w-full py-12 pt-12 bg-white">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
@@ -81,33 +45,33 @@ export default function BlogPosts() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          {blogPosts.map((post, index) => (
+          {posts.map((post) => (
             <div
-              key={index}
+              key={post.id}
               className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <Link href={post.href} className="block overflow-hidden">
+              <Link href={`/blog/${post.attributes.slug}`} className="block overflow-hidden">
                 <Image
-                  src={post.imageSrc}
-                  alt={post.title}
+                  src={getStrapiMedia(post.attributes.coverImage.data.attributes.url) || '/assets/g1.jpg'}
+                  alt={post.attributes.title}
                   width={800}
                   height={600}
-                  data-ai-hint={post.imageHint}
+                  data-ai-hint={post.attributes.imageHint}
                   className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </Link>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">
-                  {post.title}
+                  {post.attributes.title}
                 </h3>
                 <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400">
-                  {post.description}
+                  {post.attributes.description}
                 </p>
-                <Link href={post.href}>
+                <Link href={`/blog/${post.attributes.slug}`}>
                   <Button
                     className={cn(
                       'mt-auto w-full text-white transition-transform group-hover:scale-105',
-                      post.colorClass
+                      'bg-orange-500 hover:bg-orange-600'
                     )}
                   >
                     Leer Más
