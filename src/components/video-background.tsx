@@ -26,7 +26,7 @@ export default function VideoBackground() {
 
   return (
     <div className="fixed inset-0 -z-10 h-full w-full overflow-hidden">
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/70" />
       {images.map((image, index) => (
         <Image
           key={image.src}
