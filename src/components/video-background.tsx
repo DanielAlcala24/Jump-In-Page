@@ -41,7 +41,7 @@ export default function VideoBackground() {
           data-ai-hint={image.hint}
         />
       ))}
-      <div className="absolute inset-0 z-10 bg-black/70" />
+      <div className="absolute inset-0 z-10 bg-black/50" />
     </div>
   );
 }
