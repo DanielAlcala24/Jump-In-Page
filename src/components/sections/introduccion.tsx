@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Ticket } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Introduccion() {
     return (
@@ -31,16 +32,14 @@ export default function Introduccion() {
                     </div>
                 </div>
                 <div className="order-1 md:order-2 flex flex-col items-center">
-                    <div className="relative aspect-video pointer-events-none w-full overflow-hidden rounded-lg">
-                        <iframe
-                            className="absolute inset-0 w-full h-full"
-                            src="https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M"
-                            title="YouTube video player"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                        <div className="absolute inset-0 w-full h-full bg-transparent"></div>
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                       <Image
+                          src="/assets/g5.jpeg"
+                          alt="Jump-In Intro"
+                          fill
+                          data-ai-hint="jumping friends"
+                          className="object-cover"
+                        />
                     </div>
                     <Link href="/precios-y-promociones?tab=Promociones" className="hidden md:inline-flex mt-4">
                         <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
