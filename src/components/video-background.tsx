@@ -26,7 +26,6 @@ export default function VideoBackground() {
 
   return (
     <div className="fixed inset-0 -z-10 h-full w-full overflow-hidden">
-      <div className="absolute inset-0 bg-black/80" />
       {images.map((image, index) => (
         <Image
           key={image.src}
@@ -42,6 +41,7 @@ export default function VideoBackground() {
           data-ai-hint={image.hint}
         />
       ))}
+      <div className="absolute inset-0 z-10 bg-black/80" />
     </div>
   );
 }
