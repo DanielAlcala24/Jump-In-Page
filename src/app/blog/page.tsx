@@ -1,5 +1,5 @@
 
-import { getPosts, getStrapiMedia } from '@/lib/strapi';
+import { getStrapiMedia } from '@/lib/strapi';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,8 +12,60 @@ import WhatsappButton from '@/components/whatsapp-button';
 import Footer from '@/components/footer';
 import { cn } from '@/lib/utils';
 
+// Placeholder data
+const posts = [
+  {
+    id: 1,
+    attributes: {
+      title: 'Título del Blog de Ejemplo 1',
+      slug: 'ejemplo-1',
+      description: 'Esta es una descripción de ejemplo para la primera entrada del blog. El contenido se llenará cuando se conecte a Strapi.',
+      coverImage: {
+        data: {
+          attributes: {
+            url: '/assets/g1.jpg'
+          }
+        }
+      },
+      imageHint: 'blog post'
+    }
+  },
+  {
+    id: 2,
+    attributes: {
+      title: 'Título del Blog de Ejemplo 2',
+      slug: 'ejemplo-2',
+      description: 'Esta es una descripción de ejemplo para la segunda entrada del blog. El contenido se llenará cuando se conecte a Strapi.',
+       coverImage: {
+        data: {
+          attributes: {
+            url: '/assets/g2.jpg'
+          }
+        }
+      },
+      imageHint: 'blog ideas'
+    }
+  },
+    {
+    id: 3,
+    attributes: {
+      title: 'Título del Blog de Ejemplo 3',
+      slug: 'ejemplo-3',
+      description: 'Esta es una descripción de ejemplo para la tercera entrada del blog. El contenido se llenará cuando se conecte a Strapi.',
+       coverImage: {
+        data: {
+          attributes: {
+            url: '/assets/g3.jpeg'
+          }
+        }
+      },
+      imageHint: 'blog content'
+    }
+  }
+];
+
+
 export default async function BlogPage() {
-  const posts = await getPosts();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -72,9 +124,9 @@ export default async function BlogPage() {
                     key={post.id}
                     className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
                     >
-                    <Link href={`/blog/${post.attributes.slug}`} className="block overflow-hidden">
+                    <Link href={`/blog`} className="block overflow-hidden">
                         <Image
-                        src={getStrapiMedia(post.attributes.coverImage.data.attributes.url) || '/assets/g1.jpg'}
+                        src={post.attributes.coverImage.data.attributes.url || '/assets/g1.jpg'}
                         alt={post.attributes.title}
                         width={800}
                         height={600}
@@ -89,7 +141,7 @@ export default async function BlogPage() {
                         <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400">
                         {post.attributes.description}
                         </p>
-                        <Link href={`/blog/${post.attributes.slug}`}>
+                        <Link href={`/blog`}>
                         <Button
                             className={cn(
                             'mt-auto w-full text-white transition-transform group-hover:scale-105',
