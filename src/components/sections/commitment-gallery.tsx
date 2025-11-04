@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 const media = [
-    { type: 'video', src: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M', alt: 'Video de apoyo social' },
+    { type: 'image', src: '/assets/g1.jpg', alt: 'Apoyo social', hint: 'social support' },
     { type: 'image', src: '/assets/g7.jpeg', alt: 'Evento benéfico', hint: 'charity event' },
-    { type: 'video', src: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M', alt: 'Video de voluntariado' },
+    { type: 'image', src: '/assets/g2.jpg', alt: 'Voluntariado', hint: 'volunteering' },
     { type: 'image', src: '/assets/g8.jpeg', alt: 'Niños sonriendo', hint: 'children smiling' },
 ];
 
@@ -20,7 +20,7 @@ export default function CommitmentGallery() {
                             Momentos de Solidaridad
                         </h2>
                         <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                            Imágenes y videos que capturan el espíritu de nuestra labor social.
+                            Imágenes que capturan el espíritu de nuestra labor social.
                         </p>
                     </div>
                 </div>
