@@ -4,17 +4,37 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
-const images = [
+const desktopImages = [
     { src: "/assets/g1.jpg", alt: "Background image of people jumping in a trampoline park", hint: "trampoline park" },
     { src: "/assets/g2.jpg", alt: "Background image of people doing tricks on trampolines", hint: "jumping tricks" },
-    { src: "/assets/g3.jpeg", alt: "Background image of a birthday party at Jump-In", hint: "birthday party" },
     { src: "/assets/g4.jpeg", alt: "Background image of a foam pit", hint: "foam pit" },
     { src: "/assets/g5.jpeg", alt: "Background image of friends jumping together", hint: "friends jumping" },
-    { src: "/assets/g6.jpeg", alt: "Background image of a person on a climbing wall", hint: "climbing wall" },
 ];
+
+const mobileImages = [
+    { src: "/assets/g3.jpeg", alt: "Background image of a birthday party at Jump-In", hint: "birthday party" },
+    { src: "/assets/g6.jpeg", alt: "Background image of a person on a climbing wall", hint: "climbing wall" },
+    { src: "/assets/g7.jpeg", alt: "Background image of an event at Jump-In", hint: "event jump-in" },
+    { src: "/assets/g8.jpeg", alt: "Background image of kids smiling", hint: "kids smiling" },
+];
+
 
 export default function VideoBackground() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // Set initial state
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const images = isMobile ? mobileImages : desktopImages;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,7 +42,7 @@ export default function VideoBackground() {
     }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [images.length]);
 
   return (
     <div className="fixed inset-0 -z-10 h-full w-full overflow-hidden">
