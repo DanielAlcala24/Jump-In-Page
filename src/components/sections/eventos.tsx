@@ -2,12 +2,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const eventItems = [
   {
     title: 'Fiestas de Cumpleaños',
     description: 'Celebra un día inolvidable con saltos, risas y pastel. ¡Nos encargamos de todo para que tú solo te diviertas!',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
+    imageUrl: '/assets/g3.jpeg',
+    imageHint: 'birthday party',
     buttonText: 'Cotizar Fiesta',
     href: '/fiestas-y-eventos/fiestas-cumpleanos',
     colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
@@ -15,7 +17,8 @@ const eventItems = [
   {
     title: 'Eventos Empresariales',
     description: 'Fomenta el trabajo en equipo y desestresa a tu personal con una jornada llena de energía y actividades únicas.',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
+    imageUrl: '/assets/g7.jpeg',
+    imageHint: 'corporate event',
     buttonText: 'Ver Paquetes',
     href: '/fiestas-y-eventos/eventos-empresariales',
     colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
@@ -23,7 +26,8 @@ const eventItems = [
   {
     title: 'Nuestras Sucursales',
     description: 'Encuentra el Jump-In más cercano y prepárate para la acción. ¡Siempre hay uno cerca de ti esperándote!',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
+    imageUrl: '/assets/g1.jpg',
+    imageHint: 'trampoline park',
     buttonText: 'Encontrar Sucursal',
     href: '/sucursales',
     colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
@@ -31,7 +35,8 @@ const eventItems = [
   {
     title: 'Nuestras Atracciones',
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
-    videoUrl: 'https://www.youtube.com/embed/v5dFh5FjU8M?autoplay=1&mute=1&controls=0&loop=1&playlist=v5dFh5FjU8M',
+    imageUrl: '/assets/g6.jpeg',
+    imageHint: 'climbing wall',
     buttonText: 'Explorar Atracciones',
     href: '/atracciones',
     colorClass: 'bg-orange-500 hover:bg-orange-600 border-orange-600',
@@ -48,16 +53,14 @@ export default function Eventos() {
               key={item.title}
               className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
             >
-              <div className="relative aspect-video w-full overflow-hidden pointer-events-none">
-                <iframe
-                  className="absolute inset-0 h-full w-full"
-                  src={item.videoUrl}
-                  title={`YouTube video: ${item.title}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-                <div className="absolute inset-0 w-full h-full bg-transparent"></div>
+              <div className="relative aspect-video w-full overflow-hidden">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  data-ai-hint={item.imageHint}
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">{item.title}</h3>
