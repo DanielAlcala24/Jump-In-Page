@@ -10,49 +10,60 @@ import { MapPin, ArrowRight, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { createClientComponentClient } from '@/lib/supabase';
 
-const sucursales = [
-    { name: 'Coacalco', image: '/assets/g1.jpg', link: '/sucursales/coacalco', hint: 'trampoline park' },
-    { name: 'Ecatepec', image: '/assets/g2.jpg', link: '/sucursales/ecatepec', hint: 'trampoline park' },
-    { name: 'Interlomas', image: '/assets/g3.jpeg', link: '/sucursales/interlomas', hint: 'trampoline park' },
-    { name: 'La Cúspide', image: '/assets/g4.jpeg', link: '/sucursales/cuspide', hint: 'trampoline park' },
-    { name: 'Churubusco', image: '/assets/g5.jpeg', link: '/sucursales/churubusco', hint: 'trampoline park' },
-    { name: 'Miramontes', image: '/assets/g6.jpeg', link: '/sucursales/miramontes', hint: 'trampoline park' },
-    { name: 'Vallejo', image: '/assets/g7.jpeg', link: '/sucursales/vallejo', hint: 'trampoline park' },
-    { name: 'Cuernavaca', image: '/assets/g8.jpeg', link: '/sucursales/cuernavaca', hint: 'trampoline park' },
-];
+interface Branch {
+  id: string;
+  name: string;
+  slug: string;
+  state?: string;
+  featured_image?: string;
+  is_active: boolean;
+}
 
-const promotions = [
+interface Promotion {
+  id: string;
+  title: string;
+  description: string;
+  image_url: string;
+  image_hint?: string;
+  available_in: string[];
+}
+
+const DEFAULT_PROMOTIONS: Promotion[] = [
   {
+    id: 'default-1',
     title: 'Martes 2x1',
     description: '¡Los martes son de amigos! Compra una hora de salto y obtén la segunda gratis para un acompañante.',
-    image: '/assets/g5.jpeg',
-    hint: 'friends jumping',
-    availableIn: ['Todas las sucursales']
+    image_url: '/assets/g5.jpeg',
+    image_hint: 'friends jumping',
+    available_in: ['Todas las sucursales']
   },
   {
+    id: 'default-2',
     title: 'Jueves de Estudiantes',
     description: 'Presenta tu credencial de estudiante vigente y obtén un 20% de descuento en tu entrada.',
-    image: '/assets/g2.jpg',
-    hint: 'student discount',
-    availableIn: ['Coacalco', 'Ecatepec', 'Vallejo']
+    image_url: '/assets/g2.jpg',
+    image_hint: 'student discount',
+    available_in: ['Coacalco', 'Ecatepec', 'Vallejo']
   },
   {
+    id: 'default-3',
     title: 'Domingo Familiar',
     description: 'Paquete familiar (2 adultos, 2 niños) por solo $750 la hora. ¡El plan perfecto para el fin de semana!',
-    image: '/assets/g8.jpeg',
-    hint: 'family fun',
-    availableIn: ['Todas las sucursales']
+    image_url: '/assets/g8.jpeg',
+    image_hint: 'family fun',
+    available_in: ['Todas las sucursales']
   },
   {
+    id: 'default-4',
     title: 'Promo Cumpleañero',
     description: '¿Es tu mes de cumpleaños? Presenta tu INE y salta ¡GRATIS! en la compra de 3 accesos para tus amigos.',
-    image: '/assets/g3.jpeg',
-    hint: 'birthday person',
-    availableIn: ['Interlomas', 'La Cúspide', 'Cuernavaca']
+    image_url: '/assets/g3.jpeg',
+    image_hint: 'birthday person',
+    available_in: ['Interlomas', 'La Cúspide', 'Cuernavaca']
   },
 ];
-
 
 const categories = ['Precios', 'Promociones'];
 
@@ -60,6 +71,11 @@ function PreciosPromocionesContentComponent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') === 'Promociones' ? 'Promociones' : 'Precios';
   const [selectedCategory, setSelectedCategory] = useState(initialTab);
+  const [promotions, setPromotions] = useState<Promotion[]>(DEFAULT_PROMOTIONS);
+  const [loadingPromotions, setLoadingPromotions] = useState(true);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [loadingBranches, setLoadingBranches] = useState(true);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     const newTab = searchParams.get('tab');
@@ -67,6 +83,58 @@ function PreciosPromocionesContentComponent() {
       setSelectedCategory(newTab);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('promotions')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching promotions:', error);
+          setPromotions(DEFAULT_PROMOTIONS);
+        } else {
+          setPromotions(data && data.length > 0 ? data : DEFAULT_PROMOTIONS);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setPromotions(DEFAULT_PROMOTIONS);
+      } finally {
+        setLoadingPromotions(false);
+      }
+    };
+
+    fetchPromotions();
+  }, [supabase]);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('branches')
+          .select('id, name, slug, state, featured_image, is_active')
+          .eq('is_active', true)
+          .order('state', { ascending: true })
+          .order('name', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching branches:', error);
+          setBranches([]);
+        } else {
+          setBranches(data || []);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setBranches([]);
+      } finally {
+        setLoadingBranches(false);
+      }
+    };
+
+    fetchBranches();
+  }, [supabase]);
 
   return (
     <section id="content" className="w-full py-8 bg-gray-50 dark:bg-gray-900">
@@ -101,26 +169,84 @@ function PreciosPromocionesContentComponent() {
         </div>
 
         {selectedCategory === 'Precios' && (
-           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {sucursales.map((sucursal, index) => (
-                    <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group">
-                        <CardHeader className="p-0">
-                            <Image src={sucursal.image} alt={`Sucursal ${sucursal.name}`} width={600} height={400} data-ai-hint={sucursal.hint} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"/>
-                        </CardHeader>
-                        <CardContent className="p-6 flex-grow flex flex-col items-center text-center">
-                            <CardTitle className="font-headline text-xl">{sucursal.name}</CardTitle>
-                        </CardContent>
-                         <CardFooter className="p-4">
-                            <Button asChild className="w-full bg-orange-500 hover:bg-orange-600">
-                              <Link href={sucursal.link}>
-                                Checar Precios
-                                <ArrowRight className="ml-2 h-4 w-4"/>
-                              </Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))}
-           </div>
+          <>
+            {loadingBranches ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p>Cargando sucursales...</p>
+              </div>
+            ) : branches.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>No hay sucursales disponibles en este momento.</p>
+              </div>
+            ) : (() => {
+              // Agrupar sucursales por estado
+              const groupedBranches = branches.reduce((acc, branch) => {
+                const state = branch.state || 'Sin Estado';
+                if (!acc[state]) {
+                  acc[state] = [];
+                }
+                acc[state].push(branch);
+                return acc;
+              }, {} as Record<string, Branch[]>);
+
+              const states = Object.keys(groupedBranches).sort();
+
+              return (
+                <div className="space-y-12">
+                  {states.map((state, stateIndex) => (
+                    <div key={state}>
+                      {states.length > 1 && (
+                        <div className="mb-8 text-center">
+                          <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 mb-4">
+                            <h2 className="text-2xl font-bold font-headline text-primary">
+                              {state}
+                            </h2>
+                          </div>
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        {groupedBranches[state].map((branch) => (
+                          <Card key={branch.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group">
+                            <CardHeader className="p-0">
+                              <Image 
+                                src={branch.featured_image || '/assets/g1.jpg'} 
+                                alt={`Sucursal ${branch.name}`} 
+                                width={600} 
+                                height={400} 
+                                data-ai-hint="trampoline park" 
+                                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            </CardHeader>
+                            <CardContent className="p-6 flex-grow flex flex-col items-center text-center">
+                              <CardTitle className="font-headline text-xl mb-2">{branch.name}</CardTitle>
+                              {branch.state && (
+                                <Badge variant="outline" className="text-xs">
+                                  <MapPin className="h-3 w-3 mr-1" />
+                                  {branch.state}
+                                </Badge>
+                              )}
+                            </CardContent>
+                            <CardFooter className="p-4">
+                              <Button asChild className="w-full bg-orange-500 hover:bg-orange-600">
+                                <Link href={`/sucursales/${branch.slug}`}>
+                                  Checar Precios
+                                  <ArrowRight className="ml-2 h-4 w-4"/>
+                                </Link>
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        ))}
+                      </div>
+                      {stateIndex < states.length - 1 && (
+                        <Separator className="my-8" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </>
         )}
 
         {selectedCategory === 'Promociones' && (
@@ -132,27 +258,50 @@ function PreciosPromocionesContentComponent() {
                 </div>
                 <p className="mt-2 text-base">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {promotions.map((promo, index) => (
-                      <Card key={index} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                          <CardHeader className="p-0">
-                              <Image src={promo.image} alt={promo.title} width={600} height={400} data-ai-hint={promo.hint} className="w-full h-48 object-cover"/>
-                          </CardHeader>
-                          <CardContent className="p-6 flex-grow">
-                              <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
-                              <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
-                              <div className="mt-4">
-                                <h4 className="text-sm font-semibold flex items-center mb-2 justify-center"><MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>Disponible en:</h4>
-                                <div className="flex flex-wrap gap-2 justify-center">
-                                  {promo.availableIn.map(sucursal => (
-                                    <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">{sucursal}</Badge>
-                                  ))}
-                                </div>
-                              </div>
-                          </CardContent>
-                      </Card>
-                  ))}
-            </div>
+            {loadingPromotions ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p>Cargando promociones...</p>
+              </div>
+            ) : promotions.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>No hay promociones disponibles en este momento.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {promotions.map((promo) => (
+                  <Card key={promo.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                    <CardHeader className="p-0">
+                      <Image 
+                        src={promo.image_url || '/assets/g5.jpeg'} 
+                        alt={promo.title} 
+                        width={600} 
+                        height={400} 
+                        data-ai-hint={promo.image_hint || promo.title} 
+                        className="w-full h-48 object-cover"
+                      />
+                    </CardHeader>
+                    <CardContent className="p-6 flex-grow">
+                      <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
+                      <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
+                      <div className="mt-4">
+                        <h4 className="text-sm font-semibold flex items-center mb-2 justify-center">
+                          <MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>
+                          Disponible en:
+                        </h4>
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {promo.available_in && promo.available_in.map(sucursal => (
+                            <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">
+                              {sucursal}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>

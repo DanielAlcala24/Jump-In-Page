@@ -1,6 +1,11 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+'use client'
 
-const faqs = [
+import { useEffect, useState } from 'react'
+import { createClientComponentClient } from '@/lib/supabase'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+// FAQs por defecto en caso de que no haya datos en la base de datos
+const DEFAULT_FAQS = [
     {
         question: "¿Hay un límite de edad para saltar?",
         answer: "¡La diversión no tiene edad! Mientras los menores de 6 años juegan en su zona, tú puedes venir a saltar, reír y pasarla increíble en el resto del parque. ¡Te invitamos a unirte a la diversión!"
@@ -39,7 +44,52 @@ const faqs = [
     }
 ]
 
+interface FAQ {
+  id: string
+  question: string
+  answer: string
+  order: number
+}
+
 export default function Faq() {
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('faqs')
+          .select('*')
+          .order('order', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching FAQs:', error)
+          // Si hay error, usar FAQs por defecto
+          setFaqs([])
+        } else {
+          setFaqs(data || [])
+        }
+      } catch (err) {
+        console.error('Error:', err)
+        setFaqs([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFAQs()
+  }, [supabase])
+
+  // Usar FAQs de la base de datos si existen, sino usar los por defecto
+  const displayFaqs = faqs.length > 0 ? faqs : DEFAULT_FAQS.map((faq, index) => ({
+    id: `default-${index}`,
+    question: faq.question,
+    answer: faq.answer,
+    order: index
+  }))
+
   return (
     <section id="faq" className="w-full py-12 md:py-24 lg:py-32 bg-white">
       <div className="container mx-auto max-w-4xl px-4 md:px-6">
@@ -56,10 +106,16 @@ export default function Faq() {
                 </p>
             </div>
         </div>
-        <div className="mt-12">
+        {loading ? (
+          <div className="mt-12 text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-500">Cargando preguntas...</p>
+          </div>
+        ) : (
+          <div className="mt-12">
             <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, index) => (
-                    <AccordionItem key={index} value={`item-${index}`}>
+                {displayFaqs.map((faq, index) => (
+                    <AccordionItem key={faq.id} value={`item-${index}`}>
                         <AccordionTrigger className="font-headline text-lg">{faq.question}</AccordionTrigger>
                         <AccordionContent className="text-base">
                             {faq.answer}
@@ -67,7 +123,8 @@ export default function Faq() {
                     </AccordionItem>
                 ))}
             </Accordion>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

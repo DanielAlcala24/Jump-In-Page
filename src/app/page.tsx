@@ -1,6 +1,6 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
-import Faq from '@/components/sections/faq';
+import FaqServer from '@/components/sections/faq-server';
 import Eventos from '@/components/sections/eventos';
 import Galeria from '@/components/sections/galeria';
 import Inicio from '@/components/sections/inicio';
@@ -10,6 +10,18 @@ import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
 import WavyDivider from '@/components/wavy-divider';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Jump-In | El Primer Trampoline Park en México',
+  description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia. Ven a saltar, reír y pasarla increíble.',
+  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Jump-In',
+  openGraph: {
+    title: 'Jump-In | El Primer Trampoline Park en México',
+    description: 'Diversión, entretenimiento y deporte para toda la familia',
+    type: 'website',
+  },
+};
 
 export default function Home() {
   return (
@@ -25,7 +37,7 @@ export default function Home() {
         <Galeria />
         <WavyDivider fromColor="bg-gray-50" />
         <Testimonios />
-        <Faq />
+        <FaqServer />
       </main>
       <WhatsappButton />
       <Footer />

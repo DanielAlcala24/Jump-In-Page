@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram } from "lucide-react";
+import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useState, useEffect, useRef } from "react";
@@ -11,6 +11,8 @@ import { Separator } from "./ui/separator";
 import Image from "next/image";
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
+import { searchContent, SearchResult } from "@/lib/search";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { href: "/nosotros", label: "Nosotros" },
@@ -23,24 +25,72 @@ const navLinks = [
   { href: "/menu-alimentos", label: "Menú de alimentos" },
   { href: "/galeria", label: "Galería" },
   { href: "/blog", label: "Blog" },
+  { href: "/facturacion", label: "Facturación" },
 ];
+
+const getResultIcon = (type: SearchResult['type']) => {
+  switch (type) {
+    case 'faq':
+      return <HelpCircle className="h-4 w-4" />
+    case 'blog':
+      return <FileText className="h-4 w-4" />
+    case 'menu':
+      return <Utensils className="h-4 w-4" />
+    case 'section':
+      return <Hash className="h-4 w-4" />
+    default:
+      return <Search className="h-4 w-4" />
+  }
+}
+
+const getResultTypeLabel = (type: SearchResult['type']) => {
+  switch (type) {
+    case 'faq':
+      return 'Pregunta Frecuente'
+    case 'blog':
+      return 'Artículo del Blog'
+    case 'menu':
+      return 'Menú'
+    case 'section':
+      return 'Sección'
+    case 'page':
+      return 'Página'
+    default:
+      return 'Resultado'
+  }
+}
 
 export default function Header() {
   const [navVisible, setNavVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState<typeof navLinks>([]);
+  const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (searchTerm.trim() !== '') {
-      const filtered = navLinks.filter(link =>
-        link.label.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
+    const performSearch = async () => {
+      if (searchTerm.trim().length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const results = await searchContent(searchTerm);
+        setSuggestions(results);
+      } catch (error) {
+        console.error('Error searching:', error);
+        setSuggestions([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    // Debounce para evitar demasiadas búsquedas
+    const timeoutId = setTimeout(performSearch, 300);
+    return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
   useEffect(() => {
@@ -49,12 +99,30 @@ export default function Header() {
     }
   }, [isSheetOpen]);
 
-  const handleSuggestionClick = (href: string) => {
-    // For now, we just navigate. Smooth scrolling only works for on-page links.
-    window.location.href = href;
+  const handleSuggestionClick = (result: SearchResult) => {
     setSearchTerm('');
     setSuggestions([]);
-    setIsSheetOpen(false); 
+    setIsSheetOpen(false);
+
+    // Construir la URL con hash si hay sectionId
+    let url = result.href;
+    if (result.sectionId && !url.includes('#')) {
+      url = `${url}#${result.sectionId}`;
+    }
+
+    // Si es una sección en la misma página, hacer scroll suave
+    if (result.sectionId && (url.startsWith('/#') || url === `/#${result.sectionId}`)) {
+      router.push('/');
+      setTimeout(() => {
+        const element = document.getElementById(result.sectionId!);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      // Navegar a la página
+      router.push(url);
+    }
   };
 
   return (
@@ -98,17 +166,48 @@ export default function Header() {
                   ref={searchInputRef}
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
-                {suggestions.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto z-10">
-                    {suggestions.map((link) => (
-                      <a
-                        key={link.href}
-                        onClick={() => handleSuggestionClick(link.href)}
-                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200 cursor-pointer text-center"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
+                {(suggestions.length > 0 || isSearching) && (
+                  <div className="absolute top-full mt-2 w-full rounded-md bg-white/95 backdrop-blur-sm shadow-lg max-h-80 overflow-y-auto z-50 border border-gray-200">
+                    {isSearching ? (
+                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                        Buscando...
+                      </div>
+                    ) : suggestions.length > 0 ? (
+                      <>
+                        {suggestions.map((result, index) => (
+                          <button
+                            key={`${result.type}-${result.href}-${index}`}
+                            onClick={() => handleSuggestionClick(result)}
+                            className="w-full text-left px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="mt-0.5 text-gray-500 flex-shrink-0">
+                                {getResultIcon(result.type)}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-xs font-medium text-gray-500 uppercase">
+                                    {getResultTypeLabel(result.type)}
+                                  </span>
+                                </div>
+                                <div className="font-medium text-gray-900 text-sm mb-1">
+                                  {result.title}
+                                </div>
+                                {result.description && (
+                                  <div className="text-xs text-gray-600 line-clamp-2">
+                                    {result.description}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                        No se encontraron resultados
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -153,17 +252,48 @@ export default function Header() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             />
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
-                             {suggestions.length > 0 && (
-                                <div className="absolute top-full mt-2 w-full rounded-md bg-white/90 backdrop-blur-sm shadow-lg max-h-60 overflow-y-auto z-20">
-                                    {suggestions.map((link) => (
-                                    <a
-                                        key={link.href}
-                                        onClick={() => handleSuggestionClick(link.href)}
-                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200 cursor-pointer"
-                                    >
-                                        {link.label}
-                                    </a>
-                                    ))}
+                             {(suggestions.length > 0 || isSearching) && (
+                                <div className="absolute top-full mt-2 w-full rounded-md bg-white/95 backdrop-blur-sm shadow-lg max-h-80 overflow-y-auto z-50 border border-gray-200">
+                                    {isSearching ? (
+                                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                                        Buscando...
+                                      </div>
+                                    ) : suggestions.length > 0 ? (
+                                      <>
+                                        {suggestions.map((result, index) => (
+                                          <button
+                                            key={`${result.type}-${result.href}-${index}`}
+                                            onClick={() => handleSuggestionClick(result)}
+                                            className="w-full text-left px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+                                          >
+                                            <div className="flex items-start gap-3">
+                                              <div className="mt-0.5 text-gray-500 flex-shrink-0">
+                                                {getResultIcon(result.type)}
+                                              </div>
+                                              <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                  <span className="text-xs font-medium text-gray-500 uppercase">
+                                                    {getResultTypeLabel(result.type)}
+                                                  </span>
+                                                </div>
+                                                <div className="font-medium text-gray-900 text-sm mb-1">
+                                                  {result.title}
+                                                </div>
+                                                {result.description && (
+                                                  <div className="text-xs text-gray-600 line-clamp-2">
+                                                    {result.description}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </button>
+                                        ))}
+                                      </>
+                                    ) : (
+                                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                                        No se encontraron resultados
+                                      </div>
+                                    )}
                                 </div>
                             )}
                         </div>

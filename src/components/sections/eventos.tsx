@@ -8,7 +8,7 @@ const eventItems = [
   {
     title: 'Fiestas de Cumpleaños',
     description: 'Celebra un día inolvidable con saltos, risas y pastel. ¡Nos encargamos de todo para que tú solo te diviertas!',
-    imageUrl: '/assets/g3.jpeg',
+    imageUrl: '/assets/g8-1.jpeg',
     imageHint: 'birthday party',
     buttonText: 'Cotizar Fiesta',
     href: '/fiestas-y-eventos/fiestas-cumpleanos',
@@ -35,7 +35,7 @@ const eventItems = [
   {
     title: 'Nuestras Atracciones',
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
-    imageUrl: '/assets/g6.jpeg',
+    imageUrl: '/assets/g1.jpg',
     imageHint: 'climbing wall',
     buttonText: 'Explorar Atracciones',
     href: '/atracciones',
