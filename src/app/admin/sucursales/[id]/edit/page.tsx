@@ -599,13 +599,22 @@ export default function EditBranchPage() {
                   <Label htmlFor="mapLink">Enlace del Mapa (iframe de Google Maps)</Label>
                   <Textarea
                     id="mapLink"
-                    placeholder="Pega aquí el código src del iframe de Google Maps"
+                    placeholder="Pega aquí el código completo del iframe o solo el src de Google Maps"
                     value={mapLink}
-                    onChange={(e) => setMapLink(e.target.value)}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      // Si contiene un iframe, extraer automáticamente el src
+                      const iframeMatch = value.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+                      if (iframeMatch && iframeMatch[1]) {
+                        value = iframeMatch[1];
+                      }
+                      setMapLink(value);
+                    }}
                     rows={4}
                   />
                   <p className="text-xs text-gray-500">
-                    Obtén el enlace desde Google Maps: Compartir → Insertar un mapa → Copiar el src del iframe
+                    Puedes pegar el iframe completo o solo la URL del src. Si pegas el iframe completo, se extraerá automáticamente la URL.
+                    Obtén el enlace desde Google Maps: Compartir → Insertar un mapa → Copiar el iframe o el src
                   </p>
                 </div>
               </CardContent>

@@ -116,6 +116,35 @@ function SucursalPageContent() {
     setSelectedImage({ list, index: newIndex });
   };
 
+  const extractMapUrl = (mapLink: string): string | null => {
+    if (!mapLink) return null;
+    
+    let mapUrl = mapLink.trim();
+    
+    // Si contiene un iframe, extraer el src
+    const iframeMatch = mapUrl.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+    if (iframeMatch && iframeMatch[1]) {
+      mapUrl = iframeMatch[1];
+    }
+    
+    // Si es una URL completa de Google Maps pero no es embed, intentar convertirla
+    if (mapUrl.includes('google.com/maps') && !mapUrl.includes('/embed')) {
+      // Si es una URL de compartir, extraer el parámetro q
+      const urlObj = new URL(mapUrl);
+      const q = urlObj.searchParams.get('q');
+      if (q) {
+        mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.5!2d-99.1!3d19.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI0JzAwLjAiTiA5OcKwMDYnMDAuMCJX!5e0!3m2!1ses!2smx!4v1234567890&q=${encodeURIComponent(q)}`;
+      }
+    }
+    
+    // Validar que sea una URL válida
+    if (!mapUrl.startsWith('http://') && !mapUrl.startsWith('https://')) {
+      return null;
+    }
+    
+    return mapUrl;
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -223,11 +252,25 @@ function SucursalPageContent() {
                       </Link>
                     </Button>
                   </div>
-                  {sucursal.map_link && (
-                    <div className="aspect-video rounded-lg overflow-hidden">
-                      <iframe src={sucursal.map_link} width="100%" height="100%" style={{ border:0 }} allowFullScreen loading="lazy"></iframe>
-                    </div>
-                  )}
+                  {sucursal.map_link && (() => {
+                    const mapUrl = extractMapUrl(sucursal.map_link);
+                    if (!mapUrl) return null;
+                    
+                    return (
+                      <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+                        <iframe 
+                          src={mapUrl} 
+                          width="100%" 
+                          height="100%" 
+                          style={{ border: 0 }} 
+                          allowFullScreen 
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title={`Mapa de ${sucursal.name}`}
+                        />
+                      </div>
+                    );
+                  })()}
                 </CardContent>
               </Card>
             )}
