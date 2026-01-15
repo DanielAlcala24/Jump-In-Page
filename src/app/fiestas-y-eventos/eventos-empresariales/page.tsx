@@ -16,20 +16,20 @@ export default function EventosEmpresarialesPage() {
       <Header />
       <SocialIcons />
       <main className="flex-1">
-        <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
+        <section className="relative flex h-[80vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
-              <Image 
-                src="/assets/bongo.png" 
-                alt="Mascota Bongo" 
-                width={50} 
+              <Image
+                src="/assets/bongo.png"
+                alt="Mascota Bongo"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
-               <Image 
-                src="/assets/maya.png" 
-                alt="Mascota Maya" 
-                width={50} 
+              <Image
+                src="/assets/maya.png"
+                alt="Mascota Maya"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />

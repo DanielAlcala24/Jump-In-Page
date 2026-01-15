@@ -17,20 +17,20 @@ export default function FacturacionPage() {
       <Header />
       <SocialIcons />
       <main className="flex-1">
-        <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
+        <section className="relative flex h-[80vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
-              <Image 
-                src="/assets/bongo.png" 
-                alt="Mascota Bongo" 
-                width={50} 
+              <Image
+                src="/assets/bongo.png"
+                alt="Mascota Bongo"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
-               <Image 
-                src="/assets/maya.png" 
-                alt="Mascota Maya" 
-                width={50} 
+              <Image
+                src="/assets/maya.png"
+                alt="Mascota Maya"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
@@ -70,7 +70,7 @@ export default function FacturacionPage() {
                     </AlertDescription>
                   </Alert>
                   <div className="flex-grow flex items-end">
-                    <Link 
+                    <Link
                       href="https://www.decmanager.com/DM_Kiosko_AF_PV_V2/Home.aspx?TOKEN=7C92E526-33DC-4372-AEF0-26E3F592CB53"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -98,7 +98,7 @@ export default function FacturacionPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 flex-grow flex items-end">
-                  <Link 
+                  <Link
                     href="https://decmanager.com/DM_proveedores/Anonima.aspx?TOKEN=7C92E526-33DC-4372-AEF0-26E3F592CB53"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -115,7 +115,7 @@ export default function FacturacionPage() {
             {/* Información adicional */}
             <div className="mt-12 text-center">
               <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                Si tienes alguna duda o necesitas asistencia con el proceso de facturación, 
+                Si tienes alguna duda o necesitas asistencia con el proceso de facturación,
                 no dudes en contactarnos a través de nuestros canales de atención.
               </p>
             </div>
