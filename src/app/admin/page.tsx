@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin } from 'lucide-react'
+import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop } from 'lucide-react'
 import ImageComponent from 'next/image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -192,6 +192,12 @@ export default function AdminDashboard() {
                     Sucursales
                   </Button>
                 </Link>
+                <Link href="/admin/popup" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <PanelTop className="h-4 w-4 mr-2" />
+                    Popup del Sitio
+                  </Button>
+                </Link>
               </div>
               <Separator />
               <div className="space-y-2">
@@ -357,6 +363,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Popup Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Popup del Sitio</CardTitle>
+            <PanelTop className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-xs text-muted-foreground">configuración del popup</p>
+            <Link href="/admin/popup" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Popup
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Users Card (placeholder for future) */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -427,6 +450,12 @@ export default function AdminDashboard() {
             <Button className="w-full justify-start" variant="outline">
               <MapPin className="h-4 w-4 mr-2" />
               Gestionar Sucursales
+            </Button>
+          </Link>
+          <Link href="/admin/popup">
+            <Button className="w-full justify-start" variant="outline">
+              <PanelTop className="h-4 w-4 mr-2" />
+              Configurar Popup
             </Button>
           </Link>
             <Link href="/blog">

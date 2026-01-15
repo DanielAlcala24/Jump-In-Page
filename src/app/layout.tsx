@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { SonnerToaster } from '@/components/sonner-toaster';
+import Popup from '@/components/popup';
 
 export const metadata: Metadata = {
   title: 'Jump-In',
@@ -22,6 +23,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         {children}
+        <Popup />
         <Toaster />
         <SonnerToaster />
       </body>
