@@ -41,13 +41,21 @@ export async function POST(request: NextRequest) {
     })
 
     // Verificar si el usuario ya existe
-    const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(email)
+    // Listar usuarios y buscar por email
+    const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers()
     
-    if (existingUser?.user) {
-      return NextResponse.json(
-        { error: 'Ya existe un usuario con este correo electrónico' },
-        { status: 400 }
-      )
+    if (listError) {
+      console.error('Error listing users:', listError)
+      // Continuar de todas formas, la invitación fallará si el usuario ya existe
+    } else {
+      const existingUser = usersData?.users?.find(user => user.email === email)
+      
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'Ya existe un usuario con este correo electrónico' },
+          { status: 400 }
+        )
+      }
     }
 
     // Invitar al usuario
