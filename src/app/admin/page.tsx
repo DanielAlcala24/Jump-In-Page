@@ -198,6 +198,12 @@ export default function AdminDashboard() {
                     Popup del Sitio
                   </Button>
                 </Link>
+                <Link href="/admin/usuarios" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Users className="h-4 w-4 mr-2" />
+                    Usuarios
+                  </Button>
+                </Link>
               </div>
               <Separator />
               <div className="space-y-2">
@@ -380,22 +386,22 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Users Card (placeholder for future) */}
+        {/* Users Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Usuarios</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1</div>
+            <div className="text-2xl font-bold">-</div>
             <p className="text-xs text-muted-foreground">
-              administrador activo
+              usuarios administradores
             </p>
-            <div className="mt-4">
-              <Button className="w-full" disabled variant="outline">
-                Próximamente
+            <Link href="/admin/usuarios" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Usuarios
               </Button>
-            </div>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -456,6 +462,12 @@ export default function AdminDashboard() {
             <Button className="w-full justify-start" variant="outline">
               <PanelTop className="h-4 w-4 mr-2" />
               Configurar Popup
+            </Button>
+          </Link>
+          <Link href="/admin/usuarios">
+            <Button className="w-full justify-start" variant="outline">
+              <Users className="h-4 w-4 mr-2" />
+              Gestionar Usuarios
             </Button>
           </Link>
             <Link href="/blog">
