@@ -15,7 +15,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Jump-In | El Primer Trampoline Park en México',
   description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia. Ven a saltar, reír y pasarla increíble.',
-  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Jump-In',
+  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Ciudad de México, Jump-In',
   openGraph: {
     title: 'Jump-In | El Primer Trampoline Park en México',
     description: 'Diversión, entretenimiento y deporte para toda la familia',
