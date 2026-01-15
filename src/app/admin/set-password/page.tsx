@@ -26,28 +26,45 @@ function SetPasswordPageContent() {
 
   const verifyToken = async () => {
     try {
-      // Verificar si hay un token en la URL
+      // Verificar si hay un token en la URL (hash o query params)
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
-      const accessToken = hashParams.get('access_token')
-      const type = hashParams.get('type')
+      const queryParams = new URLSearchParams(window.location.search)
+      
+      // Intentar obtener el token del hash primero, luego de query params
+      const accessToken = hashParams.get('access_token') || queryParams.get('access_token')
+      const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token')
+      const type = hashParams.get('type') || queryParams.get('type')
 
-      if (accessToken && type === 'invite') {
-        // El token está en el hash, verificar sesión
-        const { data: { session }, error } = await supabase.auth.getSession()
+      if (accessToken && (type === 'invite' || type === 'signup')) {
+        // El token está en la URL, establecer la sesión
+        const { data: { session }, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken || ''
+        })
         
-        if (error || !session) {
-          setError('El enlace de invitación no es válido o ha expirado')
+        if (error) {
+          console.error('Error setting session:', error)
+          setError('El enlace de invitación no es válido o ha expirado. Por favor, solicita una nueva invitación.')
+        } else if (!session) {
+          setError('No se pudo establecer la sesión. El enlace puede haber expirado.')
+        } else {
+          // Sesión establecida correctamente, limpiar el hash/query de la URL
+          window.history.replaceState(null, '', window.location.pathname)
         }
       } else {
-        // Intentar obtener la sesión actual
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session) {
+        // No hay token en la URL, verificar si ya hay una sesión activa
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('Error getting session:', error)
+          setError('Error al verificar la sesión')
+        } else if (!session) {
           setError('No se encontró una sesión válida. Por favor, usa el enlace de invitación que recibiste por correo.')
         }
       }
     } catch (err) {
       console.error('Error verifying token:', err)
-      setError('Error al verificar el enlace de invitación')
+      setError('Error al verificar el enlace de invitación. Por favor, intenta nuevamente.')
     } finally {
       setVerifying(false)
     }
