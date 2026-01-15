@@ -58,12 +58,52 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Determinar la URL base (producción o desarrollo)
+    const getSiteUrl = () => {
+      // Prioridad 1: Variable de entorno (debe estar configurada en producción)
+      if (process.env.NEXT_PUBLIC_SITE_URL) {
+        return process.env.NEXT_PUBLIC_SITE_URL
+      }
+      
+      // Prioridad 2: Detectar desde el request URL
+      const url = new URL(request.url)
+      const protocol = url.protocol // 'http:' o 'https:'
+      const host = url.host // incluye puerto si es necesario
+      
+      if (host && !host.includes('localhost')) {
+        // En producción, usar https
+        return `${protocol}//${host}`
+      }
+      
+      // Prioridad 3: Intentar desde headers
+      const origin = request.headers.get('origin')
+      if (origin && !origin.includes('localhost')) {
+        return origin
+      }
+      
+      const hostHeader = request.headers.get('host')
+      if (hostHeader && !hostHeader.includes('localhost')) {
+        return `https://${hostHeader}`
+      }
+      
+      // Fallback: localhost solo en desarrollo
+      return process.env.NODE_ENV === 'production' 
+        ? 'https://tu-dominio.com' // ⚠️ CAMBIAR por tu dominio real
+        : 'http://localhost:9002'
+    }
+
+    const siteUrl = getSiteUrl()
+    const redirectTo = `${siteUrl}/admin/set-password`
+    
+    // Log para debugging (remover en producción si es necesario)
+    console.log('Inviting user with redirect URL:', redirectTo)
+
     // Invitar al usuario
     const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       data: {
         role: 'admin'
       },
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002'}/admin/set-password`
+      redirectTo: redirectTo
     })
 
     if (error) {

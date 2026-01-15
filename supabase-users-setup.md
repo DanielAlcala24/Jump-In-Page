@@ -25,7 +25,7 @@ SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key_aqui
 
 ### 3. Configurar variables de entorno
 
-En tu archivo `.env.local`, asegúrate de tener:
+#### En desarrollo (`.env.local`):
 
 ```env
 # Variables existentes
@@ -35,10 +35,37 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
 # Nueva variable (solo en el servidor)
 SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
 
-# URL del sitio (para los enlaces de redirección)
+# URL del sitio (desarrollo)
 NEXT_PUBLIC_SITE_URL=http://localhost:9002
-# En producción: NEXT_PUBLIC_SITE_URL=https://tu-dominio.com
 ```
+
+#### En producción (variables de entorno del servidor/hosting):
+
+⚠️ **MUY IMPORTANTE**: En producción, DEBES configurar `NEXT_PUBLIC_SITE_URL` con tu dominio real.
+
+**Ejemplos según tu plataforma de hosting:**
+
+- **Vercel**: Ve a Settings → Environment Variables y agrega:
+  ```
+  NEXT_PUBLIC_SITE_URL=https://tu-dominio.com
+  ```
+
+- **Netlify**: Ve a Site settings → Environment variables y agrega:
+  ```
+  NEXT_PUBLIC_SITE_URL=https://tu-dominio.com
+  ```
+
+- **Otros servidores**: Configura la variable de entorno del sistema:
+  ```bash
+  export NEXT_PUBLIC_SITE_URL=https://tu-dominio.com
+  ```
+
+**Ejemplo real:**
+```env
+NEXT_PUBLIC_SITE_URL=https://jumpin.com.mx
+```
+
+**Nota**: El código intentará detectar automáticamente la URL desde el request si no está configurada, pero es **altamente recomendable** configurar la variable de entorno explícitamente en producción para evitar problemas.
 
 ### 4. Configurar políticas de seguridad (opcional pero recomendado)
 
