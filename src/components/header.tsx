@@ -132,8 +132,8 @@ export default function Header() {
           <Image 
             src="/assets/logojumpin.png"
             alt="Jump-in Trampoline Park Logo"
-            width={90}
-            height={90}
+            width={120}
+            height={120}
             data-ai-hint="logo jump"
             className="h-auto"
           />
