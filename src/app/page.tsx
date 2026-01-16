@@ -6,6 +6,7 @@ import Galeria from '@/components/sections/galeria';
 import Inicio from '@/components/sections/inicio';
 import Introduccion from '@/components/sections/introduccion';
 import Testimonios from '@/components/sections/testimonios';
+import PromocionesCarousel from '@/components/sections/promociones-carousel';
 import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
@@ -31,6 +32,8 @@ export default function Home() {
       <SocialIcons />
       <main className="flex-1">
         <Inicio />
+        <PromocionesCarousel />
+        <WavyDivider fromColor="bg-white" />
         <Introduccion />
         <WavyDivider fromColor="bg-gray-50" />
         <Eventos />
