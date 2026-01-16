@@ -117,16 +117,13 @@ export default function PromocionesCarousel() {
                 <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full group border-2 hover:border-orange-500 bg-white dark:bg-gray-950">
                   <CardHeader className="p-0 relative">
                     <div
-                      className="relative w-full aspect-[4/5] bg-gray-50 flex items-center justify-center cursor-pointer overflow-hidden"
+                      className="relative w-full cursor-pointer overflow-hidden flex items-center justify-center bg-white"
                       onClick={() => openLightbox(index)}
                     >
-                      <Image
+                      <img
                         src={promo.image_url || '/assets/g5.jpeg'}
                         alt={promo.title}
-                        fill
-                        data-ai-hint={promo.image_hint || promo.title}
-                        className="object-contain transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute top-4 left-4 z-10">
                         <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none shadow-md">
@@ -217,14 +214,11 @@ export default function PromocionesCarousel() {
                   </Button>
                 )}
 
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <Image
+                <div className="relative w-full h-full flex items-center justify-center p-2 md:p-10">
+                  <img
                     src={promotions[selectedPromoIndex]?.image_url || ''}
                     alt={promotions[selectedPromoIndex]?.title || ''}
-                    fill
-                    className="object-contain"
-                    priority
-                    quality={100}
+                    className="max-w-full max-h-full object-contain shadow-2xl"
                   />
                 </div>
 
