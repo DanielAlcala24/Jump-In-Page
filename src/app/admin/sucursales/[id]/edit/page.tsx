@@ -235,9 +235,7 @@ export default function EditBranchPage() {
   }
 
   const removePrice = (index: number) => {
-    if (prices.length > 1) {
-      setPrices(prices.filter((_, i) => i !== index))
-    }
+    setPrices(prices.filter((_, i) => i !== index))
   }
 
   const updatePrice = (index: number, field: keyof Price, value: string) => {
@@ -251,9 +249,7 @@ export default function EditBranchPage() {
   }
 
   const removeAttraction = (index: number) => {
-    if (attractions.length > 1) {
-      setAttractions(attractions.filter((_, i) => i !== index))
-    }
+    setAttractions(attractions.filter((_, i) => i !== index))
   }
 
   const updateAttraction = (index: number, field: keyof Attraction, value: string) => {
@@ -267,9 +263,7 @@ export default function EditBranchPage() {
   }
 
   const removeGalleryItem = (index: number) => {
-    if (gallery.length > 1) {
-      setGallery(gallery.filter((_, i) => i !== index))
-    }
+    setGallery(gallery.filter((_, i) => i !== index))
   }
 
   const updateGalleryItem = (index: number, field: keyof GalleryItem, value: string) => {
@@ -694,16 +688,14 @@ export default function EditBranchPage() {
                       value={horario}
                       onChange={(e) => updateHorario(index, e.target.value)}
                     />
-                    {horarios.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeHorario(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeHorario(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 ))}
                 <Button type="button" variant="outline" onClick={addHorario}>
@@ -738,16 +730,14 @@ export default function EditBranchPage() {
                   <Card key={index} className="p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-semibold">Precio #{index + 1}</h4>
-                      {prices.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removePrice(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removePrice(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -819,16 +809,14 @@ export default function EditBranchPage() {
                   <Card key={index} className="p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-semibold">Atracción #{index + 1}</h4>
-                      {attractions.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeAttraction(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeAttraction(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -883,16 +871,14 @@ export default function EditBranchPage() {
                   <Card key={index} className="p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-semibold">Imagen #{index + 1}</h4>
-                      {gallery.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeGalleryItem(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeGalleryItem(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">

@@ -626,16 +626,14 @@ export default function NewBranchPage() {
                       value={horario}
                       onChange={(e) => updateHorario(index, e.target.value)}
                     />
-                    {horarios.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeHorario(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeHorario(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 ))}
                 <Button type="button" variant="outline" onClick={addHorario}>
@@ -811,16 +809,14 @@ export default function NewBranchPage() {
                   <Card key={index} className="p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-semibold">Imagen #{index + 1}</h4>
-                      {gallery.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeGalleryItem(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeGalleryItem(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
