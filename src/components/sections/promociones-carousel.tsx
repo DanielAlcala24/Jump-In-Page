@@ -5,11 +5,13 @@ import { createClientComponentClient } from '@/lib/supabase'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Ticket, ArrowRight } from 'lucide-react'
+import { MapPin, Ticket, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Autoplay from 'embla-carousel-autoplay'
 import React from 'react'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface Promotion {
   id: string
@@ -20,44 +22,11 @@ interface Promotion {
   available_in: string[]
 }
 
-const DEFAULT_PROMOTIONS: Promotion[] = [
-  {
-    id: 'default-1',
-    title: 'Martes 2x1',
-    description: '¡Los martes son de amigos! Compra una hora de salto y obtén la segunda gratis para un acompañante.',
-    image_url: '/assets/g5.jpeg',
-    image_hint: 'friends jumping',
-    available_in: ['Todas las sucursales']
-  },
-  {
-    id: 'default-2',
-    title: 'Jueves de Estudiantes',
-    description: 'Presenta tu credencial de estudiante vigente y obtén un 20% de descuento en tu entrada.',
-    image_url: '/assets/g2.jpg',
-    image_hint: 'student discount',
-    available_in: ['Coacalco', 'Ecatepec', 'Vallejo']
-  },
-  {
-    id: 'default-3',
-    title: 'Domingo Familiar',
-    description: 'Paquete familiar (2 adultos, 2 niños) por solo $750 la hora. ¡El plan perfecto para el fin de semana!',
-    image_url: '/assets/g8.jpeg',
-    image_hint: 'family fun',
-    available_in: ['Todas las sucursales']
-  },
-  {
-    id: 'default-4',
-    title: 'Promo Cumpleañero',
-    description: '¿Es tu mes de cumpleaños? Presenta tu INE y salta ¡GRATIS! en la compra de 3 accesos para tus amigos.',
-    image_url: '/assets/g3.jpeg',
-    image_hint: 'birthday person',
-    available_in: ['Interlomas', 'La Cúspide', 'Cuernavaca']
-  },
-]
-
 export default function PromocionesCarousel() {
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [selectedPromoIndex, setSelectedPromoIndex] = useState(0)
   const supabase = createClientComponentClient()
 
   const plugin = React.useRef(
@@ -89,6 +58,19 @@ export default function PromocionesCarousel() {
     fetchPromotions()
   }, [supabase])
 
+  const openLightbox = (index: number) => {
+    setSelectedPromoIndex(index)
+    setLightboxOpen(true)
+  }
+
+  const goToPrevious = () => {
+    setSelectedPromoIndex((prev) => (prev === 0 ? promotions.length - 1 : prev - 1))
+  }
+
+  const goToNext = () => {
+    setSelectedPromoIndex((prev) => (prev === promotions.length - 1 ? 0 : prev + 1))
+  }
+
   if (loading) {
     return (
       <section className="w-full py-12 bg-white">
@@ -107,7 +89,7 @@ export default function PromocionesCarousel() {
   }
 
   return (
-    <section className="w-full py-12 md:py-16 bg-white">
+    <section className="w-full py-12 md:py-16 bg-white overflow-hidden">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
           <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-headline">
@@ -130,17 +112,20 @@ export default function PromocionesCarousel() {
           className="w-full"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
-            {promotions.map((promo) => (
+            {promotions.map((promo, index) => (
               <CarouselItem key={promo.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                 <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full group border-2 hover:border-orange-500 bg-white dark:bg-gray-950">
                   <CardHeader className="p-0 relative">
-                    <div className="relative w-full aspect-[4/5] bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-2 overflow-hidden">
+                    <div
+                      className="relative w-full aspect-[4/5] bg-gray-50 flex items-center justify-center cursor-pointer overflow-hidden"
+                      onClick={() => openLightbox(index)}
+                    >
                       <Image
                         src={promo.image_url || '/assets/g5.jpeg'}
                         alt={promo.title}
                         fill
                         data-ai-hint={promo.image_hint || promo.title}
-                        className="object-contain transition-transform duration-300 group-hover:scale-105 p-1"
+                        className="object-contain transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       <div className="absolute top-4 left-4 z-10">
@@ -204,6 +189,67 @@ export default function PromocionesCarousel() {
             <CarouselNext className="relative static translate-y-0 bg-orange-500 hover:bg-orange-600 text-white border-orange-600 h-10 w-10" />
           </div>
         </Carousel>
+
+        {/* Lightbox para Promociones */}
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="bg-black/90 border-none p-0 max-w-none w-screen h-screen flex items-center justify-center">
+            <div className="relative w-full h-full flex flex-col items-center justify-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 rounded-full"
+                onClick={() => setLightboxOpen(false)}
+              >
+                <X className="h-8 w-8" />
+                <span className="sr-only">Cerrar</span>
+              </Button>
+
+              <div className="flex items-center justify-center w-full h-full p-4 md:p-8">
+                {promotions.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12 hidden md:flex"
+                    onClick={goToPrevious}
+                  >
+                    <ChevronLeft className="h-10 w-10" />
+                    <span className="sr-only">Anterior</span>
+                  </Button>
+                )}
+
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <Image
+                    src={promotions[selectedPromoIndex]?.image_url || ''}
+                    alt={promotions[selectedPromoIndex]?.title || ''}
+                    fill
+                    className="object-contain"
+                    priority
+                    quality={100}
+                  />
+                </div>
+
+                {promotions.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12 hidden md:flex"
+                    onClick={goToNext}
+                  >
+                    <ChevronRight className="h-10 w-10" />
+                    <span className="sr-only">Siguiente</span>
+                  </Button>
+                )}
+              </div>
+
+              {/* Título en el Lightbox */}
+              <div className="absolute bottom-10 left-0 right-0 text-center text-white px-4">
+                <h3 className="text-xl md:text-2xl font-bold font-headline">
+                  {promotions[selectedPromoIndex]?.title}
+                </h3>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   )
