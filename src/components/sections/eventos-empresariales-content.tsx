@@ -78,11 +78,12 @@ export default function EventosEmpresarialesContent() {
                     </CardContent>
                 </Card>
 
+                {/* Booking Form Section */}
                 <Card className="shadow-2xl rounded-2xl overflow-hidden">
                     <CardHeader className="text-center p-8 bg-primary text-primary-foreground">
-                        <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Cotiza tu Evento</CardTitle>
+                        <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Reserva tu Fiesta</CardTitle>
                         <CardDescription className="text-primary-foreground/80 md:text-lg">
-                            Completa el formulario para recibir una propuesta personalizada.
+                            Completa el formulario para recibir una cotización. ¡Es fácil y rápido!
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">

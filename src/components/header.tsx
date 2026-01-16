@@ -222,6 +222,40 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
+              <Separator className="my-2 bg-background/20 w-full" />
+              <div className="w-full">
+                <p className="text-xs font-semibold text-background mb-2 text-center">Descarga nuestra app</p>
+                <div className="flex gap-2 justify-center">
+                  <Link
+                    href="https://play.google.com/store/apps/details?id=com.jumpinapp.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <Image
+                      src="/assets/play_store.png"
+                      alt="Descargar en Google Play"
+                      width={120}
+                      height={40}
+                      className="h-8 w-auto"
+                    />
+                  </Link>
+                  <Link
+                    href="https://apps.apple.com/mx/app/jump-in/id6745444409"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <Image
+                      src="/assets/apps_store.png"
+                      alt="Descargar en App Store"
+                      width={120}
+                      height={40}
+                      className="h-8 w-auto"
+                    />
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -310,6 +344,40 @@ export default function Header() {
                                 </Link>
                             </SheetClose>
                             ))}
+                        </div>
+                        <Separator className="my-4 bg-background/20"/>
+                        <div className="w-full">
+                          <p className="text-sm font-semibold text-background mb-3 text-center">Descarga nuestra app</p>
+                          <div className="flex gap-3 justify-center">
+                            <Link
+                              href="https://play.google.com/store/apps/details?id=com.jumpinapp.app"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:opacity-80 transition-opacity"
+                            >
+                              <Image
+                                src="/assets/play_store.png"
+                                alt="Descargar en Google Play"
+                                width={140}
+                                height={46}
+                                className="h-10 w-auto"
+                              />
+                            </Link>
+                            <Link
+                              href="https://apps.apple.com/mx/app/jump-in/id6745444409"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:opacity-80 transition-opacity"
+                            >
+                              <Image
+                                src="/assets/apps_store.png"
+                                alt="Descargar en App Store"
+                                width={140}
+                                height={46}
+                                className="h-10 w-auto"
+                              />
+                            </Link>
+                          </div>
                         </div>
                         <Separator className="my-4 bg-background/20"/>
                         <div className="flex justify-center gap-4">
