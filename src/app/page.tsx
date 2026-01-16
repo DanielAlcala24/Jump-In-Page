@@ -16,17 +16,61 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Jump-In | El Primer Trampoline Park en México',
   description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia. Ven a saltar, reír y pasarla increíble.',
-  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Ciudad de México, Jump-In',
+  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Ciudad de México, Jump-In, sucursales, quiénes somos',
   openGraph: {
     title: 'Jump-In | El Primer Trampoline Park en México',
     description: 'Diversión, entretenimiento y deporte para toda la familia',
     type: 'website',
+    url: 'https://jump-in.com.mx',
+    images: [
+      {
+        url: '/assets/g5.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'Jump-In Trampoline Park',
+      },
+    ],
   },
 };
 
 export default function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "SiteNavigationElement",
+        "position": 1,
+        "name": "Quiénes Somos",
+        "url": "https://jump-in.com.mx/nosotros"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 2,
+        "name": "Sucursales",
+        "url": "https://jump-in.com.mx/sucursales"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 3,
+        "name": "Atracciones",
+        "url": "https://jump-in.com.mx/atracciones"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 4,
+        "name": "Precios y Promociones",
+        "url": "https://jump-in.com.mx/precios-y-promociones"
+      }
+    ]
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <VideoBackground />
       <Header />
       <SocialIcons />

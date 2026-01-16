@@ -8,6 +8,13 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sucursales | Jump-In',
+  description: 'Encuentra tu sucursal Jump-In más cercana. Contamos con ubicaciones en CDMX, Estado de México y Cuernavaca.',
+  keywords: 'sucursales, ubicaciones, Jump-In, CDMX, Edo Mex, Cuernavaca, trampoline park cerca de mi',
+};
 
 export default function SucursalesPage() {
   return (

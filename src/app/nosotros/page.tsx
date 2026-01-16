@@ -9,6 +9,13 @@ import { ChevronDown, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Quiénes Somos | Jump-In',
+  description: 'Conoce más sobre Jump-In, el primer Trampoline Park en México. Diversión, deporte y entretenimiento seguro para todas las edades.',
+  keywords: 'nosotros, historia, Jump-In, misión, visión, trampoline park México',
+};
 
 export default function NosotrosPage() {
   return (
