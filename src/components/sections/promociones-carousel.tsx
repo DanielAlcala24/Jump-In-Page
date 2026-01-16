@@ -111,10 +111,10 @@ export default function PromocionesCarousel() {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-2 md:-ml-4 items-start">
             {promotions.map((promo, index) => (
               <CarouselItem key={promo.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full group border-2 hover:border-orange-500 bg-white dark:bg-gray-950">
+                <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group border-2 hover:border-orange-500 bg-white dark:bg-gray-950">
                   <CardHeader className="p-0 relative">
                     <div
                       className="relative w-full cursor-pointer overflow-hidden flex items-center justify-center bg-white"
@@ -133,14 +133,14 @@ export default function PromocionesCarousel() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 flex-grow flex flex-col">
+                  <CardContent className="p-6 flex flex-col">
                     <CardTitle className="font-headline text-xl mb-2 text-center">
                       {promo.title}
                     </CardTitle>
-                    <CardDescription className="text-center mb-4 flex-grow">
+                    <CardDescription className="text-center mb-4">
                       {promo.description}
                     </CardDescription>
-                    <div className="mt-auto">
+                    <div>
                       <div className="mb-4">
                         <h4 className="text-sm font-semibold flex items-center mb-2 justify-center text-muted-foreground">
                           <MapPin className="mr-1 h-4 w-4" />
