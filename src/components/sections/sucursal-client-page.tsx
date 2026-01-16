@@ -316,15 +316,17 @@ export default function SucursalClientPage() {
                                 <CardContent className="grid md:grid-cols-3 gap-6">
                                     {prices.map((price, index) => (
                                         <Card key={index} className="overflow-hidden shadow-md hover:shadow-lg transition-shadow border-none bg-white dark:bg-gray-950 flex flex-col">
-                                            <div className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-2 flex items-center justify-center aspect-[3/4]" onClick={() => openLightbox('prices', index)}>
-                                                <Image
-                                                    src={price.image || '/assets/g1.jpg'}
-                                                    alt={price.title}
-                                                    width={600}
-                                                    height={800}
-                                                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-                                                />
-                                            </div>
+                                            {price.image && (
+                                                <div className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-2 flex items-center justify-center aspect-[3/4]" onClick={() => openLightbox('prices', index)}>
+                                                    <Image
+                                                        src={price.image}
+                                                        alt={price.title}
+                                                        width={600}
+                                                        height={800}
+                                                        className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                </div>
+                                            )}
                                             <div className="p-4 text-center">
                                                 <h4 className="font-bold text-xl mb-2">{price.title}</h4>
                                                 <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline mb-2">
