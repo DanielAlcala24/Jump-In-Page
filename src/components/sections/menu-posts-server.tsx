@@ -16,86 +16,7 @@ interface MenuItem {
 }
 
 const defaultMenuItems: MenuItem[] = [
-  {
-    title: 'Alitas (300g)',
-    description: 'BBQ, Red hot, Mango habanero ó Mix... +$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
-    price: '$140.00 MXN',
-    imageSrc: '/assets/menu/alimentos/alitas.png',
-    imageHint: 'Alitas',
-    category: 'Alimentos'
-  },
-  {
-    title: 'Boneless (300g)',
-    description: 'BBQ, Red hot, Mango habanero ó Mix... +$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
-    price: '$150.00 MXN',
-    imageSrc: '/assets/menu/alimentos/boneless.png',
-    imageHint: 'Boneless',
-    category: 'Alimentos'
-  },
-  {
-    title: 'Hotdog (1pza)',
-    description: '+$35 papas a la francesa (200g) ó papas saratoga (40g) + 1 lata de refresco 355ml.',
-    price: '$60.00 MXN',
-    imageSrc: '/assets/menu/alimentos/hotdog.png',
-    imageHint: 'Hotdog',
-    category: 'Alimentos'
-  },
-  {
-    title: 'Nuggets de Pollo',
-    description: 'Crujientes por fuera, tiernos por dentro. Acompañados de papas a la francesa.',
-    price: '$120.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'chicken nuggets',
-    category: 'Snacks'
-  },
-  {
-    title: 'Agua (600ml)',
-    description: 'Agua natural.',
-    price: '$30.00 MXN',
-    imageSrc: '/assets/menu/bebidas/agua600.png',
-    imageHint: 'Agua 600ml',
-    category: 'Bebidas'
-  },
-  {
-    title: 'Gatorade (500ml)',
-    description: 'Bebida hidratante.',
-    price: '$45.00 MXN',
-    imageSrc: '/assets/menu/bebidas/gatorade.png',
-    imageHint: 'Gatorade',
-    category: 'Bebidas'
-  },
-  {
-    title: 'Refresco (355ml)',
-    description: 'Botella o lata de varios sabores.',
-    price: '$30.00 MXN',
-    imageSrc: '/assets/menu/bebidas/refresco.png',
-    imageHint: 'Refresco',
-    category: 'Bebidas'
-  },
-  {
-    title: 'Soda Pantera Rosa (414ml)',
-    description: 'Pink Lemonade.',
-    price: '$45.00 MXN',
-    imageSrc: '/assets/menu/bebidas/sodaPanteraRosa.png',
-    imageHint: 'Soda Pantera Rosa',
-    category: 'Bebidas'
-  },
-  {
-    title: 'Cerveza (325ml)',
-    description: 'Tecate roja, Tecate light, Tecate ámbar, XX lager, XX ámbar e Indio. + $10 vaso michelado.',
-    price: '$55.00 MXN',
-    imageSrc: '/assets/menu/bebidas/cerveza.png',
-    imageHint: 'Cerveza',
-    category: 'Bebidas'
-  },
-  {
-    title: 'Gomitas Ácidas',
-    description: 'Una explosión de sabor que te hará hacer caras divertidas.',
-    price: '$50.00 MXN',
-    imageSrc: '/assets/g3.jpeg',
-    imageHint: 'Gomitas',
-    category: 'Dulces'
-  }
+
 ]
 
 const defaultCategories = ['Alimentos', 'Bebidas', 'Snacks', 'Dulces']
@@ -103,8 +24,8 @@ const FALLBACK_IMAGE = '/assets/menu/alimentos/alitas.png'
 
 export default async function MenuPostsServer() {
   const supabase = await createServerComponentClient()
-  let menuItems: MenuItem[] = defaultMenuItems
-  let categories: string[] = defaultCategories
+  let menuItems: MenuItem[] = []
+  let categories: string[] = []
 
   try {
     const { data, error } = await supabase
@@ -130,13 +51,13 @@ export default async function MenuPostsServer() {
             .filter((cat): cat is string => Boolean(cat))
         )
       )
-
-      if (categories.length === 0) {
-        categories = defaultCategories
-      }
     }
   } catch (err) {
     console.error('Error fetching menu items:', err)
+  }
+
+  if (menuItems.length === 0) {
+    return null
   }
 
   // Structured Data (JSON-LD) para SEO - MenuItemList

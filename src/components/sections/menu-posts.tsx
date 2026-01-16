@@ -134,11 +134,9 @@ const formatPrice = (price: string) => {
 }
 
 export default function MenuPosts() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems)
-  const [categories, setCategories] = useState<string[]>(defaultCategories)
-  const [selectedCategory, setSelectedCategory] = useState(
-    defaultCategories[0]
-  )
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient()
 
@@ -180,13 +178,13 @@ export default function MenuPosts() {
             )
           }
         } else {
-          setMenuItems(defaultMenuItems)
-          setCategories(defaultCategories)
+          setMenuItems([])
+          setCategories([])
         }
       } catch (err) {
         console.error('Error fetching menu items:', err)
-        setMenuItems(defaultMenuItems)
-        setCategories(defaultCategories)
+        setMenuItems([])
+        setCategories([])
       } finally {
         setLoading(false)
       }
@@ -201,6 +199,10 @@ export default function MenuPosts() {
 
   const itemsToDisplay =
     filteredItems.length > 0 ? filteredItems : menuItems.filter(Boolean)
+
+  if (!loading && menuItems.length === 0) {
+    return null
+  }
 
   return (
     <section id="menu" className="w-full py-8 bg-gray-50 dark:bg-gray-900">

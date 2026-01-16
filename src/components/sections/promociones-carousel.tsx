@@ -56,7 +56,7 @@ const DEFAULT_PROMOTIONS: Promotion[] = [
 ]
 
 export default function PromocionesCarousel() {
-  const [promotions, setPromotions] = useState<Promotion[]>(DEFAULT_PROMOTIONS)
+  const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient()
 
@@ -74,13 +74,13 @@ export default function PromocionesCarousel() {
 
         if (error) {
           console.error('Error fetching promotions:', error)
-          setPromotions(DEFAULT_PROMOTIONS)
+          setPromotions([])
         } else {
-          setPromotions(data && data.length > 0 ? data : DEFAULT_PROMOTIONS)
+          setPromotions(data && data.length > 0 ? data : [])
         }
       } catch (err) {
         console.error('Error:', err)
-        setPromotions(DEFAULT_PROMOTIONS)
+        setPromotions([])
       } finally {
         setLoading(false)
       }

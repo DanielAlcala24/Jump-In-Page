@@ -65,15 +65,11 @@ export default async function FaqServer() {
     console.error('Error fetching FAQs:', err)
   }
 
-  // Usar FAQs de la base de datos si existen, sino usar los por defecto
-  const displayFaqs = faqs.length > 0 
-    ? faqs 
-    : DEFAULT_FAQS.map((faq, index) => ({
-        id: `default-${index}`,
-        question: faq.question,
-        answer: faq.answer,
-        order: index
-      }))
+  if (faqs.length === 0) {
+    return null
+  }
+
+  const displayFaqs = faqs
 
   // Structured Data (JSON-LD) para SEO
   const faqStructuredData = {

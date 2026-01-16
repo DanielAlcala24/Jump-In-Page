@@ -71,7 +71,7 @@ function PreciosPromocionesContentComponent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') === 'Promociones' ? 'Promociones' : 'Precios';
   const [selectedCategory, setSelectedCategory] = useState(initialTab);
-  const [promotions, setPromotions] = useState<Promotion[]>(DEFAULT_PROMOTIONS);
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loadingPromotions, setLoadingPromotions] = useState(true);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loadingBranches, setLoadingBranches] = useState(true);
@@ -94,13 +94,13 @@ function PreciosPromocionesContentComponent() {
 
         if (error) {
           console.error('Error fetching promotions:', error);
-          setPromotions(DEFAULT_PROMOTIONS);
+          setPromotions([]);
         } else {
-          setPromotions(data && data.length > 0 ? data : DEFAULT_PROMOTIONS);
+          setPromotions(data && data.length > 0 ? data : []);
         }
       } catch (err) {
         console.error('Error:', err);
-        setPromotions(DEFAULT_PROMOTIONS);
+        setPromotions([]);
       } finally {
         setLoadingPromotions(false);
       }
@@ -140,7 +140,7 @@ function PreciosPromocionesContentComponent() {
     <section id="content" className="w-full py-8 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-2 md:px-6">
         <div className="sticky top-14 z-30 py-4 mb-8">
-           <div className="flex justify-center">
+          <div className="flex justify-center">
             <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-lg">
               {categories.map((category, index) => (
                 <>
@@ -209,12 +209,12 @@ function PreciosPromocionesContentComponent() {
                         {groupedBranches[state].map((branch) => (
                           <Card key={branch.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group">
                             <CardHeader className="p-0">
-                              <Image 
-                                src={branch.featured_image || '/assets/g1.jpg'} 
-                                alt={`Sucursal ${branch.name}`} 
-                                width={600} 
-                                height={400} 
-                                data-ai-hint="trampoline park" 
+                              <Image
+                                src={branch.featured_image || '/assets/g1.jpg'}
+                                alt={`Sucursal ${branch.name}`}
+                                width={600}
+                                height={400}
+                                data-ai-hint="trampoline park"
                                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             </CardHeader>
@@ -231,7 +231,7 @@ function PreciosPromocionesContentComponent() {
                               <Button asChild className="w-full bg-orange-500 hover:bg-orange-600">
                                 <Link href={`/sucursales/${branch.slug}`}>
                                   Checar Precios
-                                  <ArrowRight className="ml-2 h-4 w-4"/>
+                                  <ArrowRight className="ml-2 h-4 w-4" />
                                 </Link>
                               </Button>
                             </CardFooter>
@@ -252,11 +252,11 @@ function PreciosPromocionesContentComponent() {
         {selectedCategory === 'Promociones' && (
           <>
             <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-md shadow">
-                <div className="flex items-center">
-                    <AlertTriangle className="h-6 w-6 mr-3"/>
-                    <p className="font-bold text-lg">Importante</p>
-                </div>
-                <p className="mt-2 text-base">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
+              <div className="flex items-center">
+                <AlertTriangle className="h-6 w-6 mr-3" />
+                <p className="font-bold text-lg">Importante</p>
+              </div>
+              <p className="mt-2 text-base">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
             </div>
             {loadingPromotions ? (
               <div className="text-center py-8">
@@ -272,12 +272,12 @@ function PreciosPromocionesContentComponent() {
                 {promotions.map((promo) => (
                   <Card key={promo.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
                     <CardHeader className="p-0">
-                      <Image 
-                        src={promo.image_url || '/assets/g5.jpeg'} 
-                        alt={promo.title} 
-                        width={600} 
-                        height={400} 
-                        data-ai-hint={promo.image_hint || promo.title} 
+                      <Image
+                        src={promo.image_url || '/assets/g5.jpeg'}
+                        alt={promo.title}
+                        width={600}
+                        height={400}
+                        data-ai-hint={promo.image_hint || promo.title}
                         className="w-full h-48 object-cover"
                       />
                     </CardHeader>
@@ -286,7 +286,7 @@ function PreciosPromocionesContentComponent() {
                       <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
                       <div className="mt-4">
                         <h4 className="text-sm font-semibold flex items-center mb-2 justify-center">
-                          <MapPin className="mr-1 h-4 w-4 text-muted-foreground"/>
+                          <MapPin className="mr-1 h-4 w-4 text-muted-foreground" />
                           Disponible en:
                         </h4>
                         <div className="flex flex-wrap gap-2 justify-center">

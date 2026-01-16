@@ -9,9 +9,9 @@ import { MapPin } from 'lucide-react';
 import { createClientComponentClient } from '@/lib/supabase';
 
 interface Branch {
-  id: string;
-  name: string;
-  is_active: boolean;
+    id: string;
+    name: string;
+    is_active: boolean;
 }
 
 interface Attraction {
@@ -80,13 +80,13 @@ export default function AtraccionesContent() {
         fetchBranches();
     }, [supabase]);
 
-    const filteredAttractions = attractions.filter(attraction => 
+    const filteredAttractions = attractions.filter(attraction =>
         selectedSucursal === 'Todas las sucursales' || (attraction.available_in && attraction.available_in.includes(selectedSucursal))
     );
 
     const categories = Array.from(new Set(attractions.map(attr => attr.category).filter(Boolean)));
 
-    const renderedCategories = categories.filter(category => 
+    const renderedCategories = categories.filter(category =>
         filteredAttractions.some(attr => attr.category === category)
     );
 
@@ -103,10 +103,14 @@ export default function AtraccionesContent() {
         );
     }
 
+    if (renderedCategories.length === 0) {
+        return null;
+    }
+
     return (
         <section id="attractions-content" className="w-full py-6 md:py-6 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-7xl px-4 md:px-6">
-                
+
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 sticky top-16 z-20 py-4">
                     <Select onValueChange={setSelectedSucursal} defaultValue="Todas las sucursales">
                         <SelectTrigger className="w-full sm:w-[280px] shadow-lg">
@@ -120,16 +124,11 @@ export default function AtraccionesContent() {
                         </SelectContent>
                     </Select>
                 </div>
-                
-                {renderedCategories.length === 0 && !loading ? (
-                    <div className="text-center py-16">
-                        <p className="text-2xl font-semibold text-muted-foreground">No hay atracciones disponibles.</p>
-                    </div>
-                ) : (
-                    renderedCategories.map((category, index) => {
+
+                {renderedCategories.map((category, index) => {
                     const attractionsInCategory = filteredAttractions.filter(attr => attr.category === category);
                     if (attractionsInCategory.length === 0) return null;
-                    
+
                     return (
                         <div key={category}>
                             <div className="text-center mb-10">
@@ -142,12 +141,12 @@ export default function AtraccionesContent() {
                                 {attractionsInCategory.map(attraction => (
                                     <Card key={attraction.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group">
                                         <CardHeader className="p-0 relative">
-                                            <Image 
-                                                src={attraction.image_url || '/assets/atracciones/exclusivas/climbingwall.jpg'} 
-                                                alt={attraction.name} 
-                                                width={400} 
-                                                height={300} 
-                                                data-ai-hint={attraction.image_hint || attraction.name} 
+                                            <Image
+                                                src={attraction.image_url || '/assets/atracciones/exclusivas/climbingwall.jpg'}
+                                                alt={attraction.name}
+                                                width={400}
+                                                height={300}
+                                                data-ai-hint={attraction.image_hint || attraction.name}
                                                 className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                                             />
                                         </CardHeader>
@@ -155,7 +154,7 @@ export default function AtraccionesContent() {
                                             <CardTitle className="font-headline text-2xl text-center mb-4">{attraction.name}</CardTitle>
                                             <div className="flex-grow">
                                                 <h4 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-center">
-                                                    <MapPin className="mr-1 h-4 w-4"/>
+                                                    <MapPin className="mr-1 h-4 w-4" />
                                                     Disponible en:
                                                 </h4>
                                                 <div className="flex flex-wrap gap-2 justify-center">
@@ -172,19 +171,18 @@ export default function AtraccionesContent() {
                                     </Card>
                                 ))}
                             </div>
-                             {index < renderedCategories.length - 1 && (
+                            {index < renderedCategories.length - 1 && (
                                 <hr className="my-12" />
                             )}
                         </div>
                     );
-                    })
-                )}
-                 {filteredAttractions.length === 0 && selectedSucursal !== 'Todas las sucursales' && !loading && (
+                })}
+                {filteredAttractions.length === 0 && selectedSucursal !== 'Todas las sucursales' && !loading && (
                     <div className="text-center py-16">
                         <p className="text-2xl font-semibold text-muted-foreground">No se encontraron atracciones para la sucursal seleccionada.</p>
                         <p className="text-muted-foreground mt-2">Prueba seleccionando "Todas las sucursales" para ver todas las atracciones disponibles.</p>
                     </div>
-                 )}
+                )}
             </div>
         </section>
     )
