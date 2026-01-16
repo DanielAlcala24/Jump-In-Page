@@ -8,6 +8,13 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Nuestras Atracciones',
+  description: 'Descubre todas las atracciones emocionantes de Jump-In: Trampolines, muros de escalada, albercas de espuma y mucho más.',
+  keywords: 'atracciones, trampolines, muros de escalada, diversión infantil, parque de diversiones',
+};
 
 export default function AtraccionesPage() {
   return (
@@ -19,17 +26,17 @@ export default function AtraccionesPage() {
         <section className="relative flex h-[80vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
-              <Image 
-                src="/assets/bongo.png" 
-                alt="Mascota Bongo" 
-                width={50} 
+              <Image
+                src="/assets/bongo.png"
+                alt="Mascota Bongo"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
-               <Image 
-                src="/assets/maya.png" 
-                alt="Mascota Maya" 
-                width={50} 
+              <Image
+                src="/assets/maya.png"
+                alt="Mascota Maya"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />

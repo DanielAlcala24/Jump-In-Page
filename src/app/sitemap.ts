@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { createServerComponentClient } from '@/lib/supabase-server'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jump-in.com.mx'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'
   const supabase = await createServerComponentClient()
 
   // Obtener todas las URLs estáticas
@@ -10,8 +10,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
+      changeFrequency: 'weekly',
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/nosotros`,
@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: new Date(post.updated_at || post.created_at),
           changeFrequency: 'weekly',
-          priority: 0.7,
+          priority: 0.6,
         })
       })
     }
@@ -73,6 +73,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching blog posts for sitemap:', error)
   }
 
-  return [...staticRoutes, ...blogPosts]
-}
+  // Obtener sucursales
+  const branchRoutes: MetadataRoute.Sitemap = []
+  try {
+    const { data: branches } = await supabase
+      .from('branches')
+      .select('slug')
+      .eq('is_active', true)
 
+    if (branches) {
+      branches.forEach((branch) => {
+        branchRoutes.push({
+          url: `${baseUrl}/sucursales/${branch.slug}`,
+          lastModified: new Date(),
+          changeFrequency: 'monthly',
+          priority: 0.8,
+        })
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching branches for sitemap:', error)
+  }
+
+  return [...staticRoutes, ...blogPosts, ...branchRoutes]
+}

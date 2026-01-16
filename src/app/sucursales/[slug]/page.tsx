@@ -15,6 +15,25 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { createClientComponentClient } from '@/lib/supabase';
+import { Metadata } from 'next';
+import { createServerComponentClient } from '@/lib/supabase-server';
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const supabase = await createServerComponentClient();
+  const { data: sucursal } = await supabase
+    .from('branches')
+    .select('name, state, address')
+    .eq('slug', params.slug)
+    .single();
+
+  if (!sucursal) return { title: 'Sucursal no encontrada' };
+
+  return {
+    title: `Sucursal ${sucursal.name}`,
+    description: `Visita Jump-In ${sucursal.name} en ${sucursal.state}. ${sucursal.address}. ¡Reserva tu lugar ahora!`,
+    keywords: `Jump-In ${sucursal.name}, sucursal ${sucursal.name}, trampoline park ${sucursal.state}, donde ir en ${sucursal.name}`,
+  };
+}
 
 interface Price {
   title: string;
@@ -118,15 +137,15 @@ function SucursalPageContent() {
 
   const extractMapUrl = (mapLink: string): string | null => {
     if (!mapLink) return null;
-    
+
     let mapUrl = mapLink.trim();
-    
+
     // Si contiene un iframe, extraer el src
     const iframeMatch = mapUrl.match(/<iframe[^>]+src=["']([^"']+)["']/i);
     if (iframeMatch && iframeMatch[1]) {
       mapUrl = iframeMatch[1];
     }
-    
+
     // Si es una URL completa de Google Maps pero no es embed, intentar convertirla
     if (mapUrl.includes('google.com/maps') && !mapUrl.includes('/embed')) {
       // Si es una URL de compartir, extraer el parámetro q
@@ -136,12 +155,12 @@ function SucursalPageContent() {
         mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.5!2d-99.1!3d19.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI0JzAwLjAiTiA5OcKwMDYnMDAuMCJX!5e0!3m2!1ses!2smx!4v1234567890&q=${encodeURIComponent(q)}`;
       }
     }
-    
+
     // Validar que sea una URL válida
     if (!mapUrl.startsWith('http://') && !mapUrl.startsWith('https://')) {
       return null;
     }
-    
+
     return mapUrl;
   };
 
@@ -198,17 +217,17 @@ function SucursalPageContent() {
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
-              <Image 
-                src="/assets/bongo.png" 
-                alt="Mascota Bongo" 
-                width={50} 
+              <Image
+                src="/assets/bongo.png"
+                alt="Mascota Bongo"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
-              <Image 
-                src="/assets/maya.png" 
-                alt="Mascota Maya" 
-                width={50} 
+              <Image
+                src="/assets/maya.png"
+                alt="Mascota Maya"
+                width={50}
                 height={50}
                 className="h-auto w-10 md:w-20"
               />
@@ -240,7 +259,7 @@ function SucursalPageContent() {
               <Card className="shadow-lg rounded-2xl overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                    <MapPin className="text-primary"/> Dirección
+                    <MapPin className="text-primary" /> Dirección
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-8 items-center">
@@ -255,15 +274,15 @@ function SucursalPageContent() {
                   {sucursal.map_link && (() => {
                     const mapUrl = extractMapUrl(sucursal.map_link);
                     if (!mapUrl) return null;
-                    
+
                     return (
                       <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-                        <iframe 
-                          src={mapUrl} 
-                          width="100%" 
-                          height="100%" 
-                          style={{ border: 0 }} 
-                          allowFullScreen 
+                        <iframe
+                          src={mapUrl}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen
                           loading="lazy"
                           referrerPolicy="no-referrer-when-downgrade"
                           title={`Mapa de ${sucursal.name}`}
@@ -281,7 +300,7 @@ function SucursalPageContent() {
                 <Card className="shadow-lg rounded-2xl text-center max-w-md w-full">
                   <CardHeader className="items-center">
                     <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                      <Clock className="text-primary"/> Horarios y Contacto
+                      <Clock className="text-primary" /> Horarios y Contacto
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -291,7 +310,7 @@ function SucursalPageContent() {
                     {(sucursal.phone || sucursal.whatsapp) && (
                       <>
                         <CardTitle className="flex items-center justify-center gap-2 font-headline text-xl mt-8">
-                          <Phone className="text-primary"/> Contacto
+                          <Phone className="text-primary" /> Contacto
                         </CardTitle>
                         {sucursal.phone && (
                           <p className="text-lg text-muted-foreground mt-4">Teléfono: {sucursal.phone}</p>
@@ -315,19 +334,19 @@ function SucursalPageContent() {
               <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                    <Ticket className="text-primary"/> Precios
+                    <Ticket className="text-primary" /> Precios
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-3 gap-6">
                   {prices.map((price, index) => (
-                    <Card key={index} className="overflow-hidden">
-                      <div className="cursor-pointer" onClick={() => openLightbox('prices', index)}>
-                        <Image 
-                          src={price.image || '/assets/g1.jpg'} 
-                          alt={price.title} 
-                          width={400} 
-                          height={200} 
-                          className="w-full object-cover aspect-[2/1]"
+                    <Card key={index} className="overflow-hidden shadow-md hover:shadow-lg transition-shadow border-none bg-white dark:bg-gray-950 flex flex-col">
+                      <div className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-2 flex items-center justify-center aspect-[3/4]" onClick={() => openLightbox('prices', index)}>
+                        <Image
+                          src={price.image || '/assets/g1.jpg'}
+                          alt={price.title}
+                          width={600}
+                          height={800}
+                          className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                       <div className="p-4 text-center">
@@ -351,15 +370,15 @@ function SucursalPageContent() {
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {attractions.map((attr, index) => (
-                    <div 
-                      key={index} 
-                      className="relative group overflow-hidden rounded-lg aspect-[4/3] cursor-pointer" 
+                    <div
+                      key={index}
+                      className="relative group overflow-hidden rounded-lg aspect-[4/3] cursor-pointer"
                       onClick={() => openLightbox('attractions', index)}
                     >
-                      <Image 
-                        src={attr.image || '/assets/g1.jpg'} 
-                        alt={attr.name} 
-                        fill 
+                      <Image
+                        src={attr.image || '/assets/g1.jpg'}
+                        alt={attr.name}
+                        fill
                         className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -373,12 +392,12 @@ function SucursalPageContent() {
 
             {/* Fiestas y Eventos */}
             <Card className="shadow-lg rounded-2xl bg-primary text-primary-foreground text-center p-8">
-              <PartyPopper className="h-12 w-12 mx-auto mb-4"/>
+              <PartyPopper className="h-12 w-12 mx-auto mb-4" />
               <h3 className="font-headline text-3xl font-bold">Fiestas y Eventos en {sucursal.name}</h3>
               <p className="max-w-2xl mx-auto my-4">Celebra tu cumpleaños o evento de empresa con nosotros para una experiencia inolvidable llena de diversión y adrenalina.</p>
               <Button variant="secondary" size="lg" asChild>
                 <Link href={`/fiestas-y-eventos`}>
-                  Cotizar mi Evento en {sucursal.name} <ArrowRight className="ml-2"/>
+                  Cotizar mi Evento en {sucursal.name} <ArrowRight className="ml-2" />
                 </Link>
               </Button>
             </Card>
@@ -386,7 +405,7 @@ function SucursalPageContent() {
             {/* Registro Digital y Menú */}
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="shadow-lg rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-                <Users className="h-10 w-10 text-primary mb-2"/>
+                <Users className="h-10 w-10 text-primary mb-2" />
                 <h3 className="font-headline text-2xl font-bold">Agiliza tu Entrada</h3>
                 <p className="text-muted-foreground mb-4">Regístrate antes de tu visita a {sucursal.name} aquí.</p>
                 <Button asChild>
@@ -394,7 +413,7 @@ function SucursalPageContent() {
                 </Button>
               </Card>
               <Card className="shadow-lg rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-                <Utensils className="h-10 w-10 text-primary mb-2"/>
+                <Utensils className="h-10 w-10 text-primary mb-2" />
                 <h3 className="font-headline text-2xl font-bold">Nuestro Menú</h3>
                 <p className="text-muted-foreground mb-4">Descubre las delicias que tenemos para recargar energía.</p>
                 <Button asChild>
@@ -412,11 +431,11 @@ function SucursalPageContent() {
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {gallery.map((img, index) => (
                     <div key={index} className="overflow-hidden rounded-lg group shadow-md">
-                      <Image 
-                        src={img.src || '/assets/g1.jpg'} 
-                        alt={img.alt || `Imagen ${index + 1} de ${sucursal.name}`} 
-                        width={600} 
-                        height={400} 
+                      <Image
+                        src={img.src || '/assets/g1.jpg'}
+                        alt={img.alt || `Imagen ${index + 1} de ${sucursal.name}`}
+                        width={600}
+                        height={400}
                         className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>

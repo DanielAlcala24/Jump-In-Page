@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: 'Jump-In | El Primer Trampoline Park en México',
     description: 'Diversión, entretenimiento y deporte para toda la familia',
     type: 'website',
-    url: 'https://jump-in.com.mx',
+    url: 'https://jumpin.com.mx',
     images: [
       {
         url: '/assets/g5.jpeg',
@@ -42,25 +42,25 @@ export default function Home() {
         "@type": "SiteNavigationElement",
         "position": 1,
         "name": "Quiénes Somos",
-        "url": "https://jump-in.com.mx/nosotros"
+        "url": "https://jumpin.com.mx/nosotros"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 2,
         "name": "Sucursales",
-        "url": "https://jump-in.com.mx/sucursales"
+        "url": "https://jumpin.com.mx/sucursales"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 3,
         "name": "Atracciones",
-        "url": "https://jump-in.com.mx/atracciones"
+        "url": "https://jumpin.com.mx/atracciones"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 4,
         "name": "Precios y Promociones",
-        "url": "https://jump-in.com.mx/precios-y-promociones"
+        "url": "https://jumpin.com.mx/precios-y-promociones"
       }
     ]
   };

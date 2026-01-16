@@ -5,8 +5,19 @@ import { SonnerToaster } from '@/components/sonner-toaster';
 import Popup from '@/components/popup';
 
 export const metadata: Metadata = {
-  title: 'Jump-In',
-  description: 'El primer Trampoline Park en México.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'),
+  title: {
+    default: 'Jump-In | El Primer Trampoline Park en México',
+    template: '%s | Jump-In'
+  },
+  description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/assets/logojumpin.png',
+  },
+  alternates: {
+    canonical: './',
+  },
 };
 
 export default function RootLayout({

@@ -132,20 +132,19 @@ export default function PromocionesCarousel() {
           <CarouselContent className="-ml-2 md:-ml-4">
             {promotions.map((promo) => (
               <CarouselItem key={promo.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full group border-2 hover:border-orange-500">
+                <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full group border-2 hover:border-orange-500 bg-white dark:bg-gray-950">
                   <CardHeader className="p-0 relative">
-                    <div className="relative w-full h-64 overflow-hidden">
+                    <div className="relative w-full aspect-[4/5] bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-2 overflow-hidden">
                       <Image
                         src={promo.image_url || '/assets/g5.jpeg'}
                         alt={promo.title}
                         fill
                         data-ai-hint={promo.image_hint || promo.title}
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="object-contain transition-transform duration-300 group-hover:scale-105 p-1"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none">
+                      <div className="absolute top-4 left-4 z-10">
+                        <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none shadow-md">
                           <Ticket className="h-3 w-3 mr-1" />
                           Promoción
                         </Badge>

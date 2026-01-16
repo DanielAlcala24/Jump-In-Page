@@ -270,28 +270,31 @@ function PreciosPromocionesContentComponent() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {promotions.map((promo) => (
-                  <Card key={promo.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                  <Card key={promo.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white dark:bg-gray-950 border-none">
                     <CardHeader className="p-0">
-                      <Image
-                        src={promo.image_url || '/assets/g5.jpeg'}
-                        alt={promo.title}
-                        width={600}
-                        height={400}
-                        data-ai-hint={promo.image_hint || promo.title}
-                        className="w-full h-48 object-cover"
-                      />
+                      <div className="relative w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-2">
+                        <Image
+                          src={promo.image_url || '/assets/g5.jpeg'}
+                          alt={promo.title}
+                          width={800}
+                          height={1200}
+                          data-ai-hint={promo.image_hint || promo.title}
+                          className="w-full h-auto object-contain max-h-[600px] shadow-sm rounded-sm"
+                          priority
+                        />
+                      </div>
                     </CardHeader>
                     <CardContent className="p-6 flex-grow">
-                      <CardTitle className="font-headline text-xl text-center">{promo.title}</CardTitle>
-                      <CardDescription className="my-2 text-center">{promo.description}</CardDescription>
-                      <div className="mt-4">
-                        <h4 className="text-sm font-semibold flex items-center mb-2 justify-center">
-                          <MapPin className="mr-1 h-4 w-4 text-muted-foreground" />
+                      <CardTitle className="font-headline text-2xl text-center mb-3 text-primary">{promo.title}</CardTitle>
+                      <CardDescription className="text-base text-center text-gray-700 dark:text-gray-300 mb-4">{promo.description}</CardDescription>
+                      <div className="mt-auto border-t pt-4">
+                        <h4 className="text-sm font-semibold flex items-center mb-3 justify-center text-muted-foreground uppercase tracking-wider">
+                          <MapPin className="mr-2 h-4 w-4" />
                           Disponible en:
                         </h4>
                         <div className="flex flex-wrap gap-2 justify-center">
                           {promo.available_in && promo.available_in.map(sucursal => (
-                            <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">
+                            <Badge key={sucursal} variant="secondary" className="font-medium bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100">
                               {sucursal}
                             </Badge>
                           ))}

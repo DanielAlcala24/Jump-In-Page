@@ -8,6 +8,13 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Precios y Promociones',
+  description: 'Consulta nuestros precios de salto y aprovecha las mejores promociones de Jump-In: 2x1, descuentos estudiantiles y más.',
+  keywords: 'precios, promociones, 2x1, descuentos, ofertas, trampoline park precios',
+};
 
 export default function PreciosPromocionesPage() {
   return (

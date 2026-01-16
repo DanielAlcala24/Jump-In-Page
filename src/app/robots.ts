@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jump-in.com.mx'
-  
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'
+
   return {
     rules: [
       {

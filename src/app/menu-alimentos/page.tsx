@@ -8,6 +8,13 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Menú de Alimentos',
+  description: 'Recarga energías con nuestro delicioso menú: Alitas, hot-dogs, snacks y bebidas refrescantes para toda la familia.',
+  keywords: 'menú, comida, snacks, alitas, restaurante Jump-In, comida para niños',
+};
 
 export default function MenuAlimentosPage() {
   return (
