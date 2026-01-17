@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
     // Verificar si el usuario ya existe
     // Listar usuarios y buscar por email
     const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers()
-    
+
     if (listError) {
       console.error('Error listing users:', listError)
       // Continuar de todas formas, la invitación fallará si el usuario ya existe
     } else {
       const existingUser = usersData?.users?.find(user => user.email === email)
-      
+
       if (existingUser) {
         return NextResponse.json(
           { error: 'Ya existe un usuario con este correo electrónico' },
@@ -64,37 +64,37 @@ export async function POST(request: NextRequest) {
       if (process.env.NEXT_PUBLIC_SITE_URL) {
         return process.env.NEXT_PUBLIC_SITE_URL
       }
-      
+
       // Prioridad 2: Detectar desde el request URL
       const url = new URL(request.url)
       const protocol = url.protocol // 'http:' o 'https:'
       const host = url.host // incluye puerto si es necesario
-      
+
       if (host && !host.includes('localhost')) {
         // En producción, usar https
         return `${protocol}//${host}`
       }
-      
+
       // Prioridad 3: Intentar desde headers
       const origin = request.headers.get('origin')
       if (origin && !origin.includes('localhost')) {
         return origin
       }
-      
+
       const hostHeader = request.headers.get('host')
       if (hostHeader && !hostHeader.includes('localhost')) {
         return `https://${hostHeader}`
       }
-      
+
       // Fallback: localhost solo en desarrollo
-      return process.env.NODE_ENV === 'production' 
-        ? 'https://tu-dominio.com' // ⚠️ CAMBIAR por tu dominio real
-        : 'http://localhost:9002'
+      return process.env.NODE_ENV === 'production'
+        ? 'https://jumpin.com.mx'
+        : 'http://localhost:3000'
     }
 
     const siteUrl = getSiteUrl()
     const redirectTo = `${siteUrl}/admin/set-password`
-    
+
     // Log para debugging (remover en producción si es necesario)
     console.log('Inviting user with redirect URL:', redirectTo)
 
