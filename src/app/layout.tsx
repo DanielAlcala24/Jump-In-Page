@@ -13,8 +13,11 @@ export const metadata: Metadata = {
   },
   description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/assets/logojumpin.png',
+    icon: [
+      { url: '/favicon.ico?v=2' },
+      { url: '/assets/logojumpin.png?v=2', type: 'image/png' }
+    ],
+    apple: { url: '/assets/logojumpin.png?v=2', sizes: '180x180' },
   },
   alternates: {
     canonical: './',
