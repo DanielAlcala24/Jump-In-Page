@@ -43,12 +43,12 @@ export default function TerminosCondicionesPage() {
     "El uso de calcetas antiderrapantes es obligatorio.",
     "Por seguridad las promociones están limitadas al aforo de la sucursal.",
     "En caso de que la sucursal no abra por evento privado, no aplica ninguna promoción.",
-    "El cierre de sucursal, por evento privado, mantenimiento o por causa de fuerza mayor, exime por completo a Jump-In Trampoline Park del cumplimiento de todas las promociones.", 
+    "El cierre de sucursal, por evento privado, mantenimiento o por causa de fuerza mayor, exime por completo a Jump-In Trampoline Park del cumplimiento de todas las promociones.",
   ];
 
   const descuentoCumple = [
     "Sólo aplica en paquete de personas que pasan a saltar.",
-    "El descuento sólo aplica en el paquete cotizado, los extras cotizados a manera posterior se cobran a precio de lista.", 
+    "El descuento sólo aplica en el paquete cotizado, los extras cotizados a manera posterior se cobran a precio de lista.",
     "El descuento sólo se aplica si se reserva con un 50% del monto total cotizado.",
     "una vez realizada la reservación, no hay devoluciones.",
   ];
@@ -71,22 +71,22 @@ export default function TerminosCondicionesPage() {
         <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
-              <Image 
-                src="/assets/bongo.png" 
-                alt="Mascota Bongo" 
-                width={50} 
+              <Image
+                src="/assets/bongo.png"
+                alt="Mascota Bongo"
+                width={50}
                 height={50}
-                className="h-auto w-10 md:w-20"
+                className="h-auto w-10 md:w-10"
               />
-               <Image 
-                src="/assets/maya.png" 
-                alt="Mascota Maya" 
-                width={50} 
+              <Image
+                src="/assets/maya.png"
+                alt="Mascota Maya"
+                width={50}
                 height={50}
-                className="h-auto w-10 md:w-20"
+                className="h-auto w-10 md:w-10"
               />
             </div>
-            <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
+            <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
               Términos y Condiciones
             </h1>
           </div>
@@ -97,56 +97,56 @@ export default function TerminosCondicionesPage() {
           </div>
         </section>
         <section id="terms-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
-            <div className="container mx-auto max-w-4xl px-4 md:px-6">
-                <Card className="shadow-lg rounded-2xl overflow-hidden">
-                    <CardHeader>
-                        <div className="flex items-center gap-4">
-                            <FileText className="w-8 h-8 text-primary" />
-                            <CardTitle className="text-2xl font-bold font-headline">Términos y condiciones de promociones</CardTitle>
-                        </div>
-                        
-                    </CardHeader>
-                    <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
-                       <ul className="list-disc list-inside space-y-2">
-                            {terms.map((term, index) => (
-                                <li key={index}>{term}</li>
-                            ))}
-                       </ul>
-                    </CardContent>
-                </Card>
-                <Card className="shadow-lg rounded-2xl overflow-hidden">
-                    <CardHeader>
-                        <div className="flex items-center gap-4">
-                            <FileText className="w-8 h-8 text-primary" />
-                            <CardTitle className="text-2xl font-bold font-headline">Descuento en cumpleaños</CardTitle>
-                        </div>
-                        
-                    </CardHeader>
-                    <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
-                       <ul className="list-disc list-inside space-y-2">
-                            {descuentoCumple.map((descuentoCumple, index) => (
-                                <li key={index}>{descuentoCumple}</li>
-                            ))}
-                       </ul>
-                    </CardContent>
-                </Card>
-                <Card className="shadow-lg rounded-2xl overflow-hidden">
-                    <CardHeader>
-                        <div className="flex items-center gap-4">
-                            <FileText className="w-8 h-8 text-primary" />
-                            <CardTitle className="text-2xl font-bold font-headline">Cupones</CardTitle>
-                        </div>
-                        
-                    </CardHeader>
-                    <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
-                       <ul className="list-disc list-inside space-y-2">
-                            {cupones.map((cupones, index) => (
-                                <li key={index}>{cupones}</li>
-                            ))}
-                       </ul>
-                    </CardContent>
-                </Card>
-            </div>
+          <div className="container mx-auto max-w-4xl px-4 md:px-6">
+            <Card className="shadow-lg rounded-2xl overflow-hidden">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <FileText className="w-8 h-8 text-primary" />
+                  <CardTitle className="text-2xl font-bold font-headline">Términos y condiciones de promociones</CardTitle>
+                </div>
+
+              </CardHeader>
+              <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
+                <ul className="list-disc list-inside space-y-2">
+                  {terms.map((term, index) => (
+                    <li key={index}>{term}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="shadow-lg rounded-2xl overflow-hidden">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <FileText className="w-8 h-8 text-primary" />
+                  <CardTitle className="text-2xl font-bold font-headline">Descuento en cumpleaños</CardTitle>
+                </div>
+
+              </CardHeader>
+              <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
+                <ul className="list-disc list-inside space-y-2">
+                  {descuentoCumple.map((descuentoCumple, index) => (
+                    <li key={index}>{descuentoCumple}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="shadow-lg rounded-2xl overflow-hidden">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <FileText className="w-8 h-8 text-primary" />
+                  <CardTitle className="text-2xl font-bold font-headline">Cupones</CardTitle>
+                </div>
+
+              </CardHeader>
+              <CardContent className="text-muted-foreground space-y-4 md:text-lg/relaxed">
+                <ul className="list-disc list-inside space-y-2">
+                  {cupones.map((cupones, index) => (
+                    <li key={index}>{cupones}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       </main>
       <WhatsappButton />

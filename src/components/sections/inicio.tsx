@@ -9,7 +9,7 @@ export default function Inicio() {
       className="relative flex h-screen w-full flex-col items-center justify-center text-center text-white"
     >
       <div className="relative z-10 mx-4 flex flex-col items-center">
-        <h1 className="text-5xl font-extrabold tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-9xl font-headline">
+        <h1 className="text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl font-headline">
           ¡Salta a la Diversión!
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-white md:text-xl">
@@ -37,10 +37,10 @@ export default function Inicio() {
         </div>
       </div>
       <div className="absolute bottom-5 z-10 flex flex-col items-center">
-          <Link href="#introduccion" aria-label="Scroll down">
-            <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
-          </Link>
-        </div>
+        <Link href="#introduccion" aria-label="Scroll down">
+          <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
+        </Link>
+      </div>
     </section>
   );
 }

@@ -23,7 +23,7 @@ export default function SucursalesPage() {
       <Header />
       <SocialIcons />
       <main className="flex-1">
-        <section className="relative flex h-[80vh] w-full flex-col items-center justify-center text-center text-white">
+        <section className="relative flex h-[50vh] w-full flex-col items-center justify-center text-center text-white">
           <div className="relative z-10 mx-4 flex flex-col items-center">
             <div className="flex justify-center items-center gap-1 mb-2">
               <Image
@@ -31,17 +31,17 @@ export default function SucursalesPage() {
                 alt="Mascota Bongo"
                 width={50}
                 height={50}
-                className="h-auto w-10 md:w-20"
+                className="h-auto w-10 md:w-10"
               />
               <Image
                 src="/assets/maya.png"
                 alt="Mascota Maya"
                 width={50}
                 height={50}
-                className="h-auto w-10 md:w-20"
+                className="h-auto w-10 md:w-10"
               />
             </div>
-            <h1 className="text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline">
+            <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
               Nuestras Sucursales
             </h1>
           </div>
