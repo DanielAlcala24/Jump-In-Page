@@ -1,4 +1,4 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 // Extraer el hostname de Supabase desde la variable de entorno
 const getSupabaseHostname = () => {
@@ -32,6 +32,18 @@ const nextConfig: NextConfig = {
       {
         // Si Google indexó /precios-y-promociones (común en WordPress)
         source: '/menu',
+        destination: '/menu-alimentos',
+        permanent: true,
+      },
+      {
+        // Si Google indexó /precios-y-promociones (común en WordPress)
+        source: '/alimentos',
+        destination: '/menu-alimentos',
+        permanent: true,
+      },
+      {
+        // Si Google indexó /precios-y-promociones (común en WordPress)
+        source: '/snacks',
         destination: '/menu-alimentos',
         permanent: true,
       },
@@ -93,7 +105,7 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  
+
   images: {
     remotePatterns: [
       {
