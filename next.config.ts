@@ -24,6 +24,76 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+
+  // 1. SECCIÓN DE REDIRECCIONES PARA SEO
+  async redirects() {
+    return [
+      {
+        // Si Google indexó /precios-y-promociones (común en WordPress)
+        source: '/menu',
+        destination: '/menu-alimentos',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/teambuilding',
+        destination: '/fiestas-y-eventos/eventos-empresariales',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-la-cuspide',
+        destination: '/sucursales/la-cuspide',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-churubusco',
+        destination: '/sucursales/churubusco',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-interlomas',
+        destination: '/sucursales/interlomas',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-miramontes',
+        destination: '/sucursales/miramontes',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-vallejo',
+        destination: '/sucursales/vallejo',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-ecatepec',
+        destination: '/sucursales/ecatepec',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-coacalco',
+        destination: '/sucursales/coacalco',
+        permanent: true,
+      },
+      {
+        // Si la URL vieja era /sucursales-jumpin o similar
+        source: '/sucursal-cuernavaca',
+        destination: '/sucursales/cuernavaca',
+        permanent: true,
+      },
+      // Puedes añadir aquí cualquier otro enlace viejo que de 404
+    ];
+  },
+
+  
   images: {
     remotePatterns: [
       {
@@ -74,3 +144,5 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+
