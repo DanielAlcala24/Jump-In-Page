@@ -31,16 +31,16 @@ export default function AboutUs() {
           </CardHeader>
           <CardContent className="text-muted-foreground md:text-lg/relaxed">
             <p>
-            Jump-In, el primer trampoline park de México, es el lugar donde la diversión se eleva al máximo. Con más de 1,000 m² llenos de trampolines, cuerdas, muros y actividades para todas las edades, combinamos entretenimiento, deporte y movimiento sin parar. Todo esto en un entorno seguro, con instalaciones de primera y personal capacitado para que tu único objetivo sea brincar, reír y disfrutar al máximo.
+              Jump-In, el primer trampoline park de México, es el lugar donde la diversión se eleva al máximo. Con más de 1,000 m² llenos de trampolines, cuerdas, muros y actividades para todas las edades, combinamos entretenimiento, deporte y movimiento sin parar. Todo esto en un entorno seguro, con instalaciones de primera y personal capacitado para que tu único objetivo sea brincar, reír y disfrutar al máximo.
             </p>
           </CardContent>
         </Card>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        {/*<div className="grid md:grid-cols-2 gap-8">
           <Card className="shadow-lg rounded-2xl">
             <CardHeader className="flex flex-col items-center gap-4">
-                <Target className="w-10 h-10 text-primary" />
-                <CardTitle className="text-2xl font-bold font-headline">Misión</CardTitle>
+              <Target className="w-10 h-10 text-primary" />
+              <CardTitle className="text-2xl font-bold font-headline">Misión</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground text-center">
               <p>"Crear momentos inolvidables de felicidad a través de una experiencia de entretenimiento única e innovadora generada por nuestro equipo para todas las familias que nos visitan".</p>
@@ -48,14 +48,14 @@ export default function AboutUs() {
           </Card>
           <Card className="shadow-lg rounded-2xl">
             <CardHeader className="flex flex-col items-center gap-4">
-                <Eye className="w-10 h-10 text-primary" />
-                <CardTitle className="text-2xl font-bold font-headline">Visión</CardTitle>
+              <Eye className="w-10 h-10 text-primary" />
+              <CardTitle className="text-2xl font-bold font-headline">Visión</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground text-center">
               <p>"Seguir siendo el 1er Trampoline Park de México, con un crecimiento sustentable con la mayor cantidad de sonrisas generadas".</p>
             </CardContent>
           </Card>
-        </div>
+        </div>*/}
 
         <Card className="shadow-lg rounded-2xl overflow-hidden">
           <CardHeader>
@@ -70,8 +70,8 @@ export default function AboutUs() {
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="shadow-lg rounded-2xl overflow-hidden">
+
+        {/*<Card className="shadow-lg rounded-2xl overflow-hidden">
           <CardHeader>
             <div className="flex items-center gap-4">
               <Heart className="w-10 h-10 text-primary" />
@@ -90,7 +90,7 @@ export default function AboutUs() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card>*/}
       </div>
     </section>
   );
