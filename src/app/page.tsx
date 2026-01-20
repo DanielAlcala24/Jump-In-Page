@@ -78,13 +78,23 @@ export default function Home() {
         <Inicio />
         <PromocionesCarousel />
         <WavyDivider fromColor="bg-white" />
-        <Introduccion />
+        <div className="content-visibility-auto">
+          <Introduccion />
+        </div>
         <WavyDivider fromColor="bg-gray-50" />
-        <Eventos />
-        <Galeria />
+        <div className="content-visibility-auto">
+          <Eventos />
+        </div>
+        <div className="content-visibility-auto">
+          <Galeria />
+        </div>
         <WavyDivider fromColor="bg-gray-50" />
-        <Testimonios />
-        <FaqServer />
+        <div className="content-visibility-auto">
+          <Testimonios />
+        </div>
+        <div className="content-visibility-auto">
+          <FaqServer />
+        </div>
       </main>
       <WhatsappButton />
       <Footer />

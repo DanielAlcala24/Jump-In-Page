@@ -1,11 +1,8 @@
-
-"use client";
-
+import { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import Image from "next/image";
@@ -66,6 +63,7 @@ export default function Header() {
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -79,7 +77,9 @@ export default function Header() {
       setIsSearching(true);
       try {
         const results = await searchContent(searchTerm);
-        setSuggestions(results);
+        startTransition(() => {
+          setSuggestions(results);
+        });
       } catch (error) {
         console.error('Error searching:', error);
         setSuggestions([]);
@@ -95,41 +95,43 @@ export default function Header() {
 
   useEffect(() => {
     if (!isSheetOpen && searchInputRef.current) {
-        searchInputRef.current.blur();
+      searchInputRef.current.blur();
     }
   }, [isSheetOpen]);
 
   const handleSuggestionClick = (result: SearchResult) => {
-    setSearchTerm('');
-    setSuggestions([]);
-    setIsSheetOpen(false);
+    startTransition(() => {
+      setSearchTerm('');
+      setSuggestions([]);
+      setIsSheetOpen(false);
 
-    // Construir la URL con hash si hay sectionId
-    let url = result.href;
-    if (result.sectionId && !url.includes('#')) {
-      url = `${url}#${result.sectionId}`;
-    }
+      // Construir la URL con hash si hay sectionId
+      let url = result.href;
+      if (result.sectionId && !url.includes('#')) {
+        url = `${url}#${result.sectionId}`;
+      }
 
-    // Si es una sección en la misma página, hacer scroll suave
-    if (result.sectionId && (url.startsWith('/#') || url === `/#${result.sectionId}`)) {
-      router.push('/');
-      setTimeout(() => {
-        const element = document.getElementById(result.sectionId!);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    } else {
-      // Navegar a la página
-      router.push(url);
-    }
+      // Si es una sección en la misma página, hacer scroll suave con un pequeño delay para liberar el hilo principal
+      if (result.sectionId && (url.startsWith('/#') || url === `/#${result.sectionId}`)) {
+        router.push('/');
+        setTimeout(() => {
+          const element = document.getElementById(result.sectionId!);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      } else {
+        // Navegar a la página
+        router.push(url);
+      }
+    });
   };
 
   return (
     <>
       <header className="fixed top-4 left-4 z-50 flex items-center h-10">
-         <Link href="/" className="flex items-center gap-2">
-          <Image 
+        <Link href="/" className="flex items-center gap-2">
+          <Image
             src="/assets/logojumpin.png"
             alt="Jump-in Trampoline Park Logo"
             width={120}
@@ -151,7 +153,7 @@ export default function Header() {
           <div
             className={cn(
               "flex flex-col items-center justify-center gap-4 transition-all duration-300 ease-in-out overflow-hidden w-full",
-              !navVisible && "max-h-0 opacity-0", 
+              !navVisible && "max-h-0 opacity-0",
               navVisible && "max-h-[500px] opacity-100 delay-500"
             )}
           >
@@ -263,137 +265,137 @@ export default function Header() {
 
       <div className="fixed top-4 right-4 z-50 md:hidden">
         <div className="flex items-center gap-2">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
-                  <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
-                  <SheetDescription className="sr-only">
-                    Navega por las diferentes secciones del sitio web de Jump-In.
-                  </SheetDescription>
-                  <ScrollArea className="h-full w-full">
-                    <div className="flex flex-col gap-6 p-6 pt-12 h-full">
-                        <div className="relative w-full mb-4">
-                            <Input
-                            type="search"
-                            placeholder="Buscar..."
-                            className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
-                             {(suggestions.length > 0 || isSearching) && (
-                                <div className="absolute top-full mt-2 w-full rounded-md bg-white/95 backdrop-blur-sm shadow-lg max-h-80 overflow-y-auto z-50 border border-gray-200">
-                                    {isSearching ? (
-                                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
-                                        Buscando...
-                                      </div>
-                                    ) : suggestions.length > 0 ? (
-                                      <>
-                                        {suggestions.map((result, index) => (
-                                          <button
-                                            key={`${result.type}-${result.href}-${index}`}
-                                            onClick={() => handleSuggestionClick(result)}
-                                            className="w-full text-left px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
-                                          >
-                                            <div className="flex items-start gap-3">
-                                              <div className="mt-0.5 text-gray-500 flex-shrink-0">
-                                                {getResultIcon(result.type)}
-                                              </div>
-                                              <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                  <span className="text-xs font-medium text-gray-500 uppercase">
-                                                    {getResultTypeLabel(result.type)}
-                                                  </span>
-                                                </div>
-                                                <div className="font-medium text-gray-900 text-sm mb-1">
-                                                  {result.title}
-                                                </div>
-                                                {result.description && (
-                                                  <div className="text-xs text-gray-600 line-clamp-2">
-                                                    {result.description}
-                                                  </div>
-                                                )}
-                                              </div>
-                                            </div>
-                                          </button>
-                                        ))}
-                                      </>
-                                    ) : (
-                                      <div className="px-4 py-3 text-sm text-gray-600 text-center">
-                                        No se encontraron resultados
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+              <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
+              <SheetDescription className="sr-only">
+                Navega por las diferentes secciones del sitio web de Jump-In.
+              </SheetDescription>
+              <ScrollArea className="h-full w-full">
+                <div className="flex flex-col gap-6 p-6 pt-12 h-full">
+                  <div className="relative w-full mb-4">
+                    <Input
+                      type="search"
+                      placeholder="Buscar..."
+                      className="w-full pl-10 bg-background/20 border-background/30 text-background placeholder:text-background/70 rounded-full focus-visible:ring-transparent"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-background/70" />
+                    {(suggestions.length > 0 || isSearching) && (
+                      <div className="absolute top-full mt-2 w-full rounded-md bg-white/95 backdrop-blur-sm shadow-lg max-h-80 overflow-y-auto z-50 border border-gray-200">
+                        {isSearching ? (
+                          <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                            Buscando...
+                          </div>
+                        ) : suggestions.length > 0 ? (
+                          <>
+                            {suggestions.map((result, index) => (
+                              <button
+                                key={`${result.type}-${result.href}-${index}`}
+                                onClick={() => handleSuggestionClick(result)}
+                                className="w-full text-left px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className="mt-0.5 text-gray-500 flex-shrink-0">
+                                    {getResultIcon(result.type)}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="text-xs font-medium text-gray-500 uppercase">
+                                        {getResultTypeLabel(result.type)}
+                                      </span>
+                                    </div>
+                                    <div className="font-medium text-gray-900 text-sm mb-1">
+                                      {result.title}
+                                    </div>
+                                    {result.description && (
+                                      <div className="text-xs text-gray-600 line-clamp-2">
+                                        {result.description}
                                       </div>
                                     )}
+                                  </div>
                                 </div>
-                            )}
-                        </div>
-                        <div className="flex flex-col gap-6">
-                            {navLinks.map((link) => (
-                            <SheetClose asChild key={link.href}>
-                                <Link
-                                href={link.href}
-                                target={link.external ? "_blank" : undefined}
-                                rel={link.external ? "noopener noreferrer" : undefined}
-                                className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
-                                >
-                                {link.label}
-                                </Link>
-                            </SheetClose>
+                              </button>
                             ))}
-                        </div>
-                        <Separator className="my-4 bg-background/20"/>
-                        <div className="w-full">
-                          <p className="text-sm font-semibold text-background mb-3 text-center">Descarga nuestra app</p>
-                          <div className="flex gap-3 justify-center">
-                            <Link
-                              href="https://play.google.com/store/apps/details?id=com.jumpinapp.app"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="hover:opacity-80 transition-opacity"
-                            >
-                              <Image
-                                src="/assets/play_store.png"
-                                alt="Descargar en Google Play"
-                                width={140}
-                                height={46}
-                                className="h-10 w-auto"
-                              />
-                            </Link>
-                            <Link
-                              href="https://apps.apple.com/mx/app/jump-in/id6745444409"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="hover:opacity-80 transition-opacity"
-                            >
-                              <Image
-                                src="/assets/apps_store.png"
-                                alt="Descargar en App Store"
-                                width={140}
-                                height={46}
-                                className="h-10 w-auto"
-                              />
-                            </Link>
+                          </>
+                        ) : (
+                          <div className="px-4 py-3 text-sm text-gray-600 text-center">
+                            No se encontraron resultados
                           </div>
-                        </div>
-                        <Separator className="my-4 bg-background/20"/>
-                        <div className="flex justify-center gap-4">
-                            <Link href="https://www.tiktok.com/@jumpin_mx" aria-label="TikTok" className="text-background hover:text-white transition-colors">
-                                <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} className="h-6 w-6" />
-                            </Link>
-                            <Link href="https://www.instagram.com/jumpin_mx" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6"/></Link>
-                            <Link href="https://www.facebook.com/JumpInMX/?locale=es_LA" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6"/></Link>
-                            <Link href="https://www.youtube.com/channel/UCQ0A6bqmDR1EThKl1o0l1Zg" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6"/></Link>
-                        </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-6">
+                    {navLinks.map((link) => (
+                      <SheetClose asChild key={link.href}>
+                        <Link
+                          href={link.href}
+                          target={link.external ? "_blank" : undefined}
+                          rel={link.external ? "noopener noreferrer" : undefined}
+                          className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                        >
+                          {link.label}
+                        </Link>
+                      </SheetClose>
+                    ))}
+                  </div>
+                  <Separator className="my-4 bg-background/20" />
+                  <div className="w-full">
+                    <p className="text-sm font-semibold text-background mb-3 text-center">Descarga nuestra app</p>
+                    <div className="flex gap-3 justify-center">
+                      <Link
+                        href="https://play.google.com/store/apps/details?id=com.jumpinapp.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:opacity-80 transition-opacity"
+                      >
+                        <Image
+                          src="/assets/play_store.png"
+                          alt="Descargar en Google Play"
+                          width={140}
+                          height={46}
+                          className="h-10 w-auto"
+                        />
+                      </Link>
+                      <Link
+                        href="https://apps.apple.com/mx/app/jump-in/id6745444409"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:opacity-80 transition-opacity"
+                      >
+                        <Image
+                          src="/assets/apps_store.png"
+                          alt="Descargar en App Store"
+                          width={140}
+                          height={46}
+                          className="h-10 w-auto"
+                        />
+                      </Link>
                     </div>
-                  </ScrollArea>
-                </SheetContent>
-            </Sheet>
+                  </div>
+                  <Separator className="my-4 bg-background/20" />
+                  <div className="flex justify-center gap-4">
+                    <Link href="https://www.tiktok.com/@jumpin_mx" aria-label="TikTok" className="text-background hover:text-white transition-colors">
+                      <Image src="/assets/svg/tiktok.png" alt="TikTok" width={24} height={24} className="h-6 w-6" />
+                    </Link>
+                    <Link href="https://www.instagram.com/jumpin_mx" aria-label="Instagram" className="text-background hover:text-white transition-colors"><Instagram className="h-6 w-6" /></Link>
+                    <Link href="https://www.facebook.com/JumpInMX/?locale=es_LA" aria-label="Facebook" className="text-background hover:text-white transition-colors"><Facebook className="h-6 w-6" /></Link>
+                    <Link href="https://www.youtube.com/channel/UCQ0A6bqmDR1EThKl1o0l1Zg" aria-label="YouTube" className="text-background hover:text-white transition-colors"><Youtube className="h-6 w-6" /></Link>
+                  </div>
+                </div>
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
         </div>
-        </div>
+      </div>
     </>
   );
 }
