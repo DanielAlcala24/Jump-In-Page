@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash } from "lucide-react";
