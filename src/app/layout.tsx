@@ -45,13 +45,15 @@ export default function RootLayout({
           })(window,document,'script','dataLayer','GTM-PFWMMNBZ');`}
         </Script>
 
+
         {/* Google tag (gtag.js) */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=AW-16651738395" strategy="afterInteractive" />
-        <Script id="google-ads-gtag" strategy="afterInteractive">
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-7VFM1S3HZN" strategy="afterInteractive" />
+        <Script id="google-analytics-ads-gtag" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
+            gtag('config', 'G-7VFM1S3HZN');
             gtag('config', 'AW-16651738395');
           `}
         </Script>
