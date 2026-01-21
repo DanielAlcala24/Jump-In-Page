@@ -61,9 +61,9 @@ export default function FiestasCumpleanosContent() {
 
                 {/* Offer Section */}
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Tu Fiesta de Cumpleaños Soñada</h2>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">¿Quieres celebrar en Jump-In? Tu fiesta soñada</h2>
                     <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                        Jump-In es el lugar donde la diversión extrema y la celebración se encuentran. Ofrecemos una experiencia única para personas de todas las edades, garantizando momentos inolvidables de felicidad.
+                        El mejor **cumpleaños Jump-In** te espera. Somos el lugar donde la diversión extrema y la celebración se encuentran, garantizando momentos inolvidables para todas las edades.
                     </p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -83,9 +83,9 @@ export default function FiestasCumpleanosContent() {
                 {/* Gallery Section */}
                 <div>
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Galería de Fiestas</h2>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Tu Fiesta en Jump-In</h2>
                         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                            Inspírate con momentos de celebraciones pasadas y visualiza la increíble fiesta que puedes tener.
+                            Mira cómo es **celebrar en Jump-In** e inspírate para tener la mejor fiesta de cumpleaños con nosotros.
                         </p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -93,7 +93,7 @@ export default function FiestasCumpleanosContent() {
                             <div key={index} className="overflow-hidden rounded-lg group shadow-lg transition-all hover:shadow-2xl">
                                 <Image
                                     src={image.src}
-                                    alt={image.alt}
+                                    alt={`${image.alt} - Celebra tu cumpleaños en Jump-In`}
                                     width={600}
                                     height={800}
                                     data-ai-hint={image.hint}
@@ -107,9 +107,9 @@ export default function FiestasCumpleanosContent() {
                 {/* Booking Form Section */}
                 <Card className="shadow-2xl rounded-2xl overflow-hidden">
                     <CardHeader className="text-center p-8 bg-primary text-primary-foreground">
-                        <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Reserva tu Fiesta</CardTitle>
+                        <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Cotizar en Jump-In es fácil</CardTitle>
                         <CardDescription className="text-primary-foreground/80 md:text-lg">
-                            Completa el formulario para recibir una cotización. ¡Es fácil y rápido!
+                            Completa el formulario para recibir una cotización para tu **fiesta en Jump-In**. ¡Es rápido y sencillo!
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
