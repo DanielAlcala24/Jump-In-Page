@@ -3,7 +3,9 @@
 import { useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Gift, ShieldCheck, Sparkles } from "lucide-react"
+import { Gift, ShieldCheck, Sparkles, MessageCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import Script from "next/script";
 
 const offerItems = [
@@ -65,6 +67,18 @@ export default function FiestasCumpleanosContent() {
                     <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
                         El mejor **cumpleaños Jump-In** te espera. Somos el lugar donde la diversión extrema y la celebración se encuentran, garantizando momentos inolvidables para todas las edades.
                     </p>
+                    <div className="mt-8 flex justify-center">
+                        <Button asChild className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-6 rounded-full text-lg font-bold shadow-xl transition-all hover:scale-105 flex items-center gap-2">
+                            <Link
+                                href="https://wa.me/525536441494?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20cotizar%20mi%20fiesta%20en%20Jump-In.%20Aqu%C3%AD%20est%C3%A1n%20mis%20datos%3A%0A%0A*%20Nombre%20completo%20del%20tutor%3A%20%0A*%20N%C3%BAmero%20de%20invitados%20ni%C3%B1os%3A%20%0A*%20N%C3%BAmero%20de%20invitados%20adultos%3A%20%0A*%20Correo%20electr%C3%B3nico%3A%20%0A*%20N%C3%BAmero%20de%20tel%C3%A9fono%3A%20%0A*%20Sucursal%3A%20%0A*%20Fecha%20del%20evento%3A%20%0A*%20Nombre%20del%20festejado(a)%3A%20%0A*%20Edad%20que%20cumple%3A%20%0A*%20Hora%20de%20ingreso%3A%20%0A*%20Hora%20de%20comida%3A%20%0A*%20Hora%20del%20pastel%3A%20"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <MessageCircle className="h-6 w-6" />
+                                Pedir Cotización por WhatsApp
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
                     {offerItems.map((item) => (
