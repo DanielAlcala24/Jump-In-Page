@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,6 @@ export default function Header() {
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -79,9 +78,7 @@ export default function Header() {
       setIsSearching(true);
       try {
         const results = await searchContent(searchTerm);
-        startTransition(() => {
-          setSuggestions(results);
-        });
+        setSuggestions(results);
       } catch (error) {
         console.error('Error searching:', error);
         setSuggestions([]);
@@ -102,31 +99,29 @@ export default function Header() {
   }, [isSheetOpen]);
 
   const handleSuggestionClick = (result: SearchResult) => {
-    startTransition(() => {
-      setSearchTerm('');
-      setSuggestions([]);
-      setIsSheetOpen(false);
+    setSearchTerm('');
+    setSuggestions([]);
+    setIsSheetOpen(false);
 
-      // Construir la URL con hash si hay sectionId
-      let url = result.href;
-      if (result.sectionId && !url.includes('#')) {
-        url = `${url}#${result.sectionId}`;
-      }
+    // Construir la URL con hash si hay sectionId
+    let url = result.href;
+    if (result.sectionId && !url.includes('#')) {
+      url = `${url}#${result.sectionId}`;
+    }
 
-      // Si es una sección en la misma página, hacer scroll suave con un pequeño delay para liberar el hilo principal
-      if (result.sectionId && (url.startsWith('/#') || url === `/#${result.sectionId}`)) {
-        router.push('/');
-        setTimeout(() => {
-          const element = document.getElementById(result.sectionId!);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 150);
-      } else {
-        // Navegar a la página
-        router.push(url);
-      }
-    });
+    // Si es una sección en la misma página, hacer scroll suave con un pequeño delay para liberar el hilo principal
+    if (result.sectionId && (url.startsWith('/#') || url === `/#${result.sectionId}`)) {
+      router.push('/');
+      setTimeout(() => {
+        const element = document.getElementById(result.sectionId!);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      // Navegar a la página
+      router.push(url);
+    }
   };
 
   return (
@@ -145,7 +140,7 @@ export default function Header() {
       </header>
 
       <div className="fixed top-4 right-4 z-50 hidden md:flex">
-        <div className={cn("flex backdrop-blur-xl bg-orange-500/70 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50 flex-col", !navVisible && "w-10 h-10 items-center justify-center", navVisible && "p-2 w-64")}>
+        <div className={cn("flex backdrop-blur-md bg-orange-500/70 rounded-3xl shadow-2xl transition-all duration-500 ease-in-out shadow-black/50 flex-col", !navVisible && "w-10 h-10 items-center justify-center", navVisible && "p-2 w-64")}>
           <div className={cn("w-full flex", navVisible ? 'justify-end' : 'justify-center')}>
             <Button variant="ghost" size="icon" onClick={() => setNavVisible(!navVisible)} className="bg-transparent text-background hover:bg-background/20 rounded-full h-10 w-10 flex-shrink-0">
               {navVisible ? <X className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
@@ -269,12 +264,12 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="backdrop-blur-xl bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
+              <Button variant="ghost" size="icon" className="backdrop-blur-md bg-orange-500/70 rounded-full w-10 h-10 shadow-2xl text-background hover:bg-orange-500/40 transition-transform duration-300 ease-in-out hover:scale-110 shadow-black/50">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-xl border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+            <SheetContent side="right" className="bg-orange-500/70 backdrop-blur-md border-l-0 p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
               <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
               <SheetDescription className="sr-only">
                 Navega por las diferentes secciones del sitio web de Jump-In.

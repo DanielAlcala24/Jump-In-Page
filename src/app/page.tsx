@@ -78,13 +78,9 @@ export default function Home() {
         <Inicio />
         <PromocionesCarousel />
         <WavyDivider fromColor="bg-white" />
-        <div className="content-visibility-auto">
-          <Introduccion />
-        </div>
+        <Introduccion />
         <WavyDivider fromColor="bg-gray-50" />
-        <div className="content-visibility-auto">
-          <Eventos />
-        </div>
+        <Eventos />
         <div className="content-visibility-auto">
           <Galeria />
         </div>
