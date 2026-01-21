@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import Script from "next/script";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Target, Zap, Gamepad2 } from "lucide-react"
+import { Users, Target, Zap, Gamepad2, MessageCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const offerItems = [
     {
@@ -66,6 +68,18 @@ export default function EventosEmpresarialesContent() {
                     <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
                         Jump-In es el lugar ideal para poner a prueba habilidades físicas y mentales, fomentando la dinámica de equipo en un innovador centro de entretenimiento que combina diversión, ejercicio y deporte.
                     </p>
+                    <div className="mt-8 flex justify-center">
+                        <Button asChild className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-6 rounded-full text-lg font-bold shadow-xl transition-all hover:scale-105 flex items-center gap-2">
+                            <Link
+                                href="https://wa.me/525536441494?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20cotizar%20un%20Evento%20Empresarial%20en%20Jump-In.%20Para%20poder%20reservar%20me%20podr%C3%ADa%20brindar%20los%20siguientes%20datos%20por%20favor%20%E2%98%BA%EF%B8%8F%F0%9F%A5%B3%0A%0A*%20Nombre%20completo%20del%20responsable%3A%20%0A*%20N%C3%BAmero%20de%20asistentes%3A%20%0A*%20Correo%20electr%C3%B3nico%3A%20%0A*%20N%C3%BAmero%20de%20tel%C3%A9fono%3A%20%0A*%20Sucursal%3A%20%0A*%20Fecha%20del%20evento%3A%20%0A*%20Nombre%20de%20la%20empresa%3A%20"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <MessageCircle className="h-6 w-6" />
+                                Pedir Cotización por WhatsApp
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
