@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Gift, ShieldCheck, Sparkles } from "lucide-react"
@@ -7,21 +8,21 @@ import Script from "next/script";
 
 const offerItems = [
     {
-      title: 'Diversión Garantizada',
-      description: 'Prometemos una experiencia llena de adrenalina y risas para el cumpleañero y sus invitados, creando momentos inolvidables.',
-      icon: <Sparkles className="h-10 w-10 text-pink-500" />
+        title: 'Diversión Garantizada',
+        description: 'Prometemos una experiencia llena de adrenalina y risas para el cumpleañero y sus invitados, creando momentos inolvidables.',
+        icon: <Sparkles className="h-10 w-10 text-pink-500" />
     },
     {
-      title: 'Variedad de Actividades',
-      description: 'Con más de 1,000 m² de trampolines, cuerdas y muros, aseguramos que todos encuentren algo emocionante que hacer.',
-      icon: <Gift className="h-10 w-10 text-green-500" />
+        title: 'Variedad de Actividades',
+        description: 'Con más de 1,000 m² de trampolines, cuerdas y muros, aseguramos que todos encuentren algo emocionante que hacer.',
+        icon: <Gift className="h-10 w-10 text-green-500" />
     },
     {
-      title: 'Seguridad Primordial',
-      description: 'Contamos con instalaciones de la más alta calidad y un equipo de colaboradores capacitados para garantizar la seguridad en todo momento.',
-      icon: <ShieldCheck className="h-10 w-10 text-sky-500" />
+        title: 'Seguridad Primordial',
+        description: 'Contamos con instalaciones de la más alta calidad y un equipo de colaboradores capacitados para garantizar la seguridad en todo momento.',
+        icon: <ShieldCheck className="h-10 w-10 text-sky-500" />
     }
-  ];
+];
 
 const galleryImages = [
     { src: '/assets/g3.jpeg', alt: 'Niños saltando en fiesta', hint: 'kids jumping party' },
@@ -32,15 +33,37 @@ const galleryImages = [
 
 
 export default function FiestasCumpleanosContent() {
+    useEffect(() => {
+        const createForm = () => {
+            if ((window as any).hbspt) {
+                (window as any).hbspt.forms.create({
+                    region: 'na1',
+                    portalId: '48545315',
+                    formId: 'ef6c0690-915a-47c1-84e9-5308f1284fd7',
+                    target: '#hubspot-form-birthday'
+                });
+            }
+        };
+
+        if ((window as any).hbspt) {
+            createForm();
+        }
+
+        return () => {
+            const container = document.getElementById('hubspot-form-birthday');
+            if (container) container.innerHTML = '';
+        };
+    }, []);
+
     return (
         <section id="birthday-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-5xl px-4 md:px-6 space-y-16">
-                
+
                 {/* Offer Section */}
                 <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Tu Fiesta de Cumpleaños Soñada</h2>
                     <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                    Jump-In es el lugar donde la diversión extrema y la celebración se encuentran. Ofrecemos una experiencia única para personas de todas las edades, garantizando momentos inolvidables de felicidad.
+                        Jump-In es el lugar donde la diversión extrema y la celebración se encuentran. Ofrecemos una experiencia única para personas de todas las edades, garantizando momentos inolvidables de felicidad.
                     </p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -62,7 +85,7 @@ export default function FiestasCumpleanosContent() {
                     <div className="text-center mb-8">
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Galería de Fiestas</h2>
                         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                        Inspírate con momentos de celebraciones pasadas y visualiza la increíble fiesta que puedes tener.
+                            Inspírate con momentos de celebraciones pasadas y visualiza la increíble fiesta que puedes tener.
                         </p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -90,8 +113,21 @@ export default function FiestasCumpleanosContent() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
-                        <Script src="https://js.hsforms.net/forms/embed/48545315.js" defer></Script>
-                        <div className="hs-form-frame" data-region="na1" data-form-id="ef6c0690-915a-47c1-84e9-5308f1284fd7" data-portal-id="48545315"></div>
+                        <Script
+                            src="https://js.hsforms.net/forms/embed/v2.js"
+                            strategy="afterInteractive"
+                            onLoad={() => {
+                                if ((window as any).hbspt) {
+                                    (window as any).hbspt.forms.create({
+                                        region: 'na1',
+                                        portalId: '48545315',
+                                        formId: 'ef6c0690-915a-47c1-84e9-5308f1284fd7',
+                                        target: '#hubspot-form-birthday'
+                                    });
+                                }
+                            }}
+                        />
+                        <div id="hubspot-form-birthday"></div>
                     </CardContent>
                 </Card>
             </div>
