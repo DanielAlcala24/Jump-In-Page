@@ -103,26 +103,28 @@ function PreciosPromocionesContentComponent() {
   return (
     <section id="content" className="w-full py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex p-1 bg-white dark:bg-gray-800 rounded-full shadow-md border">
-            <button
-              onClick={() => setSelectedCategory('Precios')}
-              className={`px-8 py-2 rounded-full text-base font-bold transition-all ${selectedCategory === 'Precios'
+        <div className="sticky top-14 z-30 py-4 mb-8">
+          <div className="flex justify-center">
+            <div className="inline-flex p-1 bg-white dark:bg-gray-800 rounded-full shadow-md border">
+              <button
+                onClick={() => setSelectedCategory('Precios')}
+                className={`px-8 py-2 rounded-full text-base font-bold transition-all ${selectedCategory === 'Precios'
                   ? 'bg-primary text-white shadow-lg'
                   : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-            >
-              Precios
-            </button>
-            <button
-              onClick={() => setSelectedCategory('Promociones')}
-              className={`px-8 py-2 rounded-full text-base font-bold transition-all ${selectedCategory === 'Promociones'
+                  }`}
+              >
+                Precios
+              </button>
+              <button
+                onClick={() => setSelectedCategory('Promociones')}
+                className={`px-8 py-2 rounded-full text-base font-bold transition-all ${selectedCategory === 'Promociones'
                   ? 'bg-primary text-white shadow-lg'
                   : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-            >
-              Promociones
-            </button>
+                  }`}
+              >
+                Promociones
+              </button>
+            </div>
           </div>
         </div>
 
