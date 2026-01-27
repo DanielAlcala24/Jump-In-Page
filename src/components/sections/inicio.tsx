@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { FerrisWheel, Cake, Briefcase, MapPin, Ticket, ChevronDown } from 'lucide-react';
+import { FerrisWheel, Cake, Briefcase, MapPin, Ticket, ChevronDown, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Inicio() {
@@ -32,6 +32,12 @@ export default function Inicio() {
             <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-orange-500/30 hover:bg-orange-500/40">
               <Ticket className="mr-2 h-5 w-5" />
               Promociones
+            </Button>
+          </Link>
+          <Link href="http://decmanager.com:140/" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-blue-500/30 hover:bg-blue-500/40">
+              <UserPlus className="mr-2 h-5 w-5" />
+              Registro digital
             </Button>
           </Link>
         </div>
