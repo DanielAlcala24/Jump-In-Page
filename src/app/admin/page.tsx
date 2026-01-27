@@ -106,7 +106,7 @@ export default function AdminDashboard() {
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <ImageComponent 
+          <ImageComponent
             src="/assets/logojumpin.png"
             alt="Jump-in Trampoline Park Logo"
             width={80}
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
             <p className="text-sm md:text-base text-gray-600 truncate">Bienvenido, {user.email}</p>
           </div>
         </div>
-        
+
         {/* Botón de menú móvil */}
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
             <SheetHeader>
               <SheetTitle className="flex items-center gap-3">
-                <ImageComponent 
+                <ImageComponent
                   src="/assets/logojumpin.png"
                   alt="Jump-in Trampoline Park Logo"
                   width={50}
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
                 <span className="text-lg">Panel de Administración</span>
               </SheetTitle>
             </SheetHeader>
-            <div className="mt-6 space-y-4">
+            <div className="mt-6 space-y-4 pb-10">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-gray-500">Usuario</p>
                 <p className="text-sm text-gray-700 break-words">{user.email}</p>
@@ -222,9 +222,9 @@ export default function AdminDashboard() {
                 </Link>
               </div>
               <Separator />
-              <Button 
-                variant="destructive" 
-                onClick={handleLogout} 
+              <Button
+                variant="destructive"
+                onClick={handleLogout}
                 className="w-full"
               >
                 <LogOut className="h-4 w-4 mr-2" />
@@ -235,8 +235,8 @@ export default function AdminDashboard() {
         </Sheet>
 
         {/* Botón de cerrar sesión en desktop */}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={handleLogout}
           className="hidden md:flex"
         >
@@ -428,48 +428,48 @@ export default function AdminDashboard() {
                 Subir Archivo Multimedia
               </Button>
             </Link>
-          <Link href="/admin/menu">
-            <Button className="w-full justify-start" variant="outline">
-              <Utensils className="h-4 w-4 mr-2" />
-              Gestionar Menú
-            </Button>
-          </Link>
-          <Link href="/admin/faq/new">
-            <Button className="w-full justify-start" variant="outline">
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Crear Nueva Pregunta
-            </Button>
-          </Link>
-          <Link href="/admin/atracciones">
-            <Button className="w-full justify-start" variant="outline">
-              <Zap className="h-4 w-4 mr-2" />
-              Gestionar Atracciones
-            </Button>
-          </Link>
-          <Link href="/admin/promociones">
-            <Button className="w-full justify-start" variant="outline">
-              <Tag className="h-4 w-4 mr-2" />
-              Gestionar Promociones
-            </Button>
-          </Link>
-          <Link href="/admin/sucursales">
-            <Button className="w-full justify-start" variant="outline">
-              <MapPin className="h-4 w-4 mr-2" />
-              Gestionar Sucursales
-            </Button>
-          </Link>
-          <Link href="/admin/popup">
-            <Button className="w-full justify-start" variant="outline">
-              <PanelTop className="h-4 w-4 mr-2" />
-              Configurar Popup
-            </Button>
-          </Link>
-          <Link href="/admin/usuarios">
-            <Button className="w-full justify-start" variant="outline">
-              <Users className="h-4 w-4 mr-2" />
-              Gestionar Usuarios
-            </Button>
-          </Link>
+            <Link href="/admin/menu">
+              <Button className="w-full justify-start" variant="outline">
+                <Utensils className="h-4 w-4 mr-2" />
+                Gestionar Menú
+              </Button>
+            </Link>
+            <Link href="/admin/faq/new">
+              <Button className="w-full justify-start" variant="outline">
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Crear Nueva Pregunta
+              </Button>
+            </Link>
+            <Link href="/admin/atracciones">
+              <Button className="w-full justify-start" variant="outline">
+                <Zap className="h-4 w-4 mr-2" />
+                Gestionar Atracciones
+              </Button>
+            </Link>
+            <Link href="/admin/promociones">
+              <Button className="w-full justify-start" variant="outline">
+                <Tag className="h-4 w-4 mr-2" />
+                Gestionar Promociones
+              </Button>
+            </Link>
+            <Link href="/admin/sucursales">
+              <Button className="w-full justify-start" variant="outline">
+                <MapPin className="h-4 w-4 mr-2" />
+                Gestionar Sucursales
+              </Button>
+            </Link>
+            <Link href="/admin/popup">
+              <Button className="w-full justify-start" variant="outline">
+                <PanelTop className="h-4 w-4 mr-2" />
+                Configurar Popup
+              </Button>
+            </Link>
+            <Link href="/admin/usuarios">
+              <Button className="w-full justify-start" variant="outline">
+                <Users className="h-4 w-4 mr-2" />
+                Gestionar Usuarios
+              </Button>
+            </Link>
             <Link href="/blog">
               <Button className="w-full justify-start" variant="outline">
                 <FileText className="h-4 w-4 mr-2" />
