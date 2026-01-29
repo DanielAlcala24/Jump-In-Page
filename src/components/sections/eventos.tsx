@@ -17,7 +17,7 @@ const eventItems = [
   {
     title: 'Eventos Empresariales',
     description: 'Fomenta el trabajo en equipo y desestresa a tu personal con una jornada llena de energía y actividades únicas.',
-    imageUrl: '/assets/g7.jpeg',
+    imageUrl: '/assets/teambuilding.jpg',
     imageHint: 'corporate event',
     buttonText: 'Ver Paquetes',
     href: '/fiestas-y-eventos/eventos-empresariales',

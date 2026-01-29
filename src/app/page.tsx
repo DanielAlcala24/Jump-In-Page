@@ -11,6 +11,7 @@ import SocialIcons from '@/components/social-icons';
 import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
 import WavyDivider from '@/components/wavy-divider';
+import PromocionesForm from '@/components/sections/promociones-form';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -91,6 +92,7 @@ export default function Home() {
         <div className="content-visibility-auto">
           <FaqServer />
         </div>
+        <PromocionesForm />
       </main>
       <WhatsappButton />
       <Footer />

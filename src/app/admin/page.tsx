@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop } from 'lucide-react'
+import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift } from 'lucide-react'
 import ImageComponent from 'next/image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [attractionsCount, setAttractionsCount] = useState(0)
   const [promotionsCount, setPromotionsCount] = useState(0)
   const [branchesCount, setBranchesCount] = useState(0)
+  const [leadsCount, setLeadsCount] = useState(0)
   const router = useRouter()
   const supabase = createClientComponentClient()
 
@@ -81,12 +82,14 @@ export default function AdminDashboard() {
 
       setPromotionsCount(promotionsCount || 0)
 
-      // Fetch branches count
-      const { count: branchesCount } = await supabase
-        .from('branches')
+      setBranchesCount(branchesCount || 0)
+
+      // Fetch leads count
+      const { count: leadsCount } = await supabase
+        .from('leads')
         .select('*', { count: 'exact', head: true })
 
-      setBranchesCount(branchesCount || 0)
+      setLeadsCount(leadsCount || 0)
 
     } catch (err) {
       console.error('Error fetching stats:', err)
@@ -202,6 +205,12 @@ export default function AdminDashboard() {
                   <Button variant="ghost" className="w-full justify-start">
                     <Users className="h-4 w-4 mr-2" />
                     Usuarios
+                  </Button>
+                </Link>
+                <Link href="/admin/leads" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Gift className="h-4 w-4 mr-2" />
+                    Registros (Leads)
                   </Button>
                 </Link>
               </div>
@@ -400,6 +409,25 @@ export default function AdminDashboard() {
             <Link href="/admin/usuarios" className="mt-4 block">
               <Button className="w-full bg-orange-500 hover:bg-orange-600">
                 Gestionar Usuarios
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* Leads Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Registros (Leads)</CardTitle>
+            <Gift className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{leadsCount}</div>
+            <p className="text-xs text-muted-foreground">
+              personas registradas
+            </p>
+            <Link href="/admin/leads" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Ver Registros
               </Button>
             </Link>
           </CardContent>

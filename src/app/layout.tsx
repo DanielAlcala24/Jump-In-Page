@@ -15,9 +15,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico?v=2' },
-      { url: '/assets/logojumpin.png?v=2', type: 'image/png' }
+      { url: '/assets/LogoFavicon.png?v=2', type: 'image/png' }
     ],
-    apple: { url: '/assets/logojumpin.png?v=2', sizes: '180x180' },
+    apple: { url: '/assets/LogoFavicon.png?v=2', sizes: '180x180' },
   },
   alternates: {
     canonical: './',
