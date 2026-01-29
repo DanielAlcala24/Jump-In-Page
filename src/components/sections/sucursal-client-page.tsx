@@ -374,7 +374,7 @@ export default function SucursalClientPage() {
                             <h3 className="font-headline text-3xl font-bold">Fiestas y Eventos en {sucursal.name}</h3>
                             <p className="max-w-2xl mx-auto my-4">Celebra tu cumpleaños o evento de empresa con nosotros para una experiencia inolvidable llena de diversión y adrenalina.</p>
                             <Button variant="secondary" size="lg" asChild>
-                                <Link href={`/fiestas-y-eventos`}>
+                                <Link href={`/fiestas-y-eventos/fiestas-cumpleanos`}>
                                     Cotizar mi Evento en {sucursal.name} <ArrowRight className="ml-2" />
                                 </Link>
                             </Button>
