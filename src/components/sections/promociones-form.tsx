@@ -23,6 +23,7 @@ const months = [
 export default function PromocionesForm() {
     const [branches, setBranches] = useState<Branch[]>([]);
     const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState(false);
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
@@ -54,6 +55,7 @@ export default function PromocionesForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setEmailError(false);
 
         try {
             // 1. Verificación de Email con Emailable (vía nuestra API interna)
@@ -62,6 +64,7 @@ export default function PromocionesForm() {
 
             if (!verifyData.isValid) {
                 toast.error('Por favor, ingresa un correo electrónico verídico y activo.');
+                setEmailError(true);
                 setLoading(false);
                 return;
             }
@@ -81,6 +84,7 @@ export default function PromocionesForm() {
                 birthday_month: '',
                 branch_id: ''
             });
+            setEmailError(false);
         } catch (error: any) {
             console.error('Error saving lead:', error);
             toast.error('Hubo un error al procesar tu registro. Por favor intenta de nuevo.');
@@ -132,18 +136,22 @@ export default function PromocionesForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="email" className="text-gray-700 flex items-center gap-2">
-                                    <Mail className="h-4 w-4 text-orange-500" /> Correo Electrónico
+                                <Label htmlFor="email" className={`${emailError ? 'text-red-500' : 'text-gray-700'} flex items-center gap-2 transition-colors`}>
+                                    <Mail className={`h-4 w-4 ${emailError ? 'text-red-500' : 'text-orange-500'}`} /> Correo Electrónico
                                 </Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     required
                                     placeholder="tu@correo.com"
-                                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:ring-orange-500 focus:border-orange-500 h-12"
+                                    className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12 transition-all ${emailError ? 'border-red-500 ring-1 ring-red-500 focus:border-red-600 focus:ring-red-600' : 'focus:ring-orange-500 focus:border-orange-500'}`}
                                     value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, email: e.target.value });
+                                        setEmailError(false);
+                                    }}
                                 />
+                                {emailError && <p className="text-xs text-red-500 mt-1">Este correo no parece ser válido.</p>}
                             </div>
 
                             <div className="space-y-2">
