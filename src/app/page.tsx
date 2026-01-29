@@ -92,6 +92,7 @@ export default function Home() {
         <div className="content-visibility-auto">
           <FaqServer />
         </div>
+        <WavyDivider fromColor="bg-gray-50" />
         <PromocionesForm />
       </main>
       <WhatsappButton />
