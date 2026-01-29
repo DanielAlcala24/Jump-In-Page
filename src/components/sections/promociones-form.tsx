@@ -56,6 +56,17 @@ export default function PromocionesForm() {
         setLoading(true);
 
         try {
+            // 1. Verificación de Email con Emailable (vía nuestra API interna)
+            const verifyRes = await fetch(`/api/verify-email?email=${encodeURIComponent(formData.email)}`);
+            const verifyData = await verifyRes.json();
+
+            if (!verifyData.isValid) {
+                toast.error('Por favor, ingresa un correo electrónico verídico y activo.');
+                setLoading(false);
+                return;
+            }
+
+            // 2. Registro en Supabase si el correo es válido
             const { error } = await supabase
                 .from('leads')
                 .insert([formData]);
@@ -72,7 +83,7 @@ export default function PromocionesForm() {
             });
         } catch (error: any) {
             console.error('Error saving lead:', error);
-            toast.error('Hubo un error al registrarte. Por favor intenta de nuevo.');
+            toast.error('Hubo un error al procesar tu registro. Por favor intenta de nuevo.');
         } finally {
             setLoading(false);
         }
