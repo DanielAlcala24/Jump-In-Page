@@ -129,7 +129,7 @@ export default function FiestasCumpleanosContent() {
                     <CardContent className="p-8">
                         <Script
                             src="https://js.hsforms.net/forms/embed/v2.js"
-                            strategy="afterInteractive"
+                            strategy="lazyOnload"
                             onLoad={() => {
                                 if ((window as any).hbspt) {
                                     (window as any).hbspt.forms.create({

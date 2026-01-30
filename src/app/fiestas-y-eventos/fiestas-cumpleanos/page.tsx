@@ -65,6 +65,7 @@ export default function FiestasCumpleanosPage() {
                 alt="Mascota Bongo"
                 width={50}
                 height={50}
+                priority
                 className="h-auto w-10 md:w-10"
               />
               <Image
@@ -72,6 +73,7 @@ export default function FiestasCumpleanosPage() {
                 alt="Mascota Maya"
                 width={50}
                 height={50}
+                priority
                 className="h-auto w-10 md:w-10"
               />
             </div>

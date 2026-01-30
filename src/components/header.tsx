@@ -133,6 +133,7 @@ export default function Header() {
             alt="Jump-in Trampoline Park Logo"
             width={120}
             height={120}
+            priority
             data-ai-hint="logo jump"
             className="h-auto"
           />
