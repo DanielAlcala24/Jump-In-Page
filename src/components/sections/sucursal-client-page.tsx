@@ -49,21 +49,21 @@ interface Branch {
     is_active: boolean;
 }
 
-export default function SucursalClientPage() {
+export default function SucursalClientPage({ initialData }: { initialData: Branch | null }) {
     const params = useParams();
     const slug = params.slug as string;
-    const [sucursal, setSucursal] = useState<Branch | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [sucursal, setSucursal] = useState<Branch | null>(initialData);
+    const [loading, setLoading] = useState(!initialData);
     const [attractionsLightbox, setAttractionsLightbox] = useState(false);
     const [pricesLightbox, setPricesLightbox] = useState(false);
     const [selectedImage, setSelectedImage] = useState({ list: 'attractions' as 'attractions' | 'prices', index: 0 });
     const supabase = createClientComponentClient();
 
     useEffect(() => {
-        if (slug) {
+        if (slug && !initialData) {
             fetchBranch();
         }
-    }, [slug]);
+    }, [slug, initialData]);
 
     const fetchBranch = async () => {
         try {
@@ -198,6 +198,7 @@ export default function SucursalClientPage() {
                                 alt="Mascota Bongo"
                                 width={50}
                                 height={50}
+                                priority
                                 className="h-auto w-10 md:w-20"
                             />
                             <Image
@@ -205,6 +206,7 @@ export default function SucursalClientPage() {
                                 alt="Mascota Maya"
                                 width={50}
                                 height={50}
+                                priority
                                 className="h-auto w-10 md:w-20"
                             />
                         </div>

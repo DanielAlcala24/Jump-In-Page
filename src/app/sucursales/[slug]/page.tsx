@@ -23,7 +23,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function SucursalPage() {
+export default async function SucursalPage({ params }: { params: { slug: string } }) {
+  const supabase = await createServerComponentClient();
+  const { data: sucursal } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('slug', params.slug)
+    .eq('is_active', true)
+    .single();
+
   return (
     <Suspense fallback={
       <div className="flex flex-col min-h-screen">
@@ -38,7 +46,7 @@ export default function SucursalPage() {
         <Footer />
       </div>
     }>
-      <SucursalClientPage />
+      <SucursalClientPage initialData={sucursal} />
     </Suspense>
   );
 }
