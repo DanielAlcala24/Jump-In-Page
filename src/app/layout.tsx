@@ -8,10 +8,10 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'),
   title: {
-    default: 'Jump-In | El Primer Trampoline Park en México',
+    default: 'Jump-In | Parque de Trampolines y Trampoline Park en México',
     template: '%s | Jump-In'
   },
-  description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.',
+  description: 'Jump-In: El mejor parque de trampolines y trampoline park en México. Diversión familiar, fiestas de cumpleaños y el mejor entretenimiento.',
   icons: {
     icon: [
       { url: '/favicon.ico?v=2' },

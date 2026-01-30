@@ -17,9 +17,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!sucursal) return { title: 'Sucursal no encontrada' };
 
   return {
-    title: `Sucursal ${sucursal.name}`,
-    description: `Visita Jump-In ${sucursal.name} en ${sucursal.state}. ${sucursal.address}. ¡Reserva tu lugar ahora!`,
-    keywords: `Jump-In ${sucursal.name}, sucursal ${sucursal.name}, trampoline park ${sucursal.state}, donde ir en ${sucursal.name}`,
+    title: `Sucursal ${sucursal.name} | Parque de Trampolines y Trampoline Park`,
+    description: `Visita Jump-In ${sucursal.name}, el mejor parque de trampolines y trampoline park en ${sucursal.state}. ${sucursal.address}. ¡Reserva tu lugar ahora!`,
+    keywords: `parque de trampolines ${sucursal.name}, Jump-In ${sucursal.name}, sucursal ${sucursal.name}, trampoline park ${sucursal.state}, donde ir en ${sucursal.state}, saltos méxico`,
   };
 }
 

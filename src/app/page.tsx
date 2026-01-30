@@ -15,12 +15,12 @@ import PromocionesForm from '@/components/sections/promociones-form';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Jump-In | El Primer Trampoline Park en México',
-  description: 'Jump-In: El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia. Ven a saltar, reír y pasarla increíble.',
-  keywords: 'trampoline park, parque de trampolines, diversión familiar, entretenimiento, deporte, México, Ciudad de México, CDMX, Jump-In, Jumpin, Jumping, sucursales, quiénes somos',
+  title: 'Jump-In | Parque de Trampolines y Trampoline Park en México',
+  description: 'Jump-In es el parque de trampolines y trampoline park líder en México. Ofrecemos diversión familiar, fiestas de cumpleaños inolvidables y las mejores atracciones de salto.',
+  keywords: 'parque de trampolines, trampoline park, Jump-In, diversión familia México, fiestas de cumpleaños, saltar, entrenamiento cdmx, parque de diversiones, trampolines méxico',
   openGraph: {
-    title: 'Jump-In | El Primer Trampoline Park en México',
-    description: 'Diversión, entretenimiento y deporte para toda la familia',
+    title: 'Jump-In | El Mejor Parque de Trampolines en México',
+    description: 'La mejor experiencia de salto en México para toda la familia.',
     type: 'website',
     url: 'https://jumpin.com.mx',
     images: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         url: '/assets/logojumpin.png',
         width: 1200,
         height: 630,
-        alt: 'Jump-In Trampoline Park',
+        alt: 'Jump-In Parque de Trampolines',
       },
     ],
   },
@@ -36,6 +36,23 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AmusementPark",
+    "name": "Jump-In",
+    "description": "El mejor parque de trampolines en México con múltiples sucursales, atracciones y paquetes para fiestas.",
+    "url": "https://jumpin.com.mx",
+    "logo": "https://jumpin.com.mx/assets/logojumpin.png",
+    "sameAs": [
+      "https://www.facebook.com/JumpInMexico",
+      "https://www.instagram.com/jumpinmexico"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "MX"
+    }
+  };
+
+  const navJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": [
@@ -71,6 +88,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(navJsonLd) }}
       />
       <VideoBackground />
       <Header />
