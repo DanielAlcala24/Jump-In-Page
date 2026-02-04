@@ -165,13 +165,7 @@ function PreciosPromocionesContentComponent() {
 
         {selectedCategory === 'Promociones' && (
           <>
-            <div className="mb-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-md shadow">
-              <div className="flex items-center">
-                <AlertTriangle className="h-6 w-6 mr-3" />
-                <p className="font-bold text-lg">Importante</p>
-              </div>
-              <p className="mt-2 text-base">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
-            </div>
+
             {loadingPromotions ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
@@ -218,6 +212,14 @@ function PreciosPromocionesContentComponent() {
                 ))}
               </div>
             )}
+
+            <div className="mt-12 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 rounded-lg shadow-sm max-w-2xl mx-auto">
+              <div className="flex items-center gap-2 mb-1">
+                <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                <p className="font-bold text-sm">Importante</p>
+              </div>
+              <p className="text-xs opacity-90">'En temporada vacacional y días festivos las promociones entre semana no aplican'.</p>
+            </div>
             {/* Lightbox para Promociones */}
             <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
               <DialogContent className="bg-black/90 border-none p-0 max-w-none w-screen h-screen flex items-center justify-center">

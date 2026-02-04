@@ -12,7 +12,7 @@ import Image from 'next/image';
 export default function TerminosCondicionesPage() {
   const terms = [
     "Válida en todas las sucursales de Jump-In.",
-    "EL uso de calceta antiderrapante para nuestras instalaciones y atracciones es de carácter obligatorio.",
+    "El uso de calceta antiderrapante para nuestras instalaciones y atracciones es de carácter obligatorio.",
     "Sujeto a disponibilidad, aforo y horario de la sucursal.",
     "Los horarios están sujetos a cambios sin previo aviso.",
     "Para el ingreso a nuestras instalaciones es necesario portar cubrebocas de manera correcta y cumplir con las medidas sanitarias establecidas.",
@@ -50,14 +50,14 @@ export default function TerminosCondicionesPage() {
     "Sólo aplica en paquete de personas que pasan a saltar.",
     "El descuento sólo aplica en el paquete cotizado, los extras cotizados a manera posterior se cobran a precio de lista.",
     "El descuento sólo se aplica si se reserva con un 50% del monto total cotizado.",
-    "una vez realizada la reservación, no hay devoluciones.",
+    "Una vez realizada la reservación, no hay devoluciones.",
   ];
 
   const cupones = [
     "Su uso es personal.",
-    "no aplica en grupos mayores a 6 personas.",
+    "No aplica en grupos mayores a 6 personas.",
     "La vigencia no es negociable.",
-    "no son canjeables por dinero en efectivo.",
+    "No son canjeables por dinero en efectivo.",
     "Cupón o Diplomas estudiantiles (CD 10, SNTE y otros). Es indispensalle que esté sellado por la onstutución que emite, sólo aplican en grados menores a bachillerato, no aplica en grupos mayores a 6 personas. Es necesario presentar credencial de estudiante.",
   ];
 
