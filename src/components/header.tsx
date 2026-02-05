@@ -14,9 +14,10 @@ import { searchContent, SearchResult } from "@/lib/search";
 import { useRouter } from "next/navigation";
 
 const navLinks = [
+  { href: "/fiestas-y-eventos/fiestas-cumpleanos", label: "Fiestas de cumpleaños", featured: true },
+  { href: "/fiestas-y-eventos/eventos-empresariales", label: "Eventos empresariales" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/compromiso-social", label: "Compromiso Social" },
-  { href: "/fiestas-y-eventos", label: "Fiestas y eventos empresariales" },
   { href: "/atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
   { href: "/precios-y-promociones", label: "Precios y promociones" },
@@ -217,7 +218,12 @@ export default function Header() {
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110 text-center"
+                  className={cn(
+                    "transition-transform duration-300 ease-in-out hover:scale-110 text-center",
+                    link.featured
+                      ? "text-base font-extrabold text-background mb-1"
+                      : "text-sm font-medium text-background"
+                  )}
                 >
                   {link.label}
                 </Link>
@@ -338,7 +344,12 @@ export default function Header() {
                           href={link.href}
                           target={link.external ? "_blank" : undefined}
                           rel={link.external ? "noopener noreferrer" : undefined}
-                          className="text-sm font-medium text-background transition-transform duration-300 ease-in-out hover:scale-110"
+                          className={cn(
+                            "transition-transform duration-300 ease-in-out hover:scale-110",
+                            link.featured
+                              ? "text-lg font-extrabold text-background"
+                              : "text-sm font-medium text-background"
+                          )}
                         >
                           {link.label}
                         </Link>

@@ -90,9 +90,15 @@ const staticSections: SearchResult[] = [
   },
   {
     type: 'page',
-    title: 'Fiestas y Eventos',
-    description: 'Organiza tu fiesta o evento con nosotros',
-    href: '/fiestas-y-eventos'
+    title: 'Fiestas de Cumpleaños',
+    description: 'Celebra tu cumpleaños con nosotros en Jump-In',
+    href: '/fiestas-y-eventos/fiestas-cumpleanos'
+  },
+  {
+    type: 'page',
+    title: 'Eventos Empresariales',
+    description: 'Organiza tu evento corporativo o de teambuilding con nosotros',
+    href: '/fiestas-y-eventos/eventos-empresariales'
   }
 ]
 
@@ -108,7 +114,7 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
   staticSections.forEach(section => {
     const titleMatch = section.title.toLowerCase().includes(searchTerm)
     const descMatch = section.description?.toLowerCase().includes(searchTerm)
-    
+
     if (titleMatch || descMatch) {
       results.push(section)
     }
@@ -189,10 +195,10 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
   results.sort((a, b) => {
     const aTitleMatch = a.title.toLowerCase().includes(searchTerm)
     const bTitleMatch = b.title.toLowerCase().includes(searchTerm)
-    
+
     if (aTitleMatch && !bTitleMatch) return -1
     if (!aTitleMatch && bTitleMatch) return 1
-    
+
     return 0
   })
 

@@ -26,12 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/fiestas-y-eventos`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
       url: `${baseUrl}/fiestas-y-eventos/fiestas-cumpleanos`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
