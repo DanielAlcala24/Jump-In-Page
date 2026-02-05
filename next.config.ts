@@ -18,9 +18,6 @@ const supabaseHostname = getSupabaseHostname();
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental: {
-    nodeMiddleware: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
