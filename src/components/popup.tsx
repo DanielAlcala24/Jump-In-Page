@@ -8,6 +8,9 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 
+// Memory cache to avoid redundant database hits during the same session
+let cachedPopupConfig: { is_active: boolean, images: string[] } | null = null;
+
 export default function Popup() {
   const [isOpen, setIsOpen] = useState(false)
   const [images, setImages] = useState<string[]>([])
@@ -26,14 +29,15 @@ export default function Popup() {
       return
     }
 
-    // Check if the user has already seen the popup in this session
-    const popupKey = `popup_seen_${pathname}`
-    const hasSeenPopup = sessionStorage.getItem(popupKey)
-
-    // Optimization: If already seen, don't even fetch from Supabase
-    if (hasSeenPopup) {
+    // Optimization: If we already have the config in memory, use it
+    if (cachedPopupConfig) {
+      if (cachedPopupConfig.is_active && cachedPopupConfig.images.length > 0) {
+        setImages(cachedPopupConfig.images)
+        setIsOpen(true)
+      } else {
+        setIsOpen(false)
+      }
       setIsLoading(false)
-      setIsOpen(false)
       return
     }
 
@@ -49,15 +53,19 @@ export default function Popup() {
         if (error.code !== 'PGRST116') {
           console.error('Error fetching popup config:', error)
         }
+        cachedPopupConfig = { is_active: false, images: [] }
         setIsOpen(false)
         return
       }
 
-      if (data && data.is_active && data.images && data.images.length > 0) {
-        setImages(data.images)
-        setIsOpen(true)
-      } else {
-        setIsOpen(false)
+      if (data) {
+        cachedPopupConfig = { is_active: data.is_active, images: data.images || [] }
+        if (data.is_active && data.images && data.images.length > 0) {
+          setImages(data.images)
+          setIsOpen(true)
+        } else {
+          setIsOpen(false)
+        }
       }
     } catch (err) {
       console.error('Error fetching popup config:', err)
@@ -68,13 +76,18 @@ export default function Popup() {
   }, [pathname, supabase])
 
   useEffect(() => {
+    // Reset image index when navigating back to home
+    if (pathname === '/') {
+      setCurrentImageIndex(0)
+    }
+
     // Optimization: Delay the popup check slightly to prioritize main content LCP
     const timer = setTimeout(() => {
       fetchPopupConfig()
-    }, 1500)
+    }, 1200) // Slightly reduced delay for better feel on return
 
     return () => clearTimeout(timer)
-  }, [fetchPopupConfig])
+  }, [fetchPopupConfig, pathname])
 
   // Preload next image if there are multiple images
   useEffect(() => {
@@ -87,9 +100,6 @@ export default function Popup() {
 
   const handleClose = () => {
     setIsOpen(false)
-    if (pathname === '/') {
-      sessionStorage.setItem(`popup_seen_${pathname}`, 'true')
-    }
   }
 
   const handlePrevious = () => {
