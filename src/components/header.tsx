@@ -14,10 +14,10 @@ import { searchContent, SearchResult } from "@/lib/search";
 import { useRouter } from "next/navigation";
 
 const navLinks = [
-  { href: "/fiestas-y-eventos/fiestas-cumpleanos", label: "Fiestas de cumpleaños", featured: true },
-  { href: "/fiestas-y-eventos/eventos-empresariales", label: "Eventos empresariales" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/compromiso-social", label: "Compromiso Social" },
+  { href: "/fiestas-y-eventos/fiestas-cumpleanos", label: "Fiestas de cumpleaños", featured: true },
+  { href: "/fiestas-y-eventos/eventos-empresariales", label: "Eventos empresariales" },
   { href: "/atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
   { href: "/precios-y-promociones", label: "Precios y promociones" },
