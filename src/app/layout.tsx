@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { SonnerToaster } from '@/components/sonner-toaster';
-import Popup from '@/components/popup';
 import Script from 'next/script';
+import dynamic from 'next/dynamic';
+
+const Popup = dynamic(() => import('@/components/popup'), { ssr: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'),

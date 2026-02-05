@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -14,17 +14,29 @@ export default function Popup() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const pathname = usePathname()
-  const supabase = createClientComponentClient()
 
-  useEffect(() => {
-    // Si estamos en la página principal, limpiar el flag del popup para que se muestre de nuevo
-    if (pathname === '/') {
-      sessionStorage.removeItem('popup_seen_/')
+  // Memoize Supabase client to avoid unnecessary re-initialization
+  const supabase = useMemo(() => createClientComponentClient(), [])
+
+  const fetchPopupConfig = useCallback(async () => {
+    // The popup is only intended for the home page
+    if (pathname !== '/') {
+      setIsLoading(false)
+      setIsOpen(false)
+      return
     }
-    fetchPopupConfig()
-  }, [pathname])
 
-  const fetchPopupConfig = async () => {
+    // Check if the user has already seen the popup in this session
+    const popupKey = `popup_seen_${pathname}`
+    const hasSeenPopup = sessionStorage.getItem(popupKey)
+
+    // Optimization: If already seen, don't even fetch from Supabase
+    if (hasSeenPopup) {
+      setIsLoading(false)
+      setIsOpen(false)
+      return
+    }
+
     try {
       setIsLoading(true)
       const { data, error } = await supabase
@@ -33,44 +45,48 @@ export default function Popup() {
         .single()
 
       if (error) {
-        // Si no existe la configuración, no mostrar popup
-        if (error.code === 'PGRST116') {
-          setIsOpen(false)
-          return
+        // PGRST116 means no rows found, which is fine
+        if (error.code !== 'PGRST116') {
+          console.error('Error fetching popup config:', error)
         }
-        console.error('Error fetching popup config:', error)
         setIsOpen(false)
         return
       }
 
       if (data && data.is_active && data.images && data.images.length > 0) {
         setImages(data.images)
-        // Solo mostrar el popup en la página principal (ruta "/")
-        // Y solo si no se ha cerrado en esta visita a la página principal
-        if (pathname === '/') {
-          const popupKey = `popup_seen_${pathname}`
-          const hasSeenPopup = sessionStorage.getItem(popupKey)
-          if (!hasSeenPopup) {
-            setIsOpen(true)
-          }
-        } else {
-          setIsOpen(false)
-        }
+        setIsOpen(true)
       } else {
         setIsOpen(false)
       }
     } catch (err) {
-      console.error('Error:', err)
+      console.error('Error fetching popup config:', err)
       setIsOpen(false)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [pathname, supabase])
+
+  useEffect(() => {
+    // Optimization: Delay the popup check slightly to prioritize main content LCP
+    const timer = setTimeout(() => {
+      fetchPopupConfig()
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [fetchPopupConfig])
+
+  // Preload next image if there are multiple images
+  useEffect(() => {
+    if (images.length > 1) {
+      const nextIndex = (currentImageIndex + 1) % images.length
+      const img = new (window as any).Image()
+      img.src = images[nextIndex]
+    }
+  }, [currentImageIndex, images])
 
   const handleClose = () => {
     setIsOpen(false)
-    // Marcar que el usuario ya vio el popup en esta visita a la página principal
-    // Usar una clave específica para la ruta actual
     if (pathname === '/') {
       sessionStorage.setItem(`popup_seen_${pathname}`, 'true')
     }
@@ -98,64 +114,70 @@ export default function Popup() {
         handleClose()
       }
     }}>
-      <DialogContent className="max-w-[100vw] md:max-w-4xl w-full md:w-fit p-0 bg-transparent border-none shadow-none">
-        <div className="relative flex items-center justify-center bg-transparent overflow-hidden sm:rounded-lg shadow-2xl">
-          {/* Botón de cerrar */}
+      <DialogContent className="max-w-[95vw] md:max-w-4xl w-full md:w-fit p-0 bg-transparent border-none shadow-none focus:outline-none overflow-hidden">
+        <div className="relative flex items-center justify-center bg-transparent sm:rounded-lg overflow-hidden">
+          {/* Close Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 z-50 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
+            className="absolute top-2 right-2 z-50 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all duration-200 hover:scale-110 active:scale-95 border border-white/10"
             onClick={handleClose}
+            aria-label="Cerrar modal"
           >
             <X className="h-5 w-5" />
           </Button>
 
-          {/* Contenedor de imagen */}
-          <div className="relative max-h-[85vh] w-full flex items-center justify-center bg-gray-900/10">
-            <img
+          {/* Image Container with aspect-ratio protection and next/image optimization */}
+          <div className="relative max-h-[85vh] w-full flex items-center justify-center bg-black/5 min-h-[200px] min-w-[200px]">
+            <Image
               src={images[currentImageIndex]}
-              alt={`Popup image ${currentImageIndex + 1}`}
-              className="max-w-full max-h-[85vh] h-auto w-auto object-contain rounded-lg"
+              alt={`Promoción Jump-In ${currentImageIndex + 1}`}
+              width={1200}
+              height={1200}
+              priority
+              quality={85}
+              className="max-w-full max-h-[85vh] h-auto w-auto object-contain rounded-lg shadow-2xl transition-opacity duration-300"
+              onLoadingComplete={() => setIsLoading(false)}
             />
           </div>
 
-          {/* Controles de navegación si hay múltiples imágenes */}
+          {/* Navigation Controls */}
           {images.length > 1 && (
             <>
-              {/* Botón anterior */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors h-10 w-10 md:h-12 md:w-12"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors h-10 w-10 md:h-12 md:w-12 backdrop-blur-sm"
                 onClick={handlePrevious}
+                aria-label="Imagen anterior"
               >
                 <ChevronLeft className="h-8 w-8" />
               </Button>
 
-              {/* Botón siguiente */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors h-10 w-10 md:h-12 md:w-12"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors h-10 w-10 md:h-12 md:w-12 backdrop-blur-sm"
                 onClick={handleNext}
+                aria-label="Siguiente imagen"
               >
                 <ChevronRight className="h-8 w-8" />
               </Button>
 
-              {/* Indicadores de imágenes */}
+              {/* Pagination Dots */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
                 {images.map((_, index) => (
                   <button
                     key={index}
-                    className={`h-2 rounded-full transition-all ${index === currentImageIndex
-                      ? 'w-10 bg-orange-500 shadow-lg'
-                      : 'w-2 bg-white/50 hover:bg-white/80'
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentImageIndex
+                      ? 'w-10 bg-orange-500 shadow-orange-500/50 shadow-lg'
+                      : 'w-2 bg-white/40 hover:bg-white/70'
                       }`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setCurrentImageIndex(index);
                     }}
-                    aria-label={`Ir a imagen ${index + 1}`}
+                    aria-label={`Ver imagen ${index + 1}`}
                   />
                 ))}
               </div>
