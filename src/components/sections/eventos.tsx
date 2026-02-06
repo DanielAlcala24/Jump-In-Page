@@ -26,7 +26,7 @@ const eventItems = [
   {
     title: 'Nuestras Sucursales',
     description: 'Encuentra el Jump-In más cercano y prepárate para la acción. ¡Siempre hay uno cerca de ti esperándote!',
-    imageUrl: '/assets/g1.jpg',
+    imageUrl: '/assets/sucursales1.jpg',
     imageHint: 'trampoline park',
     buttonText: 'Encontrar Sucursal',
     href: '/sucursales',
@@ -35,7 +35,7 @@ const eventItems = [
   {
     title: 'Nuestras Atracciones',
     description: 'Desde albercas de espuma hasta paredes de escalada, descubre todas las emocionantes áreas que tenemos para ti.',
-    imageUrl: '/assets/g1.jpg',
+    imageUrl: '/assets/atracciones1.jpeg',
     imageHint: 'climbing wall',
     buttonText: 'Explorar Atracciones',
     href: '/atracciones',
