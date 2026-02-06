@@ -9,22 +9,22 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="space-y-4">
-             <Image 
-                src="/assets/logojumpin.png"
-                alt="Jump-in Trampoline Park Logo"
-                width={90}
-                height={90}
-                data-ai-hint="logo jump"
-                className="h-auto"
-              />
-             <p className="text-sm text-gray-400">
-                El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.
-             </p>
+            <Image
+              src="/assets/logojumpin.png"
+              alt="Jump-in Trampoline Park Logo"
+              width={90}
+              height={90}
+              data-ai-hint="logo jump"
+              className="h-auto"
+            />
+            <p className="text-sm text-gray-400">
+              El Primer Trampoline Park en México. Diversión, entretenimiento y deporte para toda la familia.
+            </p>
           </div>
           <div>
             <h3 className="text-lg font-bold mb-4 font-headline">Enlaces Rápidos</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="hover:text-orange-500 transition-colors">Facturación</Link></li>
+              <li><Link href="/facturacion" className="hover:text-orange-500 transition-colors">Facturación</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Contacto</Link></li>
               <li><Link href="#" className="hover:text-orange-500 transition-colors">Trabaja con nosotros</Link></li>
               <li><Link href="/aviso-de-privacidad" className="hover:text-orange-500 transition-colors">Aviso de Privacidad</Link></li>
