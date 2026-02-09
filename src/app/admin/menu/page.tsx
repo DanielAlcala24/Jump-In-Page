@@ -21,9 +21,15 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Plus, Edit, Trash2, Home, Tag } from 'lucide-react'
+import { Plus, Edit, Trash2, Home, Tag, ArrowUp, ArrowDown } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
+
+interface Category {
+  id: string
+  name: string
+  order_index: number
+}
 
 interface MenuItem {
   id: string
@@ -33,6 +39,7 @@ interface MenuItem {
   category: string
   image_url: string
   image_hint?: string
+  order_index?: number
   created_at: string
 }
 
@@ -40,6 +47,7 @@ const DEFAULT_IMAGE = '/assets/menu/alimentos/alitas.png'
 
 export default function MenuAdminPage() {
   const [items, setItems] = useState<MenuItem[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState('')
@@ -49,8 +57,14 @@ export default function MenuAdminPage() {
 
   useEffect(() => {
     checkUser()
-    fetchMenuItems()
+    fetchData()
   }, [])
+
+  const fetchData = async () => {
+    setLoading(true)
+    await Promise.all([fetchMenuItems(), fetchCategories()])
+    setLoading(false)
+  }
 
   const checkUser = async () => {
     const {
@@ -65,10 +79,10 @@ export default function MenuAdminPage() {
 
   const fetchMenuItems = async () => {
     try {
-      setLoading(true)
       const { data, error } = await supabase
         .from('menu_items')
         .select('*')
+        .order('order_index', { ascending: true })
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -80,9 +94,89 @@ export default function MenuAdminPage() {
     } catch (err) {
       console.error('Error:', err)
       setError('No se pudieron cargar los elementos del menú')
-    } finally {
-      setLoading(false)
     }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('menu_categories')
+        .select('*')
+        .order('order_index', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching categories:', error)
+        // Si la tabla no existe aún, las derivamos de los items
+      } else {
+        setCategories(data || [])
+      }
+    } catch (err) {
+      console.error('Error fetching categories:', err)
+    }
+  }
+
+  const handleMoveProduct = async (item: MenuItem, direction: 'up' | 'down') => {
+    const currentItems = [...items]
+    const index = currentItems.findIndex((i) => i.id === item.id)
+    if (index === -1) return
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= currentItems.length) return
+
+    const otherItem = currentItems[newIndex]
+
+    // Intercambiar order_index
+    const tempOrder = item.order_index || 0
+    const newOrder = otherItem.order_index || 0
+
+    const { error } = await supabase
+      .from('menu_items')
+      .update({ order_index: newOrder || index + (direction === 'up' ? -1 : 1) })
+      .eq('id', item.id)
+
+    if (error) {
+      toast.error('Error al mover el producto')
+      return
+    }
+
+    await supabase
+      .from('menu_items')
+      .update({ order_index: tempOrder || index })
+      .eq('id', otherItem.id)
+
+    fetchMenuItems()
+    toast.success('Orden actualizado')
+  }
+
+  const handleMoveCategory = async (category: Category, direction: 'up' | 'down') => {
+    const index = categories.findIndex((c) => c.id === category.id)
+    if (index === -1) return
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= categories.length) return
+
+    const otherCategory = categories[newIndex]
+
+    const tempOrder = category.order_index
+    const newOrder = otherCategory.order_index
+
+    const { error } = await supabase
+      .from('menu_categories')
+      .update({ order_index: newOrder })
+      .eq('id', category.id)
+
+    if (error) {
+      toast.error('Error al mover la categoría')
+      return
+    }
+
+    await supabase
+      .from('menu_categories')
+      .update({ order_index: tempOrder })
+      .eq('id', otherCategory.id)
+
+    fetchCategories()
+    toast.success('Orden de categoría actualizado')
   }
 
   const handleDelete = async (id: string) => {
@@ -108,7 +202,7 @@ export default function MenuAdminPage() {
   const handleDeleteCategory = async (categoryToDelete: string) => {
     // Verificar si hay platillos usando esta categoría
     const itemsInCategory = items.filter((item) => item.category === categoryToDelete)
-    
+
     if (itemsInCategory.length > 0) {
       toast.error(
         `No se puede eliminar la categoría "${categoryToDelete}" porque tiene ${itemsInCategory.length} platillo(s) asociado(s). Primero mueve o elimina esos platillos.`
@@ -122,11 +216,13 @@ export default function MenuAdminPage() {
     if (filterCategory === categoryToDelete) {
       setFilterCategory('Todas')
     }
-    
+
     toast.success(`Categoría "${categoryToDelete}" eliminada (no tenía platillos asociados)`)
   }
 
-  const categories = useMemo(() => {
+  const categoriesList = useMemo(() => {
+    if (categories.length > 0) return categories.map(c => c.name)
+
     const unique = Array.from(
       new Set(
         items
@@ -135,17 +231,17 @@ export default function MenuAdminPage() {
       )
     )
     return unique
-  }, [items])
+  }, [items, categories])
 
   useEffect(() => {
     if (
       filterCategory !== 'Todas' &&
-      categories.length > 0 &&
-      !categories.includes(filterCategory)
+      categoriesList.length > 0 &&
+      !categoriesList.includes(filterCategory)
     ) {
       setFilterCategory('Todas')
     }
-  }, [categories, filterCategory])
+  }, [categoriesList, filterCategory])
 
   const filteredItems =
     filterCategory === 'Todas'
@@ -210,7 +306,7 @@ export default function MenuAdminPage() {
                         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       >
                         <option value="Todas">Todas</option>
-                        {categories.map((category) => (
+                        {categoriesList.map((category) => (
                           <option key={category} value={category}>
                             {category}
                           </option>
@@ -218,7 +314,7 @@ export default function MenuAdminPage() {
                       </select>
                     </div>
                   </div>
-                  
+
                   {/* Sección de gestión de categorías */}
                   <Card className="mb-4 border-dashed">
                     <CardHeader className="pb-3">
@@ -227,36 +323,68 @@ export default function MenuAdminPage() {
                         Gestionar Categorías
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Elimina categorías que no tengan platillos asociados
+                        Ordena las categorías y elimina las que no tengan platillos asociados
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-wrap gap-2">
-                        {categories.map((cat) => {
-                          const itemsInCategory = items.filter((item) => item.category === cat).length
-                          return (
+                        {categories.length > 0 ? (
+                          categories.map((cat, idx) => {
+                            const itemsInCategory = items.filter((item) => item.category === cat.name).length
+                            return (
+                              <div
+                                key={cat.id}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md border"
+                              >
+                                <div className="flex flex-col">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-4 w-4 p-0"
+                                    onClick={() => handleMoveCategory(cat, 'up')}
+                                    disabled={idx === 0}
+                                  >
+                                    <ArrowUp className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-4 w-4 p-0"
+                                    onClick={() => handleMoveCategory(cat, 'down')}
+                                    disabled={idx === categories.length - 1}
+                                  >
+                                    <ArrowDown className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                                <span className="text-sm font-medium">{cat.name}</span>
+                                <span className="text-xs text-gray-500">
+                                  ({itemsInCategory} platillo{itemsInCategory !== 1 ? 's' : ''})
+                                </span>
+                                {itemsInCategory === 0 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDeleteCategory(cat.name)}
+                                    className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                )}
+                              </div>
+                            )
+                          })
+                        ) : (
+                          categoriesList.map((catName) => (
                             <div
-                              key={cat}
+                              key={catName}
                               className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md border"
                             >
-                              <span className="text-sm font-medium">{cat}</span>
-                              <span className="text-xs text-gray-500">
-                                ({itemsInCategory} platillo{itemsInCategory !== 1 ? 's' : ''})
-                              </span>
-                              {itemsInCategory === 0 && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDeleteCategory(cat)}
-                                  className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              )}
+                              <span className="text-sm font-medium">{catName}</span>
+                              <p className="text-[10px] text-orange-600 ml-2">Ejecuta el SQL para ordenar</p>
                             </div>
-                          )
-                        })}
+                          ))
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -283,6 +411,7 @@ export default function MenuAdminPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Imagen</TableHead>
+                      <TableHead>Orden</TableHead>
                       <TableHead>Nombre</TableHead>
                       <TableHead>Categoría</TableHead>
                       <TableHead>Precio</TableHead>
@@ -301,6 +430,26 @@ export default function MenuAdminPage() {
                               fill
                               className="object-cover"
                             />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleMoveProduct(item, 'up')}
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleMoveProduct(item, 'down')}
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="font-medium">{item.title}</TableCell>

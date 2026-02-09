@@ -56,13 +56,13 @@ export default function NewMenuItemPage() {
 
           // Combinar categorías existentes con las predeterminadas
           const allCategories = Array.from(new Set([...DEFAULT_CATEGORIES, ...unique]))
-          
+
           setCategories((prevCategories) => {
             // Mantener cualquier categoría nueva que el usuario haya creado
             const combined = Array.from(new Set([...allCategories, ...prevCategories]))
             return combined
           })
-          
+
           // Solo resetear la categoría si no hay ninguna seleccionada o si la actual no existe en ninguna lista
           setCategory((prevCategory) => {
             if (!prevCategory) {
@@ -103,7 +103,7 @@ export default function NewMenuItemPage() {
 
     // Asegurarse de que category tenga el valor correcto
     const categoryToSave = category.trim()
-    
+
     if (!title || !description || !price || !categoryToSave) {
       setError('Todos los campos obligatorios deben estar completos')
       return
@@ -116,6 +116,36 @@ export default function NewMenuItemPage() {
 
     setLoading(true)
     try {
+      // 1. Asegurarse de que la categoría exista en la tabla de categorías
+      const { data: catExists } = await supabase
+        .from('menu_categories')
+        .select('id')
+        .eq('name', categoryToSave)
+
+      if (!catExists || catExists.length === 0) {
+        const { data: maxCat } = await supabase
+          .from('menu_categories')
+          .select('order_index')
+          .order('order_index', { ascending: false })
+          .limit(1)
+
+        const newCatOrder = maxCat && maxCat.length > 0 ? (maxCat[0].order_index + 10) : 0
+
+        await supabase.from('menu_categories').insert([{
+          name: categoryToSave,
+          order_index: newCatOrder
+        }])
+      }
+
+      // 2. Obtener el max order_index para el nuevo platillo
+      const { data: maxItem } = await supabase
+        .from('menu_items')
+        .select('order_index')
+        .order('order_index', { ascending: false })
+        .limit(1)
+
+      const newItemOrder = maxItem && maxItem.length > 0 ? (maxItem[0].order_index + 10) : 0
+
       const dataToInsert = {
         title: title.trim(),
         description: description.trim(),
@@ -123,11 +153,12 @@ export default function NewMenuItemPage() {
         category: categoryToSave,
         image_url: imageUrl.trim(),
         image_hint: imageHint.trim(),
+        order_index: newItemOrder,
         created_at: new Date().toISOString()
       }
-      
+
       console.log('Datos a insertar:', dataToInsert)
-      
+
       const { data, error } = await supabase.from('menu_items').insert([dataToInsert]).select()
 
       if (error) {

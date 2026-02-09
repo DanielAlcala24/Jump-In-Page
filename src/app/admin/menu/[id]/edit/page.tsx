@@ -76,7 +76,7 @@ export default function EditMenuItemPage() {
           // Combinar categorías existentes con las predeterminadas
           const allCategories = Array.from(new Set([...DEFAULT_CATEGORIES, ...unique]))
           setCategories(allCategories)
-          
+
           // Si la categoría actual del platillo no está en la lista, asegurarse de que esté
           if (category && !allCategories.includes(category)) {
             setCategories([...allCategories, category])
@@ -127,7 +127,7 @@ export default function EditMenuItemPage() {
       setCategory(itemCategory)
       setImageUrl(data.image_url || '')
       setImageHint(data.image_hint || '')
-      
+
       // Asegurarse de que la categoría del platillo esté en la lista
       setCategories((prevCategories) => {
         if (itemCategory && !prevCategories.includes(itemCategory)) {
@@ -154,6 +154,27 @@ export default function EditMenuItemPage() {
 
     setLoading(true)
     try {
+      // 1. Asegurarse de que la categoría exista en la tabla de categorías
+      const { data: catExists } = await supabase
+        .from('menu_categories')
+        .select('id')
+        .eq('name', category)
+
+      if (!catExists || catExists.length === 0) {
+        const { data: maxCat } = await supabase
+          .from('menu_categories')
+          .select('order_index')
+          .order('order_index', { ascending: false })
+          .limit(1)
+
+        const newCatOrder = maxCat && maxCat.length > 0 ? (maxCat[0].order_index + 10) : 0
+
+        await supabase.from('menu_categories').insert([{
+          name: category,
+          order_index: newCatOrder
+        }])
+      }
+
       const { error } = await supabase
         .from('menu_items')
         .update({

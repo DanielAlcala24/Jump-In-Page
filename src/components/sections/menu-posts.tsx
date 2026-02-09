@@ -15,6 +15,7 @@ interface MenuItem {
   imageSrc: string
   imageHint?: string
   category: string
+  order_index?: number
 }
 
 const defaultMenuItems: MenuItem[] = [
@@ -143,9 +144,24 @@ export default function MenuPosts() {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
+        setLoading(true)
+
+        // 1. Fetch Categories first to determine order
+        const { data: catData, error: catError } = await supabase
+          .from('menu_categories')
+          .select('*')
+          .order('order_index', { ascending: true })
+
+        let fetchedCategories: string[] = []
+        if (!catError && catData && catData.length > 0) {
+          fetchedCategories = catData.map(c => c.name)
+        }
+
+        // 2. Fetch Menu Items
         const { data, error } = await supabase
           .from('menu_items')
           .select('*')
+          .order('order_index', { ascending: true })
           .order('created_at', { ascending: true })
 
         if (!error && data && data.length) {
@@ -161,13 +177,16 @@ export default function MenuPosts() {
 
           setMenuItems(mapped)
 
-          const fetchedCategories = Array.from(
-            new Set(
-              mapped
-                .map((item) => item.category)
-                .filter((cat): cat is string => Boolean(cat))
+          // If we didn't get categories from the table, derive them from items (unsorted)
+          if (fetchedCategories.length === 0) {
+            fetchedCategories = Array.from(
+              new Set(
+                mapped
+                  .map((item) => item.category)
+                  .filter((cat): cat is string => Boolean(cat))
+              )
             )
-          )
+          }
 
           if (fetchedCategories.length) {
             setCategories(fetchedCategories)
