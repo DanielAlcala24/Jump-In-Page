@@ -82,7 +82,7 @@ export default function EditPromotionPage() {
       // Cargar solo sucursales activas para el selector
       const { data: activeBranches, error: activeError } = await supabase
         .from('branches')
-        .select('id, name, is_active')
+        .select('id, name, slug, is_active')
         .eq('is_active', true)
         .order('name', { ascending: true })
 

@@ -73,6 +73,7 @@ function PreciosPromocionesContentComponent() {
       const { data, error } = await supabase
         .from('promotions')
         .select('*')
+        .order('order_index', { ascending: true })
         .order('created_at', { ascending: false });
 
       if (error) {

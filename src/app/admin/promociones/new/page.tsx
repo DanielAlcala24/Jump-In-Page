@@ -63,7 +63,7 @@ export default function NewPromotionPage() {
       // Cargar solo sucursales activas para el selector
       const { data: activeBranches, error: activeError } = await supabase
         .from('branches')
-        .select('id, name, is_active')
+        .select('id, name, slug, is_active')
         .eq('is_active', true)
         .order('name', { ascending: true })
 
@@ -215,12 +215,24 @@ export default function NewPromotionPage() {
 
     setLoading(true)
     try {
+      // Obtener el máximo order_index actual
+      const { data: currentPromos } = await supabase
+        .from('promotions')
+        .select('order_index')
+        .order('order_index', { ascending: false })
+        .limit(1)
+
+      const nextOrderIndex = currentPromos && currentPromos.length > 0
+        ? (currentPromos[0].order_index || 0) + 1
+        : 0
+
       const dataToInsert = {
         title: title.trim(),
         description: description.trim(),
         available_in: availableIn,
         image_url: imageUrl.trim(),
         image_hint: imageHint.trim() || null,
+        order_index: nextOrderIndex,
         created_at: new Date().toISOString()
       }
 

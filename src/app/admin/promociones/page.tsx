@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Plus, Edit, Trash2, Home } from 'lucide-react'
+import { Plus, Edit, Trash2, Home, ArrowUp, ArrowDown } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -33,6 +33,7 @@ interface Promotion {
   image_url: string
   image_hint?: string
   available_in: string[]
+  order_index: number
   created_at: string
 }
 
@@ -68,6 +69,7 @@ export default function PromocionesAdminPage() {
       const { data, error } = await supabase
         .from('promotions')
         .select('*')
+        .order('order_index', { ascending: true })
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -82,6 +84,47 @@ export default function PromocionesAdminPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleMovePromotion = async (item: Promotion, direction: 'up' | 'down') => {
+    const index = promotions.findIndex((p) => p.id === item.id)
+    if (index === -1) return
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= promotions.length) return
+
+    const otherItem = promotions[newIndex]
+
+    // Intercambiar order_index
+    const tempOrder = item.order_index || 0
+    const newOrder = otherItem.order_index || 0
+
+    // Si ambos tienen el mismo orden o no tienen (0), asignar nuevos basados en indices
+    const finalItemOrder = newOrder || index + (direction === 'up' ? -1 : 1)
+    const finalOtherOrder = tempOrder || index
+
+    const { error: error1 } = await supabase
+      .from('promotions')
+      .update({ order_index: finalItemOrder })
+      .eq('id', item.id)
+
+    if (error1) {
+      toast.error('Error al mover la promoción')
+      return
+    }
+
+    const { error: error2 } = await supabase
+      .from('promotions')
+      .update({ order_index: finalOtherOrder })
+      .eq('id', otherItem.id)
+
+    if (error2) {
+      toast.error('Error al mover la promoción')
+      return
+    }
+
+    fetchPromotions()
+    toast.success('Orden actualizado')
   }
 
   const handleDelete = async (id: string) => {
@@ -140,7 +183,7 @@ export default function PromocionesAdminPage() {
             <CardHeader>
               <CardTitle>Listado de Promociones</CardTitle>
               <CardDescription>
-                Administra las promociones que aparecen en la página de Precios y Promociones
+                Administra las promociones que aparecen en la página de Precios y Promociones. Usa las flechas para ordenar.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -169,15 +212,16 @@ export default function PromocionesAdminPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Imagen</TableHead>
+                      <TableHead className="w-[100px]">Imagen</TableHead>
+                      <TableHead className="w-[80px]">Orden</TableHead>
                       <TableHead>Título</TableHead>
                       <TableHead>Descripción</TableHead>
                       <TableHead>Sucursales</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <TableHead className="text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {promotions.map((promotion) => (
+                    {promotions.map((promotion, idx) => (
                       <TableRow key={promotion.id}>
                         <TableCell>
                           <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
@@ -187,6 +231,28 @@ export default function PromocionesAdminPage() {
                               fill
                               className="object-cover"
                             />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col items-center">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleMovePromotion(promotion, 'up')}
+                              disabled={idx === 0}
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleMovePromotion(promotion, 'down')}
+                              disabled={idx === promotions.length - 1}
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="font-medium">{promotion.title}</TableCell>
@@ -211,8 +277,8 @@ export default function PromocionesAdminPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
+                        <TableCell className="text-right">
+                          <div className="flex justify-end space-x-2">
                             <Link href={`/admin/promociones/${promotion.id}/edit`}>
                               <Button variant="outline" size="sm">
                                 <Edit className="h-4 w-4" />
