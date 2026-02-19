@@ -389,7 +389,7 @@ export default function SucursalClientPage({ initialData }: { initialData: Branc
                                 <h3 className="font-headline text-2xl font-bold">Agiliza tu Entrada</h3>
                                 <p className="text-muted-foreground mb-4">Regístrate antes de tu visita a {sucursal.name} aquí.</p>
                                 <Button asChild>
-                                    <Link href="http://decmanager.com:140" target="_blank">Registro Digital</Link>
+                                    <Link href="https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx" target="_blank">Registro Digital</Link>
                                 </Button>
                             </Card>
                             <Card className="shadow-lg rounded-2xl p-6 flex flex-col items-center justify-center text-center">

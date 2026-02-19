@@ -21,7 +21,7 @@ const navLinks = [
   { href: "/atracciones", label: "Atracciones" },
   { href: "/sucursales", label: "Sucursales" },
   { href: "/precios-y-promociones", label: "Precios y promociones" },
-  { href: "http://decmanager.com:140", label: "Registro digital", external: true },
+  { href: "https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx", label: "Registro digital", external: true },
   { href: "/menu-alimentos", label: "Menú de alimentos" },
   { href: "/galeria", label: "Galería" },
   { href: "/blog", label: "Blog" },

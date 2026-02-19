@@ -34,7 +34,7 @@ export default function Inicio() {
               Promociones
             </Button>
           </Link>
-          <Link href="http://decmanager.com:140/" target="_blank" rel="noopener noreferrer">
+          <Link href="https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx" target="_blank" rel="noopener noreferrer">
             <Button size="lg" variant="outline" className="border-background/50 text-background backdrop-blur-sm bg-blue-500/30 hover:bg-blue-500/40">
               <UserPlus className="mr-2 h-5 w-5" />
               Registro digital
