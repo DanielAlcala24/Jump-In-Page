@@ -45,27 +45,45 @@ export default function Popup() {
       setIsLoading(true)
       const { data, error } = await supabase
         .from('popup_config')
-        .select('is_active, images')
-        .single()
+        .select('*')
+        .order('order_index', { ascending: true })
 
       if (error) {
-        // PGRST116 means no rows found, which is fine
-        if (error.code !== 'PGRST116') {
-          console.error('Error fetching popup config:', error)
-        }
+        console.error('Error fetching popup config:', error)
         cachedPopupConfig = { is_active: false, images: [] }
         setIsOpen(false)
         return
       }
 
-      if (data) {
-        cachedPopupConfig = { is_active: data.is_active, images: data.images || [] }
-        if (data.is_active && data.images && data.images.length > 0) {
-          setImages(data.images)
+      if (data && data.length > 0) {
+        // Handle both new multi-row structure and old single-row structure
+        const hasImageUrls = data.some(row => row.image_url)
+
+        let isActive = false
+        let imagesList: string[] = []
+
+        if (hasImageUrls) {
+          // New structure
+          const imageRows = data.filter(row => row.image_url)
+          isActive = imageRows[0]?.is_active || false
+          imagesList = imageRows.map(row => row.image_url)
+        } else {
+          // Legacy structure
+          isActive = data[0].is_active || false
+          imagesList = data[0].images || []
+        }
+
+        cachedPopupConfig = { is_active: isActive, images: imagesList }
+
+        if (isActive && imagesList.length > 0) {
+          setImages(imagesList)
           setIsOpen(true)
         } else {
           setIsOpen(false)
         }
+      } else {
+        cachedPopupConfig = { is_active: false, images: [] }
+        setIsOpen(false)
       }
     } catch (err) {
       console.error('Error fetching popup config:', err)

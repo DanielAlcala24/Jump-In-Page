@@ -14,22 +14,30 @@ import {
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Home, Save, X, Image as ImageIcon } from 'lucide-react'
+import { Home, Save, X, Image as ImageIcon, ArrowLeft, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import MediaSelectorMultiple from '@/components/admin/media-selector-multiple'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-interface PopupConfig {
+interface PopupImage {
   id?: string
+  image_url: string
+  order_index: number
   is_active: boolean
-  images: string[]
+}
+
+interface PopupConfig {
+  is_active: boolean
+  images: string[] // We'll keep this for compatibility with the UI logic
+  rawImages: PopupImage[] // We'll use this to track DB rows
 }
 
 export default function PopupAdminPage() {
   const [config, setConfig] = useState<PopupConfig>({
     is_active: false,
-    images: []
+    images: [],
+    rawImages: []
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -58,25 +66,47 @@ export default function PopupAdminPage() {
       const { data, error } = await supabase
         .from('popup_config')
         .select('*')
-        .single()
+        .order('order_index', { ascending: true })
 
       if (error) {
-        // Si no existe la configuración, crear una por defecto
-        if (error.code === 'PGRST116') {
+        console.error('Error fetching popup config:', error)
+        setError('No se pudo cargar la configuración del popup')
+      } else {
+        if (data && data.length > 0) {
+          // If the first row still has the old 'images' array, we might be in transition
+          // But our SQL migration should have handled it.
+          // Let's check if we have multiple rows with image_url
+          const hasImageUrls = data.some(row => row.image_url)
+
+          if (hasImageUrls) {
+            // New structure: multiple rows
+            const imageRows = data.filter(row => row.image_url)
+            setConfig({
+              is_active: imageRows[0]?.is_active || false,
+              images: imageRows.map(row => row.image_url),
+              rawImages: imageRows
+            })
+          } else if (data[0].images && data[0].images.length > 0) {
+            // Old structure: single row with array
+            setConfig({
+              is_active: data[0].is_active || false,
+              images: data[0].images || [],
+              rawImages: []
+            })
+          } else {
+            setConfig({
+              is_active: data[0]?.is_active || false,
+              images: [],
+              rawImages: []
+            })
+          }
+        } else {
           setConfig({
             is_active: false,
-            images: []
+            images: [],
+            rawImages: []
           })
-        } else {
-          console.error('Error fetching popup config:', error)
-          setError('No se pudo cargar la configuración del popup')
         }
-      } else {
-        setConfig({
-          id: data.id,
-          is_active: data.is_active || false,
-          images: data.images || []
-        })
       }
     } catch (err) {
       console.error('Error:', err)
@@ -107,6 +137,18 @@ export default function PopupAdminPage() {
     }))
   }
 
+  const handleMoveImage = (index: number, direction: 'prev' | 'next') => {
+    const newImages = [...config.images]
+    const targetIndex = direction === 'prev' ? index - 1 : index + 1
+
+    if (targetIndex < 0 || targetIndex >= newImages.length) return
+
+    const [movedItem] = newImages.splice(index, 1)
+    newImages.splice(targetIndex, 0, movedItem)
+
+    setConfig(prev => ({ ...prev, images: newImages }))
+  }
+
   const handleSave = async () => {
     setSaving(true)
     setError('')
@@ -118,40 +160,48 @@ export default function PopupAdminPage() {
         return
       }
 
-      const dataToSave = {
+      // 1. Get current IDs to know what to delete
+      const currentIds = config.rawImages.map(img => img.id).filter(Boolean) as string[]
+
+      // 2. Prepare data for all images
+      const imagesToSave = config.images.map((url, index) => ({
+        image_url: url,
+        order_index: index,
         is_active: config.is_active,
-        images: config.images,
         updated_at: new Date().toISOString()
-      }
+      }))
 
-      if (config.id) {
-        // Actualizar configuración existente
-        const { error: updateError } = await supabase
+      // To keep it simple and robust, we'll delete existing rows and insert new ones
+      // This avoids complex diffing for this specific small config
+      const { error: deleteError } = await supabase
+        .from('popup_config')
+        .delete()
+        .not('id', 'is', null) // Delete all rows
+
+      if (deleteError) throw deleteError
+
+      if (imagesToSave.length > 0) {
+        const { error: insertError } = await supabase
           .from('popup_config')
-          .update(dataToSave)
-          .eq('id', config.id)
+          .insert(imagesToSave)
 
-        if (updateError) {
-          throw updateError
-        }
+        if (insertError) throw insertError
       } else {
-        // Crear nueva configuración
-        const { data, error: insertError } = await supabase
+        // If no images, we still need at least one row to store the is_active state?
+        // Actually, if there are no images, the popup won't show anyway.
+        // But for consistency let's insert a dummy row if we want to preserve the active state
+        const { error: insertError } = await supabase
           .from('popup_config')
           .insert([{
-            ...dataToSave,
-            created_at: new Date().toISOString()
+            is_active: config.is_active,
+            images: [], // Keep array for backwards compat in first row
+            updated_at: new Date().toISOString()
           }])
-          .select()
-          .single()
 
-        if (insertError) {
-          throw insertError
-        }
-
-        setConfig(prev => ({ ...prev, id: data.id }))
+        if (insertError) throw insertError
       }
 
+      await fetchConfig()
       toast.success('Configuración del popup guardada correctamente')
     } catch (err: any) {
       console.error('Error saving popup config:', err)
@@ -251,7 +301,7 @@ export default function PopupAdminPage() {
                         {config.images.map((imageUrl, index) => (
                           <div
                             key={index}
-                            className="relative group border rounded-lg overflow-hidden bg-gray-100"
+                            className="relative group border rounded-lg overflow-hidden bg-gray-100 transition-all hover:ring-2 hover:ring-orange-500"
                           >
                             <div className="aspect-video relative">
                               <Image
@@ -262,19 +312,46 @@ export default function PopupAdminPage() {
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               />
                             </div>
+
+                            {/* Reordering Controls */}
+                            <div className="absolute top-2 left-2 flex gap-1">
+                              <Button
+                                variant="secondary"
+                                size="icon"
+                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === 0 ? 'hidden' : ''}`}
+                                onClick={() => handleMoveImage(index, 'prev')}
+                                title="Mover anterior"
+                              >
+                                <ArrowLeft className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                size="icon"
+                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === config.images.length - 1 ? 'hidden' : ''}`}
+                                onClick={() => handleMoveImage(index, 'next')}
+                                title="Mover posterior"
+                              >
+                                <ArrowRight className="h-4 w-4" />
+                              </Button>
+                            </div>
+
                             <div className="absolute top-2 right-2">
                               <Button
                                 variant="destructive"
                                 size="icon"
-                                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
                                 onClick={() => handleRemoveImage(index)}
+                                title="Eliminar imagen"
                               >
                                 <X className="h-4 w-4" />
                               </Button>
                             </div>
-                            <div className="p-2 bg-white">
-                              <p className="text-xs text-gray-600 truncate" title={imageUrl}>
-                                Imagen {index + 1}
+                            <div className="p-2 bg-white flex items-center justify-between">
+                              <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded border border-orange-200">
+                                #{index + 1}
+                              </span>
+                              <p className="text-xs text-gray-600 truncate flex-1 ml-2" title={imageUrl}>
+                                {imageUrl.split('/').pop()}
                               </p>
                             </div>
                           </div>
