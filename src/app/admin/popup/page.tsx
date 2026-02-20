@@ -172,15 +172,15 @@ export default function PopupAdminPage() {
       }))
 
       // To keep it simple and robust, we'll delete existing rows and insert new ones
-      // We use a filter that matches all UUIDs to ensure everything is cleared
+      // We use a filter on 'id' to match all rows safely
       const { error: deleteError } = await supabase
         .from('popup_config')
         .delete()
-        .neq('is_active', 'something_that_will_never_match') // Hack to delete all rows via filter
+        .filter('id', 'neq', '00000000-0000-0000-0000-000000000000')
 
       if (deleteError) {
-        console.error('Delete error:', deleteError)
-        throw new Error('No se pudieron eliminar las imágenes anteriores. Verifica los permisos de DELETE en Supabase.')
+        console.error('Delete error details:', deleteError)
+        throw new Error(`Error de Supabase: ${deleteError.message}. Código: ${deleteError.code}`)
       }
 
       if (imagesToSave.length > 0) {
