@@ -5,11 +5,12 @@ interface VideoBackgroundProps {
 }
 
 export default function VideoBackground({
-  videoSrc = "/assets/JumpinDron.mp4"
+  videoSrc = "/assets/Jumpindron.mp4"
 }: VideoBackgroundProps) {
   return (
     <div className="fixed inset-0 -z-10 h-full w-full overflow-hidden">
       <video
+        key={videoSrc}
         autoPlay
         loop
         muted
@@ -17,9 +18,8 @@ export default function VideoBackground({
         preload="metadata"
         className="absolute inset-0 w-full h-full object-cover"
         aria-label="Video de fondo de Jump-In"
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
+        src={videoSrc}
+      />
       <div className="absolute inset-0 z-10 bg-black/50" />
     </div>
   );
