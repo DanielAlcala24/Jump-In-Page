@@ -1,6 +1,12 @@
 'use client';
 
-export default function VideoBackground() {
+interface VideoBackgroundProps {
+  videoSrc?: string;
+}
+
+export default function VideoBackground({
+  videoSrc = "/assets/JumpinDron.mp4"
+}: VideoBackgroundProps) {
   return (
     <div className="fixed inset-0 -z-10 h-full w-full overflow-hidden">
       <video
@@ -12,7 +18,7 @@ export default function VideoBackground() {
         className="absolute inset-0 w-full h-full object-cover"
         aria-label="Video de fondo de Jump-In"
       >
-        <source src="/assets/JumpinDron.mp4" type="video/mp4" />
+        <source src={videoSrc} type="video/mp4" />
       </video>
       <div className="absolute inset-0 z-10 bg-black/50" />
     </div>
