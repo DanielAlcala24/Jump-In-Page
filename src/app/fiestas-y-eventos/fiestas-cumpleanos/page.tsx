@@ -8,6 +8,7 @@ import Footer from '@/components/footer';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import BirthdayPackagesCarousel from '@/components/sections/birthday-packages-carousel';
 
 export const metadata: Metadata = {
   title: 'Fiestas de Cumpleaños en Jump-In | Cotizar y Celebrar en Grande',
@@ -82,11 +83,12 @@ export default function FiestasCumpleanosPage() {
             </h1>
           </div>
           <div className="absolute bottom-0 z-10 flex flex-col items-center">
-            <Link href="#birthday-content" aria-label="Scroll down">
+            <Link href="#nuestros-paquetes" aria-label="Scroll down">
               <ChevronDown className="h-10 w-10 animate-bounce text-background/80" />
             </Link>
           </div>
         </section>
+        <BirthdayPackagesCarousel />
         <FiestasCumpleanosContent />
       </main>
       <WhatsappButton />

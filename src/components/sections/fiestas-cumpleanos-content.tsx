@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect } from "react"
-import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Gift, ShieldCheck, Sparkles, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Script from "next/script";
+import BirthdayGalleryCarousel from "@/components/sections/birthday-gallery-carousel"
 
 const offerItems = [
     {
@@ -25,14 +25,6 @@ const offerItems = [
         icon: <ShieldCheck className="h-10 w-10 text-sky-500" />
     }
 ];
-
-const galleryImages = [
-    { src: '/assets/g3.jpeg', alt: 'Niños saltando en fiesta', hint: 'kids jumping party' },
-    { src: '/assets/g8.jpeg', alt: 'Pastel de cumpleaños en Jump-In', hint: 'birthday cake' },
-    { src: '/assets/g5.jpeg', alt: 'Grupo de amigos celebrando', hint: 'friends celebrating' },
-    { src: '/assets/g7.jpeg', alt: 'Decoración de fiesta', hint: 'party decoration' },
-]
-
 
 export default function FiestasCumpleanosContent() {
     useEffect(() => {
@@ -58,27 +50,40 @@ export default function FiestasCumpleanosContent() {
     }, []);
 
     return (
-        <section id="birthday-content" className="w-full py-12 md:py-24 bg-gray-50 dark:bg-gray-900">
+        <section id="birthday-content" className="w-full pb-12 md:pb-24 pt-4 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto max-w-5xl px-4 md:px-6 space-y-16">
 
-                {/* Offer Section */}
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">¿Quieres celebrar en Jump-In? Tu fiesta soñada</h2>
-                    <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                        El mejor **cumpleaños Jump-In** te espera. Somos el lugar donde la diversión extrema y la celebración se encuentran, garantizando momentos inolvidables para todas las edades.
-                    </p>
+                {/* Gallery Section */}
+                <div>
+                    <BirthdayGalleryCarousel />
+
                     <div className="mt-8 flex justify-center">
-                        <Button asChild className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-6 rounded-full text-lg font-bold shadow-xl transition-all hover:scale-105 flex items-center gap-2">
+                        <Button asChild className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-7 rounded-full text-lg font-bold shadow-xl transition-all hover:scale-105 flex items-center gap-3">
                             <Link
                                 href="https://wa.me/525536441494?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20cotizar%20mi%20fiesta%20en%20Jump-In.%20Aqu%C3%AD%20est%C3%A1n%20mis%20datos%3A%0A%0A*%20Nombre%20completo%20del%20tutor%3A%20%0A*%20N%C3%BAmero%20de%20invitados%20ni%C3%B1os%3A%20%0A*%20N%C3%BAmero%20de%20invitados%20adultos%3A%20%0A*%20Correo%20electr%C3%B3nico%3A%20%0A*%20N%C3%BAmero%20de%20tel%C3%A9fono%3A%20%0A*%20Sucursal%3A%20%0A*%20Fecha%20del%20evento%3A%20%0A*%20Nombre%20del%20festejado(a)%3A%20%0A*%20Edad%20que%20cumple%3A%20%0A*%20Hora%20de%20ingreso%3A%20"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <MessageCircle className="h-6 w-6" />
+                                <MessageCircle className="h-7 w-7" />
                                 Pedir Cotización por WhatsApp
                             </Link>
                         </Button>
                     </div>
+
+                    <div className="text-center mt-12">
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Tu Fiesta en Jump-In</h2>
+                        <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-lg">
+                            Mira cómo es **celebrar en Jump-In** e inspírate para tener la mejor fiesta de cumpleaños con nosotros.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Offer Section */}
+                <div className="text-center pt-8">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">¿Quieres celebrar en Jump-In? Tu fiesta soñada</h2>
+                    <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-lg">
+                        El mejor **cumpleaños Jump-In** te espera. Somos el lugar donde la diversión extrema y la celebración se encuentran, garantizando momentos inolvidables para todas las edades.
+                    </p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
                     {offerItems.map((item) => (
@@ -92,30 +97,6 @@ export default function FiestasCumpleanosContent() {
                             </CardContent>
                         </Card>
                     ))}
-                </div>
-
-                {/* Gallery Section */}
-                <div>
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl font-headline">Tu Fiesta en Jump-In</h2>
-                        <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-lg">
-                            Mira cómo es **celebrar en Jump-In** e inspírate para tener la mejor fiesta de cumpleaños con nosotros.
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {galleryImages.map((image, index) => (
-                            <div key={index} className="overflow-hidden rounded-lg group shadow-lg transition-all hover:shadow-2xl">
-                                <Image
-                                    src={image.src}
-                                    alt={`${image.alt} - Celebra tu cumpleaños en Jump-In`}
-                                    width={600}
-                                    height={800}
-                                    data-ai-hint={image.hint}
-                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
-                            </div>
-                        ))}
-                    </div>
                 </div>
 
                 {/* Booking Form Section */}
@@ -145,6 +126,6 @@ export default function FiestasCumpleanosContent() {
                     </CardContent>
                 </Card>
             </div>
-        </section>
+        </section >
     )
 }

@@ -21,6 +21,7 @@ export default function AdminDashboard() {
   const [promotionsCount, setPromotionsCount] = useState(0)
   const [branchesCount, setBranchesCount] = useState(0)
   const [leadsCount, setLeadsCount] = useState(0)
+  const [birthdayPackagesCount, setBirthdayPackagesCount] = useState(0)
   const router = useRouter()
   const supabase = createClientComponentClient()
 
@@ -81,6 +82,13 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
 
       setPromotionsCount(promotionsCount || 0)
+
+      // Fetch birthday packages count
+      const { count: birthdayPackagesCount } = await supabase
+        .from('birthday_packages')
+        .select('*', { count: 'exact', head: true })
+
+      setBirthdayPackagesCount(birthdayPackagesCount || 0)
 
       setBranchesCount(branchesCount || 0)
 
@@ -181,6 +189,12 @@ export default function AdminDashboard() {
                   <Button variant="ghost" className="w-full justify-start">
                     <Tag className="h-4 w-4 mr-2" />
                     Promociones
+                  </Button>
+                </Link>
+                <Link href="/admin/cumpleanos" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Gift className="h-4 w-4 mr-2" />
+                    Paquetes Cumpleaños
                   </Button>
                 </Link>
                 <Link href="/admin/atracciones" className="block">
@@ -361,6 +375,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Birthday Packages Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Paquetes Cumpleaños</CardTitle>
+            <Gift className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{birthdayPackagesCount}</div>
+            <p className="text-xs text-muted-foreground">paquetes publicados</p>
+            <Link href="/admin/cumpleanos" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Paquetes
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Branches Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -478,6 +509,12 @@ export default function AdminDashboard() {
               <Button className="w-full justify-start" variant="outline">
                 <Tag className="h-4 w-4 mr-2" />
                 Gestionar Promociones
+              </Button>
+            </Link>
+            <Link href="/admin/cumpleanos">
+              <Button className="w-full justify-start" variant="outline">
+                <Gift className="h-4 w-4 mr-2" />
+                Gestionar Paquetes Cumpleaños
               </Button>
             </Link>
             <Link href="/admin/sucursales">
