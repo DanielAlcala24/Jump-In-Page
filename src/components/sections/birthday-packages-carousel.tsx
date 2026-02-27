@@ -96,10 +96,10 @@ export default function BirthdayPackagesCarousel() {
                         ]}
                         className="w-full"
                     >
-                        <CarouselContent className="-ml-4">
+                        <CarouselContent className="-ml-4 items-start">
                             {packages.map((pkg) => (
                                 <CarouselItem key={pkg.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                    <Card className="h-full border-0 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+                                    <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
                                         <Dialog>
                                             <DialogTrigger asChild>
                                                 <div className="relative cursor-pointer group w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
@@ -127,7 +127,7 @@ export default function BirthdayPackagesCarousel() {
                                             </DialogContent>
                                         </Dialog>
 
-                                        <CardContent className="p-6 flex-1 flex flex-col">
+                                        <CardContent className="p-6 flex flex-col">
                                             <div className="mb-2">
                                                 <h3 className="text-xl font-bold font-headline text-gray-900 dark:text-gray-100">
                                                     {pkg.title}
@@ -138,12 +138,12 @@ export default function BirthdayPackagesCarousel() {
                                                     </p>
                                                 )}
                                             </div>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 flex-1">
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
                                                 {pkg.description}
                                             </p>
 
                                             {pkg.available_in && pkg.available_in.length > 0 && (
-                                                <div className="mt-auto pt-3 border-t dark:border-gray-800">
+                                                <div className="pt-3 border-t dark:border-gray-800 mt-2">
                                                     <div className="flex flex-wrap gap-1.5 items-center">
                                                         <MapPin className="h-3 w-3 text-primary shrink-0" />
                                                         <div className="flex flex-wrap gap-1">
