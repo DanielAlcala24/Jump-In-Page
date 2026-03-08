@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { createClientComponentClient } from '@/lib/supabase'
+import { X } from 'lucide-react'
 
 interface MenuItem {
   id?: string
@@ -139,7 +140,19 @@ export default function MenuPosts() {
   const [categories, setCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const supabase = createClientComponentClient()
+
+  // Handle escape key to close lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedImage(null)
+    }
+    if (selectedImage) {
+      document.addEventListener('keydown', handleKeyDown)
+    }
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImage])
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -269,14 +282,19 @@ export default function MenuPosts() {
                 key={`${item.title}-${index}`}
                 className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
               >
-                <div className="relative w-full aspect-square bg-white dark:bg-gray-950">
+                <div
+                  className="relative w-full aspect-square bg-white dark:bg-gray-950 cursor-pointer group/img"
+                  onClick={() => setSelectedImage(item.imageSrc || FALLBACK_IMAGE)}
+                >
                   <Image
                     src={item.imageSrc || FALLBACK_IMAGE}
                     alt={item.title}
                     fill
                     data-ai-hint={item.imageHint}
-                    className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
+                    className="object-contain transition-transform duration-300 group-hover:scale-105 group-hover/img:scale-110 p-2"
                   />
+                  {/* Overlay on hover for visual cue */}
+                  <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors duration-300 pointer-events-none" />
                 </div>
                 <div className="flex flex-1 flex-col p-6 text-center">
                   <h3 className="mb-2 text-xl font-bold font-headline text-gray-900 dark:text-gray-50">
@@ -296,6 +314,39 @@ export default function MenuPosts() {
           </div>
         )}
       </div>
+
+      {/* Lightbox / Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8 animate-in fade-in duration-200"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            className="absolute top-4 right-4 md:top-8 md:right-8 text-white hover:text-gray-300 transition-colors z-[110] bg-black/50 hover:bg-black/70 p-2 rounded-full"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedImage(null)
+            }}
+            aria-label="Cerrar vista completa"
+          >
+            <X className="h-6 w-6 md:h-8 md:w-8" />
+          </button>
+
+          <div
+            className="relative w-full max-w-5xl h-full max-h-[85vh] flex items-center justify-center animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedImage}
+              alt="Platillo a tamaño completo"
+              fill
+              className="object-contain"
+              sizes="100vw"
+              priority
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }
