@@ -303,11 +303,24 @@ export default function MenuPosts() {
                   <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400">
                     {item.description}
                   </p>
-                  <div className="mt-auto">
-                    <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline">
-                      {formatPrice(item.price)}
-                    </div>
-                  </div>
+                  {(() => {
+                    const displayPrice = formatPrice(item.price)
+                    const isZero =
+                      !item.price ||
+                      item.price.trim() === '0' ||
+                      item.price.trim() === '0.00' ||
+                      displayPrice === '$0.00 MXN'
+
+                    if (isZero) return null
+
+                    return (
+                      <div className="mt-auto">
+                        <div className="inline-block rounded-lg bg-primary/10 px-4 py-2 text-base font-bold text-primary font-headline">
+                          {displayPrice}
+                        </div>
+                      </div>
+                    )
+                  })()}
                 </div>
               </div>
             ))}
