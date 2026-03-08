@@ -269,13 +269,13 @@ export default function MenuPosts() {
                 key={`${item.title}-${index}`}
                 className="group flex flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all hover:shadow-2xl dark:bg-gray-950"
               >
-                <div className="relative w-full aspect-square">
+                <div className="relative w-full aspect-square bg-white dark:bg-gray-950">
                   <Image
                     src={item.imageSrc || FALLBACK_IMAGE}
                     alt={item.title}
                     fill
                     data-ai-hint={item.imageHint}
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-6 text-center">
