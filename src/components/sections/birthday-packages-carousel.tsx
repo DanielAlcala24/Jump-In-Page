@@ -26,7 +26,7 @@ import Link from 'next/link'
 interface BirthdayPackage {
     id: string
     title: string
-    description: string
+    description?: string
     price: string
     image_url: string
     available_in?: string[]
@@ -43,7 +43,7 @@ export default function BirthdayPackagesCarousel() {
             try {
                 const { data, error } = await supabase
                     .from('birthday_packages')
-                    .select('*')
+                    .select('id, title, description, price, image_url, available_in, order_index')
                     .order('order_index', { ascending: true })
 
                 if (!error && data) {
@@ -138,9 +138,11 @@ export default function BirthdayPackagesCarousel() {
                                                     </p>
                                                 )}
                                             </div>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
-                                                {pkg.description}
-                                            </p>
+                                            {pkg.description && (
+                                                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
+                                                    {pkg.description}
+                                                </p>
+                                            )}
 
                                             {pkg.available_in && pkg.available_in.length > 0 && (
                                                 <div className="pt-3 border-t dark:border-gray-800 mt-2">

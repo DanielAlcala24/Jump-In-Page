@@ -6,7 +6,15 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { createClientComponentClient } from '@/lib/supabase'
-import { X } from 'lucide-react'
+import { X, MapPin } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+
+interface Branch {
+  id: string
+  name: string
+  is_active: boolean
+}
 
 interface MenuItem {
   id?: string
@@ -16,6 +24,7 @@ interface MenuItem {
   imageSrc: string
   imageHint?: string
   category: string
+  availableIn?: string[]
   order_index?: number
 }
 
@@ -139,6 +148,8 @@ export default function MenuPosts() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
   const [categories, setCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [branches, setBranches] = useState<Branch[]>([])
+  const [selectedSucursal, setSelectedSucursal] = useState('Todas las sucursales')
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const supabase = createClientComponentClient()
@@ -170,10 +181,21 @@ export default function MenuPosts() {
           fetchedCategories = catData.map(c => c.name)
         }
 
+        // 1.5 Fetch active branches for the filter
+        const { data: branchData, error: branchError } = await supabase
+          .from('branches')
+          .select('id, name, is_active')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+
+        if (!branchError && branchData) {
+          setBranches(branchData)
+        }
+
         // 2. Fetch Menu Items
         const { data, error } = await supabase
           .from('menu_items')
-          .select('*')
+          .select('id, title, description, price, category, available_in, image_url, image_hint, order_index, created_at')
           .order('order_index', { ascending: true })
           .order('created_at', { ascending: true })
 
@@ -184,6 +206,7 @@ export default function MenuPosts() {
             description: item.description,
             price: item.price,
             category: item.category,
+            availableIn: item.available_in || [],
             imageSrc: item.image_url || FALLBACK_IMAGE,
             imageHint: item.image_hint || item.title
           }))
@@ -225,12 +248,23 @@ export default function MenuPosts() {
     fetchMenuItems()
   }, [supabase])
 
-  const filteredItems = useMemo(() => {
-    return menuItems.filter((item) => item.category === selectedCategory)
-  }, [menuItems, selectedCategory])
+  const isAvailableInSucursal = (item: MenuItem) => {
+    if (selectedSucursal === 'Todas las sucursales') return true
+    if (!item.availableIn || item.availableIn.length === 0) return true
+    return (
+      item.availableIn.includes('Todas las sucursales') ||
+      item.availableIn.includes(selectedSucursal)
+    )
+  }
 
-  const itemsToDisplay =
-    filteredItems.length > 0 ? filteredItems : menuItems.filter(Boolean)
+  const itemsBySucursal = useMemo(() => {
+    return menuItems.filter(isAvailableInSucursal)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuItems, selectedSucursal])
+
+  const itemsToDisplay = useMemo(() => {
+    return itemsBySucursal.filter((item) => item.category === selectedCategory)
+  }, [itemsBySucursal, selectedCategory])
 
   if (!loading && menuItems.length === 0) {
     return null
@@ -239,6 +273,21 @@ export default function MenuPosts() {
   return (
     <section id="menu" className="w-full py-8 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-7xl px-2 md:px-6">
+        {branches.length > 0 && (
+          <div className="flex justify-center mb-4">
+            <Select value={selectedSucursal} onValueChange={setSelectedSucursal}>
+              <SelectTrigger className="w-full sm:w-[280px] shadow-lg">
+                <SelectValue placeholder="Selecciona una sucursal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Todas las sucursales">Todas las sucursales</SelectItem>
+                {branches.map((branch) => (
+                  <SelectItem key={branch.id} value={branch.name}>{branch.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="sticky top-14 z-30 py-4 mb-8">
           <div className="flex justify-center">
             <div className="inline-flex flex-wrap justify-center items-center bg-white border border-gray-200 rounded-full p-1 shadow-lg">
@@ -274,6 +323,15 @@ export default function MenuPosts() {
           <div className="text-center py-16 text-gray-500">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
             <p>Cargando menú...</p>
+          </div>
+        ) : itemsToDisplay.length === 0 ? (
+          <div className="text-center py-16 text-gray-500">
+            <p className="text-lg font-medium">No hay productos en esta categoría</p>
+            <p className="text-sm">
+              {selectedSucursal === 'Todas las sucursales'
+                ? 'Prueba seleccionando otra categoría.'
+                : `No hay productos de "${selectedCategory}" disponibles en ${selectedSucursal}.`}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -321,6 +379,28 @@ export default function MenuPosts() {
                       </div>
                     )
                   })()}
+
+                  {item.availableIn && item.availableIn.length > 0 && (
+                    <div className="mt-4 pt-3 border-t dark:border-gray-800">
+                      <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center justify-center">
+                        <MapPin className="mr-1 h-3.5 w-3.5" />
+                        Disponible en:
+                      </h4>
+                      <div className="flex flex-wrap gap-1.5 justify-center">
+                        {item.availableIn.includes('Todas las sucursales') ? (
+                          <Badge variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">
+                            Todas las sucursales
+                          </Badge>
+                        ) : (
+                          item.availableIn.map((sucursal) => (
+                            <Badge key={sucursal} variant="outline" className="font-normal bg-blue-100 text-blue-800 border-blue-300">
+                              {sucursal}
+                            </Badge>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClientComponentClient } from '@/lib/supabase'
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Card,
   CardContent,
@@ -18,14 +19,56 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Save } from 'lucide-react'
 
+interface Branch {
+  id: string
+  name: string
+  is_active: boolean
+}
+
 export default function NewFAQPage() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
+  const [branchesSelected, setBranchesSelected] = useState<string[]>(['Todas las sucursales'])
+  const [branches, setBranches] = useState<Branch[]>([])
+  const [loadingBranches, setLoadingBranches] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const router = useRouter()
   const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoadingBranches(true)
+        const { data, error } = await supabase
+          .from('branches')
+          .select('id, name, is_active')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+
+        if (!error && data) {
+          setBranches(data)
+        }
+      } catch (err) {
+        console.error('Error fetching branches:', err)
+      } finally {
+        setLoadingBranches(false)
+      }
+    }
+
+    fetchBranches()
+  }, [supabase])
+
+  const handleSucursalToggle = (sucursal: string) => {
+    setBranchesSelected((prev) => {
+      if (prev.includes(sucursal)) {
+        return prev.filter((s) => s !== sucursal)
+      } else {
+        return [...prev.filter((s) => s !== 'Todas las sucursales'), sucursal]
+      }
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,6 +76,11 @@ export default function NewFAQPage() {
 
     if (!question.trim() || !answer.trim()) {
       setError('La pregunta y la respuesta son obligatorias')
+      return
+    }
+
+    if (branchesSelected.length === 0) {
+      setError('Debes seleccionar al menos una sucursal')
       return
     }
 
@@ -53,6 +101,7 @@ export default function NewFAQPage() {
         {
           question: question.trim(),
           answer: answer.trim(),
+          branches: branchesSelected,
           order: nextOrder,
           created_at: new Date().toISOString()
         }
@@ -121,6 +170,71 @@ export default function NewFAQPage() {
                   rows={6}
                   required
                 />
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Sucursales *</Label>
+                  <p className="text-xs text-gray-500">
+                    Selecciona la sucursal, las sucursales o todas las sucursales a
+                    las que aplica esta pregunta.
+                  </p>
+                </div>
+                {loadingBranches ? (
+                  <p className="text-sm text-gray-500">Cargando sucursales...</p>
+                ) : branches.length === 0 ? (
+                  <Alert>
+                    <AlertDescription>
+                      No hay sucursales activas registradas.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="todas-sucursales"
+                        checked={branchesSelected.includes('Todas las sucursales')}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setBranchesSelected(['Todas las sucursales'])
+                          } else {
+                            setBranchesSelected([])
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor="todas-sucursales"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Todas las sucursales
+                      </Label>
+                    </div>
+                    {!branchesSelected.includes('Todas las sucursales') && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                        {branches.map((branch) => (
+                          <div key={branch.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`sucursal-${branch.id}`}
+                              checked={branchesSelected.includes(branch.name)}
+                              onCheckedChange={() => handleSucursalToggle(branch.name)}
+                            />
+                            <Label
+                              htmlFor={`sucursal-${branch.id}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {branch.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {branchesSelected.length === 0 && (
+                      <p className="text-xs text-red-500">
+                        Debes seleccionar al menos una sucursal
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
 
               {error && (

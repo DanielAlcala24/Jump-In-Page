@@ -29,6 +29,7 @@ interface Branch {
 export default function NewBirthdayPackagePage() {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [knowledgeBase, setKnowledgeBase] = useState('')
     const [price, setPrice] = useState('')
     const [imageUrl, setImageUrl] = useState('')
     const [availableIn, setAvailableIn] = useState<string[]>(['Todas las sucursales'])
@@ -80,7 +81,7 @@ export default function NewBirthdayPackagePage() {
         e.preventDefault()
         setError('')
 
-        if (!title || !description || !imageUrl || availableIn.length === 0) {
+        if (!title || !imageUrl || availableIn.length === 0) {
             setError('Todos los campos son obligatorios, incluyendo al menos una sucursal')
             return
         }
@@ -101,7 +102,8 @@ export default function NewBirthdayPackagePage() {
             const { error } = await supabase.from('birthday_packages').insert([
                 {
                     title: title.trim(),
-                    description: description.trim(),
+                    description: description.trim() || null,
+                    knowledge_base: knowledgeBase.trim() || null,
                     price: price.trim(),
                     image_url: imageUrl.trim(),
                     available_in: availableIn,
@@ -163,15 +165,17 @@ export default function NewBirthdayPackagePage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description">Descripción *</Label>
+                                <Label htmlFor="description">Descripción (opcional)</Label>
                                 <Textarea
                                     id="description"
                                     placeholder="Escribe una descripción detallada del paquete..."
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     rows={4}
-                                    required
                                 />
+                                <p className="text-xs text-gray-500">
+                                    Se mostrará en la vista pública. Déjala vacía si no quieres mostrar descripción.
+                                </p>
                             </div>
 
                             <div className="space-y-2">
@@ -258,6 +262,21 @@ export default function NewBirthdayPackagePage() {
                                     onSelect={(url) => setImageUrl(url)}
                                     label="Seleccionar Imagen"
                                 />
+                            </div>
+
+                            <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
+                                <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
+                                <Textarea
+                                    id="knowledgeBase"
+                                    placeholder="Información interna detallada sobre este paquete (no se muestra en el sitio)"
+                                    value={knowledgeBase}
+                                    onChange={(e) => setKnowledgeBase(e.target.value)}
+                                    rows={5}
+                                />
+                                <p className="text-xs text-gray-500">
+                                    Este contenido NO se muestra en la página pública. Es solo informativo
+                                    para el admin y para consumirse vía API.
+                                </p>
                             </div>
 
                             {error && (

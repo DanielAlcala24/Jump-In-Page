@@ -38,7 +38,7 @@ export default function PromocionesCarousel() {
       try {
         const { data, error } = await supabase
           .from('promotions')
-          .select('*')
+          .select('id, title, description, image_url, image_hint, available_in, order_index, created_at')
           .order('order_index', { ascending: true })
           .order('created_at', { ascending: false })
 
@@ -138,9 +138,11 @@ export default function PromocionesCarousel() {
                     <CardTitle className="font-headline text-xl mb-2 text-center">
                       {promo.title}
                     </CardTitle>
-                    <CardDescription className="text-center mb-4">
-                      {promo.description}
-                    </CardDescription>
+                    {promo.description && (
+                      <CardDescription className="text-center mb-4">
+                        {promo.description}
+                      </CardDescription>
+                    )}
                     <div>
                       <div className="mb-4">
                         <h4 className="text-sm font-semibold flex items-center mb-2 justify-center text-muted-foreground">

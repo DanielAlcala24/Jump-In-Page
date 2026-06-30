@@ -40,6 +40,7 @@ interface Branch {
 export default function NewPromotionPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [knowledgeBase, setKnowledgeBase] = useState('')
   const [availableIn, setAvailableIn] = useState<string[]>([])
   const [imageUrl, setImageUrl] = useState('')
   const [imageHint, setImageHint] = useState('')
@@ -208,7 +209,7 @@ export default function NewPromotionPage() {
     e.preventDefault()
     setError('')
 
-    if (!title || !description || availableIn.length === 0 || !imageUrl) {
+    if (!title || availableIn.length === 0 || !imageUrl) {
       setError('Todos los campos obligatorios deben estar completos, incluyendo al menos una sucursal')
       return
     }
@@ -228,7 +229,8 @@ export default function NewPromotionPage() {
 
       const dataToInsert = {
         title: title.trim(),
-        description: description.trim(),
+        description: description.trim() || null,
+        knowledge_base: knowledgeBase.trim() || null,
         available_in: availableIn,
         image_url: imageUrl.trim(),
         image_hint: imageHint.trim() || null,
@@ -292,15 +294,17 @@ export default function NewPromotionPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Descripción *</Label>
+                <Label htmlFor="description">Descripción (opcional)</Label>
                 <Textarea
                   id="description"
                   placeholder="Escribe una descripción detallada de la promoción..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  required
                 />
+                <p className="text-xs text-gray-500">
+                  Se mostrará en la vista pública. Déjala vacía si no quieres mostrar descripción.
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -527,6 +531,21 @@ export default function NewPromotionPage() {
                 />
                 <p className="text-xs text-gray-500">
                   Puedes seleccionar una imagen existente o subir una nueva.
+                </p>
+              </div>
+
+              <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
+                <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
+                <Textarea
+                  id="knowledgeBase"
+                  placeholder="Información interna detallada sobre esta promoción (no se muestra en el sitio)"
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  rows={5}
+                />
+                <p className="text-xs text-gray-500">
+                  Este contenido NO se muestra en la página pública. Es solo informativo para el
+                  admin y para consumirse vía API.
                 </p>
               </div>
 

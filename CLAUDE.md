@@ -78,6 +78,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Multimedia | `/admin/media` | Storage bucket `media` |
 | Menú de alimentos | `/admin/menu` | `menu_items` |
 | Preguntas frecuentes | `/admin/faq` | `faqs` |
+| Base de conocimiento | `/admin/base-conocimiento` | `knowledge_base` |
 | Atracciones | `/admin/atracciones` | `attractions` |
 | Sucursales | `/admin/sucursales` | — |
 | Promociones | `/admin/promociones` | `promotions` |
@@ -97,7 +98,19 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 
 ## Tablas Supabase
 
-`posts` · `menu_items` · `faqs` · `attractions` · `promotions` · `birthday_packages` · `leads`
+`posts` · `menu_items` · `faqs` · `knowledge_base` · `attractions` · `promotions` · `birthday_packages` · `leads`
+
+> La tabla `attractions` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
+>
+> La tabla `promotions` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
+>
+> La tabla `birthday_packages` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
+>
+> La tabla `menu_items` incluye `available_in` (array de sucursales donde está disponible el producto; se muestra en la vista pública con filtro y badges), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público). Nota: `knowledge_category` y `knowledge_is_active` son independientes de `category` y de cualquier estado público del producto.
+>
+> La tabla `knowledge_base` incluye `question`, `answer`, `knowledge_category` (categoría de la pregunta, editable y ampliable desde el admin), `branches` (array de sucursales a las que aplica; `['Todas las sucursales']` = todas) e `is_active` (bandera para activar/desactivar la respuesta sin borrarla; controla si se detecta en otras plataformas / consumo vía API).
+>
+> La tabla `faqs` incluye `question`, `answer` y `branches` (array de sucursales a las que aplica la pregunta frecuente; `['Todas las sucursales']` = todas).
 
 Storage bucket: **`media`**
 

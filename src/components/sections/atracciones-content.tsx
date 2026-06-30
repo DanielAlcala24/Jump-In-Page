@@ -17,6 +17,7 @@ interface Branch {
 interface Attraction {
     id: string;
     name: string;
+    description?: string;
     category: string;
     available_in: string[];
     image_url: string;
@@ -36,7 +37,7 @@ export default function AtraccionesContent() {
             try {
                 const { data, error } = await supabase
                     .from('attractions')
-                    .select('*')
+                    .select('id, name, description, category, available_in, image_url, image_hint')
                     .order('category', { ascending: true })
                     .order('name', { ascending: true });
 
@@ -152,6 +153,11 @@ export default function AtraccionesContent() {
                                         </CardHeader>
                                         <CardContent className="p-6 flex-grow flex flex-col">
                                             <CardTitle className="font-headline text-2xl text-center mb-4">{attraction.name}</CardTitle>
+                                            {attraction.description && (
+                                                <p className="text-sm text-muted-foreground text-center mb-4 whitespace-pre-line">
+                                                    {attraction.description}
+                                                </p>
+                                            )}
                                             <div className="flex-grow">
                                                 <h4 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-center">
                                                     <MapPin className="mr-1 h-4 w-4" />

@@ -397,7 +397,7 @@ export default function SucursalClientPage({ initialData }: { initialData: Branc
                                 <h3 className="font-headline text-2xl font-bold">Nuestro Menú</h3>
                                 <p className="text-muted-foreground mb-4">Descubre las delicias que tenemos para recargar energía.</p>
                                 <Button asChild>
-                                    <Link href="/menu-alimentos">Ver Menú de Alimentos</Link>
+                                    <Link href={`/menu-alimentos?sucursal=${encodeURIComponent(sucursal.name)}`}>Ver Menú de Alimentos</Link>
                                 </Button>
                             </Card>
                         </div>

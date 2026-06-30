@@ -22,12 +22,14 @@ import {
 } from '@/components/ui/table'
 import { Plus, Edit, Trash2, Home, HelpCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 
 interface FAQ {
   id: string
   question: string
   answer: string
+  branches?: string[]
   order: number
   created_at: string
   updated_at?: string
@@ -196,6 +198,7 @@ export default function FAQAdminPage() {
                       <TableHead className="w-20">Orden</TableHead>
                       <TableHead>Pregunta</TableHead>
                       <TableHead className="max-w-md">Respuesta</TableHead>
+                      <TableHead>Sucursales</TableHead>
                       <TableHead>Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -227,6 +230,19 @@ export default function FAQAdminPage() {
                         <TableCell className="font-medium">{faq.question}</TableCell>
                         <TableCell className="max-w-md truncate">
                           {faq.answer}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {faq.branches && faq.branches.length > 0 ? (
+                              faq.branches.map((branch) => (
+                                <Badge key={branch} variant="secondary">
+                                  {branch}
+                                </Badge>
+                              ))
+                            ) : (
+                              <Badge variant="secondary">Todas las sucursales</Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex space-x-2">

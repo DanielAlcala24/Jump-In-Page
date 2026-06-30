@@ -19,15 +19,24 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Save, Plus, X } from 'lucide-react'
 import MediaSelector from '@/components/admin/media-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const DEFAULT_CATEGORIES = ['Alimentos', 'Bebidas', 'Snacks', 'Dulces']
+
+interface Branch {
+  id: string
+  name: string
+  is_active: boolean
+}
 
 interface MenuItem {
   id: string
   title: string
   description: string
+  knowledge_base?: string
   price: string
   category: string
+  available_in?: string[]
   image_url: string
   image_hint?: string
 }
@@ -36,10 +45,14 @@ export default function EditMenuItemPage() {
   const [menuItem, setMenuItem] = useState<MenuItem | null>(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [knowledgeBase, setKnowledgeBase] = useState('')
   const [price, setPrice] = useState('')
   const [category, setCategory] = useState(DEFAULT_CATEGORIES[0])
   const [imageUrl, setImageUrl] = useState('')
   const [imageHint, setImageHint] = useState('')
+  const [availableIn, setAvailableIn] = useState<string[]>([])
+  const [branches, setBranches] = useState<Branch[]>([])
+  const [loadingBranches, setLoadingBranches] = useState(true)
   const [loading, setLoading] = useState(false)
   const [loadingItem, setLoadingItem] = useState(true)
   const [error, setError] = useState('')
@@ -94,6 +107,39 @@ export default function EditMenuItemPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase])
 
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoadingBranches(true)
+        const { data, error } = await supabase
+          .from('branches')
+          .select('id, name, is_active')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+
+        if (!error && data) {
+          setBranches(data)
+        }
+      } catch (err) {
+        console.error('Error fetching branches:', err)
+      } finally {
+        setLoadingBranches(false)
+      }
+    }
+
+    fetchBranches()
+  }, [supabase])
+
+  const handleSucursalToggle = (sucursal: string) => {
+    setAvailableIn((prev) => {
+      if (prev.includes(sucursal)) {
+        return prev.filter((s) => s !== sucursal)
+      } else {
+        return [...prev.filter((s) => s !== 'Todas las sucursales'), sucursal]
+      }
+    })
+  }
+
   const handleCreateCategory = () => {
     if (newCategoryName.trim()) {
       const trimmedName = newCategoryName.trim()
@@ -123,10 +169,16 @@ export default function EditMenuItemPage() {
       const itemCategory = data.category || DEFAULT_CATEGORIES[0]
       setTitle(data.title || '')
       setDescription(data.description || '')
+      setKnowledgeBase(data.knowledge_base || '')
       setPrice(data.price || '')
       setCategory(itemCategory)
       setImageUrl(data.image_url || '')
       setImageHint(data.image_hint || '')
+      setAvailableIn(
+        data.available_in && data.available_in.length > 0
+          ? data.available_in
+          : ['Todas las sucursales']
+      )
 
       // Asegurarse de que la categoría del platillo esté en la lista
       setCategories((prevCategories) => {
@@ -149,6 +201,11 @@ export default function EditMenuItemPage() {
 
     if (!title || !description || !price || !category) {
       setError('Todos los campos obligatorios deben estar completos')
+      return
+    }
+
+    if (availableIn.length === 0) {
+      setError('Debes seleccionar al menos una sucursal')
       return
     }
 
@@ -180,8 +237,10 @@ export default function EditMenuItemPage() {
         .update({
           title,
           description,
+          knowledge_base: knowledgeBase.trim() || null,
           price,
           category,
+          available_in: availableIn,
           image_url: imageUrl,
           image_hint: imageHint,
           updated_at: new Date().toISOString()
@@ -369,6 +428,70 @@ export default function EditMenuItemPage() {
                 />
               </div>
 
+              <div className="space-y-4">
+                <div>
+                  <Label>Sucursales Disponibles *</Label>
+                  <p className="text-xs text-gray-500">
+                    Selecciona las sucursales donde está disponible este producto.
+                  </p>
+                </div>
+                {loadingBranches ? (
+                  <p className="text-sm text-gray-500">Cargando sucursales...</p>
+                ) : branches.length === 0 ? (
+                  <Alert>
+                    <AlertDescription>
+                      No hay sucursales activas registradas.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="todas-sucursales"
+                        checked={availableIn.includes('Todas las sucursales')}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setAvailableIn(['Todas las sucursales'])
+                          } else {
+                            setAvailableIn([])
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor="todas-sucursales"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Todas las sucursales
+                      </Label>
+                    </div>
+                    {!availableIn.includes('Todas las sucursales') && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                        {branches.map((branch) => (
+                          <div key={branch.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`sucursal-${branch.id}`}
+                              checked={availableIn.includes(branch.name)}
+                              onCheckedChange={() => handleSucursalToggle(branch.name)}
+                            />
+                            <Label
+                              htmlFor={`sucursal-${branch.id}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {branch.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {availableIn.length === 0 && (
+                      <p className="text-xs text-red-500">
+                        Debes seleccionar al menos una sucursal
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label>Imagen del Platillo</Label>
                 <MediaSelector
@@ -378,6 +501,21 @@ export default function EditMenuItemPage() {
                 />
                 <p className="text-xs text-gray-500">
                   Puedes seleccionar una imagen existente o subir una nueva.
+                </p>
+              </div>
+
+              <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
+                <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
+                <Textarea
+                  id="knowledgeBase"
+                  placeholder="Información interna detallada sobre este producto (no se muestra en el sitio)"
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  rows={5}
+                />
+                <p className="text-xs text-gray-500">
+                  Este contenido NO se muestra en la página pública. Es solo informativo para el
+                  admin y para consumirse vía API.
                 </p>
               </div>
 

@@ -7,6 +7,7 @@ import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
   CardContent,
@@ -46,6 +47,8 @@ interface Branch {
 
 export default function NewAttractionPage() {
   const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [knowledgeBase, setKnowledgeBase] = useState('')
   const [category, setCategory] = useState(DEFAULT_CATEGORIES[0])
   const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES)
   const [availableIn, setAvailableIn] = useState<string[]>([])
@@ -279,6 +282,8 @@ export default function NewAttractionPage() {
     try {
       const dataToInsert = {
         name: name.trim(),
+        description: description.trim() || null,
+        knowledge_base: knowledgeBase.trim() || null,
         category: categoryToSave,
         available_in: availableIn,
         image_url: imageUrl.trim(),
@@ -339,6 +344,20 @@ export default function NewAttractionPage() {
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Descripción (opcional)</Label>
+                <Textarea
+                  id="description"
+                  placeholder="Descripción de la atracción que se mostrará en la página pública"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={4}
+                />
+                <p className="text-xs text-gray-500">
+                  Se mostrará en la vista pública. Déjalo vacío si no quieres mostrar descripción.
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -609,6 +628,21 @@ export default function NewAttractionPage() {
                 />
                 <p className="text-xs text-gray-500">
                   Puedes seleccionar una imagen existente o subir una nueva.
+                </p>
+              </div>
+
+              <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
+                <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
+                <Textarea
+                  id="knowledgeBase"
+                  placeholder="Información interna detallada sobre esta atracción (no se muestra en el sitio)"
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  rows={5}
+                />
+                <p className="text-xs text-gray-500">
+                  Este contenido NO se muestra en la página pública. Es solo informativo para el
+                  admin y para consumirse vía API.
                 </p>
               </div>
 

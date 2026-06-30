@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift } from 'lucide-react'
+import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift, ShoppingCart, BookOpen } from 'lucide-react'
 import ImageComponent from 'next/image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [mediaCount, setMediaCount] = useState(0)
   const [menuCount, setMenuCount] = useState(0)
   const [faqCount, setFaqCount] = useState(0)
+  const [knowledgeCount, setKnowledgeCount] = useState(0)
   const [attractionsCount, setAttractionsCount] = useState(0)
   const [promotionsCount, setPromotionsCount] = useState(0)
   const [branchesCount, setBranchesCount] = useState(0)
@@ -68,6 +69,13 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
 
       setFaqCount(faqsCount || 0)
+
+      // Fetch knowledge base count
+      const { count: knowledgeBaseCount } = await supabase
+        .from('knowledge_base')
+        .select('*', { count: 'exact', head: true })
+
+      setKnowledgeCount(knowledgeBaseCount || 0)
 
       // Fetch attractions count
       const { count: attractionsCount } = await supabase
@@ -185,6 +193,12 @@ export default function AdminDashboard() {
                     Preguntas Frecuentes
                   </Button>
                 </Link>
+                <Link href="/admin/base-conocimiento" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Base de Conocimiento
+                  </Button>
+                </Link>
                 <Link href="/admin/promociones" className="block">
                   <Button variant="ghost" className="w-full justify-start">
                     <Tag className="h-4 w-4 mr-2" />
@@ -213,6 +227,12 @@ export default function AdminDashboard() {
                   <Button variant="ghost" className="w-full justify-start">
                     <PanelTop className="h-4 w-4 mr-2" />
                     Popup del Sitio
+                  </Button>
+                </Link>
+                <Link href="/admin/shop" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Shop — Fechas
                   </Button>
                 </Link>
                 <Link href="/admin/usuarios" className="block">
@@ -341,6 +361,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Knowledge Base Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Base de Conocimiento</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{knowledgeCount}</div>
+            <p className="text-xs text-muted-foreground">preguntas registradas</p>
+            <Link href="/admin/base-conocimiento" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Base de Conocimiento
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Attractions Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -445,6 +482,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Shop Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Shop — Fechas</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-xs text-muted-foreground">restricciones de calendario</p>
+            <Link href="/admin/shop" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Shop
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Leads Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -499,6 +553,12 @@ export default function AdminDashboard() {
                 Crear Nueva Pregunta
               </Button>
             </Link>
+            <Link href="/admin/base-conocimiento/new">
+              <Button className="w-full justify-start" variant="outline">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Agregar a Base de Conocimiento
+              </Button>
+            </Link>
             <Link href="/admin/atracciones">
               <Button className="w-full justify-start" variant="outline">
                 <Zap className="h-4 w-4 mr-2" />
@@ -527,6 +587,12 @@ export default function AdminDashboard() {
               <Button className="w-full justify-start" variant="outline">
                 <PanelTop className="h-4 w-4 mr-2" />
                 Configurar Popup
+              </Button>
+            </Link>
+            <Link href="/admin/shop">
+              <Button className="w-full justify-start" variant="outline">
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Shop — Control de Fechas
               </Button>
             </Link>
             <Link href="/admin/usuarios">

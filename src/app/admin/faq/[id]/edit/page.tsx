@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Card,
   CardContent,
@@ -22,13 +23,23 @@ interface FAQ {
   id: string
   question: string
   answer: string
+  branches?: string[]
   order: number
+}
+
+interface Branch {
+  id: string
+  name: string
+  is_active: boolean
 }
 
 export default function EditFAQPage() {
   const [faq, setFaq] = useState<FAQ | null>(null)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
+  const [branchesSelected, setBranchesSelected] = useState<string[]>(['Todas las sucursales'])
+  const [branches, setBranches] = useState<Branch[]>([])
+  const [loadingBranches, setLoadingBranches] = useState(true)
   const [loading, setLoading] = useState(false)
   const [loadingFAQ, setLoadingFAQ] = useState(true)
   const [error, setError] = useState('')
@@ -43,6 +54,39 @@ export default function EditFAQPage() {
       fetchFAQ()
     }
   }, [faqId])
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoadingBranches(true)
+        const { data, error } = await supabase
+          .from('branches')
+          .select('id, name, is_active')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+
+        if (!error && data) {
+          setBranches(data)
+        }
+      } catch (err) {
+        console.error('Error fetching branches:', err)
+      } finally {
+        setLoadingBranches(false)
+      }
+    }
+
+    fetchBranches()
+  }, [supabase])
+
+  const handleSucursalToggle = (sucursal: string) => {
+    setBranchesSelected((prev) => {
+      if (prev.includes(sucursal)) {
+        return prev.filter((s) => s !== sucursal)
+      } else {
+        return [...prev.filter((s) => s !== 'Todas las sucursales'), sucursal]
+      }
+    })
+  }
 
   const fetchFAQ = async () => {
     try {
@@ -60,6 +104,11 @@ export default function EditFAQPage() {
       setFaq(data as FAQ)
       setQuestion(data.question || '')
       setAnswer(data.answer || '')
+      setBranchesSelected(
+        Array.isArray(data.branches) && data.branches.length > 0
+          ? data.branches
+          : ['Todas las sucursales']
+      )
     } catch (err) {
       console.error('Error fetching FAQ:', err)
       setError('Error al cargar la pregunta')
@@ -77,6 +126,11 @@ export default function EditFAQPage() {
       return
     }
 
+    if (branchesSelected.length === 0) {
+      setError('Debes seleccionar al menos una sucursal')
+      return
+    }
+
     setLoading(true)
     try {
       const { error } = await supabase
@@ -84,6 +138,7 @@ export default function EditFAQPage() {
         .update({
           question: question.trim(),
           answer: answer.trim(),
+          branches: branchesSelected,
           updated_at: new Date().toISOString()
         })
         .eq('id', faqId)
@@ -176,6 +231,71 @@ export default function EditFAQPage() {
                   rows={6}
                   required
                 />
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Sucursales *</Label>
+                  <p className="text-xs text-gray-500">
+                    Selecciona la sucursal, las sucursales o todas las sucursales a
+                    las que aplica esta pregunta.
+                  </p>
+                </div>
+                {loadingBranches ? (
+                  <p className="text-sm text-gray-500">Cargando sucursales...</p>
+                ) : branches.length === 0 ? (
+                  <Alert>
+                    <AlertDescription>
+                      No hay sucursales activas registradas.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="todas-sucursales"
+                        checked={branchesSelected.includes('Todas las sucursales')}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setBranchesSelected(['Todas las sucursales'])
+                          } else {
+                            setBranchesSelected([])
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor="todas-sucursales"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Todas las sucursales
+                      </Label>
+                    </div>
+                    {!branchesSelected.includes('Todas las sucursales') && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                        {branches.map((branch) => (
+                          <div key={branch.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`sucursal-${branch.id}`}
+                              checked={branchesSelected.includes(branch.name)}
+                              onCheckedChange={() => handleSucursalToggle(branch.name)}
+                            />
+                            <Label
+                              htmlFor={`sucursal-${branch.id}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {branch.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {branchesSelected.length === 0 && (
+                      <p className="text-xs text-red-500">
+                        Debes seleccionar al menos una sucursal
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
 
               {error && (

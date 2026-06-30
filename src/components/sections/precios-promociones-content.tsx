@@ -72,7 +72,7 @@ function PreciosPromocionesContentComponent() {
     try {
       const { data, error } = await supabase
         .from('promotions')
-        .select('*')
+        .select('id, title, description, image_url, image_hint, available_in, order_index, created_at')
         .order('order_index', { ascending: true })
         .order('created_at', { ascending: false });
 
@@ -194,7 +194,9 @@ function PreciosPromocionesContentComponent() {
                     </CardHeader>
                     <CardContent className="p-6">
                       <CardTitle className="font-headline text-2xl text-center mb-3 text-primary">{promo.title}</CardTitle>
-                      <CardDescription className="text-base text-center text-gray-700 dark:text-gray-300 mb-4">{promo.description}</CardDescription>
+                      {promo.description && (
+                        <CardDescription className="text-base text-center text-gray-700 dark:text-gray-300 mb-4">{promo.description}</CardDescription>
+                      )}
                       <div className="border-t pt-4">
                         <h4 className="text-sm font-semibold flex items-center mb-3 justify-center text-muted-foreground uppercase tracking-wider">
                           <MapPin className="mr-2 h-4 w-4" />

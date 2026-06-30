@@ -19,17 +19,28 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Save, Plus, X } from 'lucide-react'
 import MediaSelector from '@/components/admin/media-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const DEFAULT_CATEGORIES = ['Alimentos', 'Bebidas', 'Snacks', 'Dulces']
+
+interface Branch {
+  id: string
+  name: string
+  is_active: boolean
+}
 
 export default function NewMenuItemPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [knowledgeBase, setKnowledgeBase] = useState('')
   const [price, setPrice] = useState('')
   const [category, setCategory] = useState(DEFAULT_CATEGORIES[0])
   const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES)
   const [imageUrl, setImageUrl] = useState('')
   const [imageHint, setImageHint] = useState('')
+  const [availableIn, setAvailableIn] = useState<string[]>(['Todas las sucursales'])
+  const [branches, setBranches] = useState<Branch[]>([])
+  const [loadingBranches, setLoadingBranches] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showNewCategory, setShowNewCategory] = useState(false)
@@ -37,6 +48,39 @@ export default function NewMenuItemPage() {
 
   const router = useRouter()
   const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        setLoadingBranches(true)
+        const { data, error } = await supabase
+          .from('branches')
+          .select('id, name, is_active')
+          .eq('is_active', true)
+          .order('name', { ascending: true })
+
+        if (!error && data) {
+          setBranches(data)
+        }
+      } catch (err) {
+        console.error('Error fetching branches:', err)
+      } finally {
+        setLoadingBranches(false)
+      }
+    }
+
+    fetchBranches()
+  }, [supabase])
+
+  const handleSucursalToggle = (sucursal: string) => {
+    setAvailableIn((prev) => {
+      if (prev.includes(sucursal)) {
+        return prev.filter((s) => s !== sucursal)
+      } else {
+        return [...prev.filter((s) => s !== 'Todas las sucursales'), sucursal]
+      }
+    })
+  }
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -109,6 +153,11 @@ export default function NewMenuItemPage() {
       return
     }
 
+    if (availableIn.length === 0) {
+      setError('Debes seleccionar al menos una sucursal')
+      return
+    }
+
     // Debug: verificar el valor antes de guardar
     console.log('Guardando platillo con categoría:', categoryToSave)
     console.log('Estado actual de category:', category)
@@ -149,8 +198,10 @@ export default function NewMenuItemPage() {
       const dataToInsert = {
         title: title.trim(),
         description: description.trim(),
+        knowledge_base: knowledgeBase.trim() || null,
         price: price.trim(),
         category: categoryToSave,
+        available_in: availableIn,
         image_url: imageUrl.trim(),
         image_hint: imageHint.trim(),
         order_index: newItemOrder,
@@ -319,6 +370,70 @@ export default function NewMenuItemPage() {
                 />
               </div>
 
+              <div className="space-y-4">
+                <div>
+                  <Label>Sucursales Disponibles *</Label>
+                  <p className="text-xs text-gray-500">
+                    Selecciona las sucursales donde está disponible este producto.
+                  </p>
+                </div>
+                {loadingBranches ? (
+                  <p className="text-sm text-gray-500">Cargando sucursales...</p>
+                ) : branches.length === 0 ? (
+                  <Alert>
+                    <AlertDescription>
+                      No hay sucursales activas registradas.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="todas-sucursales"
+                        checked={availableIn.includes('Todas las sucursales')}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setAvailableIn(['Todas las sucursales'])
+                          } else {
+                            setAvailableIn([])
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor="todas-sucursales"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Todas las sucursales
+                      </Label>
+                    </div>
+                    {!availableIn.includes('Todas las sucursales') && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                        {branches.map((branch) => (
+                          <div key={branch.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`sucursal-${branch.id}`}
+                              checked={availableIn.includes(branch.name)}
+                              onCheckedChange={() => handleSucursalToggle(branch.name)}
+                            />
+                            <Label
+                              htmlFor={`sucursal-${branch.id}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {branch.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {availableIn.length === 0 && (
+                      <p className="text-xs text-red-500">
+                        Debes seleccionar al menos una sucursal
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label>Imagen del Platillo</Label>
                 <MediaSelector
@@ -328,6 +443,21 @@ export default function NewMenuItemPage() {
                 />
                 <p className="text-xs text-gray-500">
                   Puedes seleccionar una imagen existente o subir una nueva.
+                </p>
+              </div>
+
+              <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
+                <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
+                <Textarea
+                  id="knowledgeBase"
+                  placeholder="Información interna detallada sobre este producto (no se muestra en el sitio)"
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  rows={5}
+                />
+                <p className="text-xs text-gray-500">
+                  Este contenido NO se muestra en la página pública. Es solo informativo para el
+                  admin y para consumirse vía API.
                 </p>
               </div>
 
