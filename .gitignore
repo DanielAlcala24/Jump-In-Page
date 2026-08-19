@@ -12,6 +12,7 @@ next-env.d.ts
 
 # Next.js
 /.next/
+/.next-verify/
 /out/
 
 # Production

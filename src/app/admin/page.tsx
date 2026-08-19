@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift, ShoppingCart, BookOpen } from 'lucide-react'
+import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift, ShoppingCart, BookOpen, Package, Megaphone } from 'lucide-react'
 import ImageComponent from 'next/image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -227,6 +227,18 @@ export default function AdminDashboard() {
                   <Button variant="ghost" className="w-full justify-start">
                     <PanelTop className="h-4 w-4 mr-2" />
                     Popup del Sitio
+                  </Button>
+                </Link>
+                <Link href="/admin/banner" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Megaphone className="h-4 w-4 mr-2" />
+                    Banner Superior
+                  </Button>
+                </Link>
+                <Link href="/admin/articulos" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Package className="h-4 w-4 mr-2" />
+                    Artículos (Shop)
                   </Button>
                 </Link>
                 <Link href="/admin/shop" className="block">
@@ -463,6 +475,23 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Banner Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Banner Superior</CardTitle>
+            <Megaphone className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-xs text-muted-foreground">banner de la página de inicio</p>
+            <Link href="/admin/banner" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Banner
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Users Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -477,6 +506,23 @@ export default function AdminDashboard() {
             <Link href="/admin/usuarios" className="mt-4 block">
               <Button className="w-full bg-orange-500 hover:bg-orange-600">
                 Gestionar Usuarios
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* Articulos (Stripe) Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Artículos (Shop)</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-xs text-muted-foreground">productos de Stripe</p>
+            <Link href="/admin/articulos" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Gestionar Artículos
               </Button>
             </Link>
           </CardContent>
@@ -587,6 +633,12 @@ export default function AdminDashboard() {
               <Button className="w-full justify-start" variant="outline">
                 <PanelTop className="h-4 w-4 mr-2" />
                 Configurar Popup
+              </Button>
+            </Link>
+            <Link href="/admin/banner">
+              <Button className="w-full justify-start" variant="outline">
+                <Megaphone className="h-4 w-4 mr-2" />
+                Configurar Banner Superior
               </Button>
             </Link>
             <Link href="/admin/shop">

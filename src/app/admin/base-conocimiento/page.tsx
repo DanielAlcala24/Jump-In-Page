@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClientComponentClient } from '@/lib/supabase'
@@ -29,10 +29,13 @@ import {
   Ticket,
   Cake,
   UtensilsCrossed,
-  Tag
+  Tag,
+  Search,
+  X
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import ExternalKnowledgeSection from '@/components/admin/external-knowledge-section'
 
@@ -48,13 +51,105 @@ interface KnowledgeEntry {
   updated_at?: string
 }
 
+// --- Búsqueda por similitud (sin dependencias externas) ---------------------
+
+// Normaliza el texto: minúsculas, sin acentos y sin signos de puntuación.
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9ñ\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// Conjunto de bigramas de caracteres de una cadena.
+function bigrams(text: string): Set<string> {
+  const clean = text.replace(/\s+/g, '')
+  const set = new Set<string>()
+  for (let i = 0; i < clean.length - 1; i++) {
+    set.add(clean.slice(i, i + 2))
+  }
+  return set
+}
+
+// Coeficiente de Sørensen–Dice sobre bigramas (0..1). Bueno para errores de
+// tipeo y coincidencias parciales.
+function diceCoefficient(a: string, b: string): number {
+  const ba = bigrams(a)
+  const bb = bigrams(b)
+  if (ba.size === 0 || bb.size === 0) return a === b ? 1 : 0
+  let intersection = 0
+  ba.forEach((gram) => {
+    if (bb.has(gram)) intersection++
+  })
+  return (2 * intersection) / (ba.size + bb.size)
+}
+
+// Similitud query↔texto combinando cobertura de palabras y bigramas de
+// caracteres. Devuelve un valor entre 0 y 1.
+function textSimilarity(query: string, text: string): number {
+  const nQuery = normalizeText(query)
+  const nText = normalizeText(text)
+  if (!nQuery || !nText) return 0
+
+  const queryTokens = nQuery.split(' ')
+  const textTokens = nText.split(' ')
+
+  // Cobertura: por cada palabra de la búsqueda se toma su mejor coincidencia
+  // dentro del texto (exacta = 1, parcial mediante Dice).
+  let coverage = 0
+  for (const qt of queryTokens) {
+    let best = 0
+    for (const tt of textTokens) {
+      const score = qt === tt ? 1 : diceCoefficient(qt, tt)
+      if (score > best) best = score
+      if (best === 1) break
+    }
+    coverage += best
+  }
+  const tokenScore = coverage / queryTokens.length
+
+  // Similitud global de la cadena completa.
+  const charScore = diceCoefficient(nQuery, nText)
+
+  return 0.7 * tokenScore + 0.3 * charScore
+}
+
+// Similitud de una entrada priorizando la pregunta sobre la respuesta.
+function entrySimilarity(query: string, entry: KnowledgeEntry): number {
+  const questionScore = textSimilarity(query, entry.question)
+  const answerScore = textSimilarity(query, entry.answer || '')
+  const categoryScore = entry.knowledge_category
+    ? textSimilarity(query, entry.knowledge_category)
+    : 0
+  return Math.max(questionScore, 0.85 * answerScore, 0.6 * categoryScore)
+}
+
 export default function KnowledgeBaseAdminPage() {
   const [entries, setEntries] = useState<KnowledgeEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
   const router = useRouter()
   const supabase = createClientComponentClient()
+
+  const isSearching = search.trim().length > 0
+
+  // Lista a mostrar: en modo normal se respeta el orden; al buscar se calcula la
+  // similitud de cada entrada y se ordena de mayor a menor coincidencia.
+  const displayedEntries = useMemo(() => {
+    if (!isSearching) {
+      return entries.map((entry) => ({ entry, similarity: null as number | null }))
+    }
+    const query = search.trim()
+    return entries
+      .map((entry) => ({ entry, similarity: entrySimilarity(query, entry) }))
+      .filter(({ similarity }) => similarity >= 0.12)
+      .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
+  }, [entries, search, isSearching])
 
   useEffect(() => {
     checkUser()
@@ -186,6 +281,39 @@ export default function KnowledgeBaseAdminPage() {
               <CardDescription>
                 Administra las preguntas y respuestas de la base de conocimiento
               </CardDescription>
+              <div className="pt-4">
+                <div className="relative max-w-xl">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Buscar por similitud (pregunta, respuesta o categoría)..."
+                    className="pl-9 pr-9"
+                  />
+                  {isSearching && (
+                    <button
+                      type="button"
+                      onClick={() => setSearch('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      aria-label="Limpiar búsqueda"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                {isSearching && (
+                  <p className="mt-2 text-sm text-gray-500">
+                    {displayedEntries.length === 0
+                      ? 'Sin coincidencias similares.'
+                      : `${displayedEntries.length} resultado${
+                          displayedEntries.length === 1 ? '' : 's'
+                        } ordenado${
+                          displayedEntries.length === 1 ? '' : 's'
+                        } por similitud.`}
+                  </p>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {error && (
@@ -204,11 +332,18 @@ export default function KnowledgeBaseAdminPage() {
                   <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No hay preguntas en la base de conocimiento. Agrega la primera.</p>
                 </div>
+              ) : isSearching && displayedEntries.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No se encontraron preguntas similares a “{search.trim()}”.</p>
+                </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-20">Orden</TableHead>
+                      <TableHead className="w-24">
+                        {isSearching ? 'Similitud' : 'Orden'}
+                      </TableHead>
                       <TableHead>Pregunta</TableHead>
                       <TableHead className="max-w-md">Respuesta</TableHead>
                       <TableHead>Categoría</TableHead>
@@ -218,29 +353,44 @@ export default function KnowledgeBaseAdminPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {entries.map((entry, index) => (
+                    {displayedEntries.map(({ entry, similarity }, index) => (
                       <TableRow key={entry.id}>
                         <TableCell>
-                          <div className="flex flex-col gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleReorder(entry.id, 'up')}
-                              disabled={index === 0}
+                          {isSearching && similarity !== null ? (
+                            <Badge
+                              variant="outline"
+                              className={
+                                similarity >= 0.6
+                                  ? 'bg-green-100 text-green-800 border-green-300'
+                                  : similarity >= 0.35
+                                  ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                                  : 'bg-gray-100 text-gray-600 border-gray-300'
+                              }
                             >
-                              ↑
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleReorder(entry.id, 'down')}
-                              disabled={index === entries.length - 1}
-                            >
-                              ↓
-                            </Button>
-                          </div>
+                              {Math.round(similarity * 100)}%
+                            </Badge>
+                          ) : (
+                            <div className="flex flex-col gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleReorder(entry.id, 'up')}
+                                disabled={index === 0}
+                              >
+                                ↑
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleReorder(entry.id, 'down')}
+                                disabled={index === displayedEntries.length - 1}
+                              >
+                                ↓
+                              </Button>
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="font-medium">{entry.question}</TableCell>
                         <TableCell className="max-w-md truncate">

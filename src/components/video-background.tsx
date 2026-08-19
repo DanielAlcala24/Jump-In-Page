@@ -7,7 +7,7 @@ interface VideoBackgroundProps {
 }
 
 export default function VideoBackground({
-  videoSrc = "/assets/Jumpindron.mp4"
+  videoSrc = "/assets/CasaFut.mp4"
 }: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 

@@ -15,7 +15,11 @@ export async function GET(req: NextRequest) {
     const filtered = products.data.filter((p) => {
       if (!branchId) return true
       const productBranch = p.metadata?.branch_id
-      return !productBranch || productBranch === branchId
+      // Vacío = disponible en todas las sucursales.
+      if (!productBranch) return true
+      // Soporta una sola sucursal o varias separadas por coma: "uuid1,uuid2,uuid3".
+      const allowed = productBranch.split(',').map((b) => b.trim()).filter(Boolean)
+      return allowed.includes(branchId)
     })
 
     const result = filtered.map((p) => {

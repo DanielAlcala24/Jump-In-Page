@@ -18,6 +18,13 @@ const supabaseHostname = getSupabaseHostname();
 
 const nextConfig: NextConfig = {
   /* config options here */
+
+  // Permite correr un build de verificación sin pisar el .next del `npm run dev`
+  // (si ambos escriben la misma carpeta, los manifiestos se corrompen y el dev
+  // server empieza a tirar "ENOENT ... app-build-manifest.json").
+  // Uso: NEXT_DIST_DIR=.next-verify npm run build
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+
   typescript: {
     ignoreBuildErrors: true,
   },

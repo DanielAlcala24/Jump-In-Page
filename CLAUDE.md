@@ -81,10 +81,12 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Base de conocimiento | `/admin/base-conocimiento` | `knowledge_base` |
 | Atracciones | `/admin/atracciones` | `attractions` |
 | Sucursales | `/admin/sucursales` | — |
+| Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) |
 | Promociones | `/admin/promociones` | `promotions` |
 | Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` |
 | Galería cumpleaños | `/admin/cumpleanos/gallery` | — |
 | Popup del sitio | `/admin/popup` | — |
+| Banner superior | `/admin/banner` | `banner_config` |
 | Usuarios admin | `/admin/usuarios` | Supabase Auth |
 | Leads/Registros | `/admin/leads` | `leads` |
 
@@ -112,6 +114,10 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 >
 > La tabla `faqs` incluye `question`, `answer` y `branches` (array de sucursales a las que aplica la pregunta frecuente; `['Todas las sucursales']` = todas).
 
+> La tabla `banner_config` guarda **una sola fila** con la configuración del banner superior de la página de inicio: `is_active`, `image_url` + `image_width`/`image_height` (imagen para PC), `mobile_image_url` + `mobile_image_width`/`mobile_image_height` (imagen para móvil, se usa por debajo de 768 px), `desktop_max_height`, `image_alt`, `link_url` (opcional; ruta interna `/...` o URL externa `https://...`) e `is_dismissible` (muestra la ✕ para cerrarlo). Las dimensiones se detectan solas en el admin al elegir la imagen y sirven para reservar la altura antes de que cargue el JS.
+>
+> Comportamiento según qué imágenes haya: **ambas** → cada una en su breakpoint; **solo PC** → esa imagen a ancho completo siempre; **solo móvil** → a ancho completo en móvil, y en PC centrada con alto máximo `desktop_max_height` (default 200 px) sobre fondo negro, es decir con franjas negras a los costados.
+
 Storage bucket: **`media`**
 
 ---
@@ -129,6 +135,7 @@ Presentes en prácticamente todas las páginas públicas:
 | `<VideoBackground>` | `src/components/video-background.tsx` | Video hero (prop `videoSrc`) |
 | `<WavyDivider>` | `src/components/wavy-divider.tsx` | Divisor ondulado (prop `fromColor`) |
 | `<PopupClient>` | `src/components/popup-client.tsx` | Popup configurable desde admin |
+| `<TopBannerServer>` | `src/components/top-banner-server.tsx` | Banner superior configurable desde admin (solo `/`) |
 
 ---
 
@@ -142,6 +149,57 @@ Presentes en prácticamente todas las páginas públicas:
 - Los íconos del admin usan **Lucide React**.
 - Los botones de acción del admin usan `bg-orange-500 hover:bg-orange-600`.
 - Los assets estáticos (imágenes, videos) viven en `public/assets/`.
+- El **banner superior** se renderiza en `src/app/page.tsx` (antes de `<VideoBackground>` y `<Header>`) y publica su altura en la variable CSS `--banner-h` (definida en `globals.css` con valor `0px`). El header flotante se recorre con `top-[calc(1rem_+_var(--banner-h))]`, así que cualquier elemento nuevo fijado arriba debe usar ese mismo cálculo.
+
+---
+
+## Tienda / Pagos (Stripe)
+
+La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checkout**. Los **productos NO viven en Supabase**: viven en el catálogo de Stripe y se leen en vivo. Supabase solo guarda las restricciones de fecha por producto (`shop_date_restrictions`) y las órdenes pagadas (`shop_orders`).
+
+**Flujo `/shop`:** Sucursal → Productos → Fecha (calendario) → Pago (Stripe Checkout) → `/shop/success`.
+
+**Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. apiVersion de Stripe: `2026-05-27.dahlia`.
+
+**Archivos:** `src/lib/stripe.ts` · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha).
+
+### Gestión de productos desde el admin (`/admin/articulos`)
+Los productos de Stripe se pueden crear/editar/archivar desde el admin sin entrar al Dashboard de Stripe. La página llena la metadata automáticamente (`Id_Articulo`, `product_type`, `branch_id`) y las sucursales se eligen con casillas (se convierten a UUID). La imagen se toma de la biblioteca Multimedia (bucket `media`). Rutas API protegidas con sesión de Supabase (`src/lib/admin-auth.ts` → `getAdminUser`): `GET/POST /api/admin/stripe-products` y `PATCH /api/admin/stripe-products/[id]`. Los precios de Stripe son inmutables: al cambiar el precio se crea uno nuevo y se archiva el anterior.
+
+**Webhook en Stripe:** `https://jumpin.com.mx/api/webhooks/stripe`, evento `checkout.session.completed`.
+
+### Metadata de cada producto en Stripe
+Al crear un producto en el Dashboard de Stripe se agregan estos campos de metadata:
+- `branch_id`: UUID(s) de la sucursal (columna `id` de la tabla `branches`). Vacío = todas las sucursales; un solo UUID = esa sucursal; varios UUID separados por coma (`uuid1,uuid2`) = solo esas sucursales.
+- `product_type`: `access` | `article` | `promotion` (default `access`).
+- `Id_Articulo`: identificador del artículo. Se envía en el webhook de venta (ver abajo) por cada artículo comprado.
+
+### Webhook de venta en línea (saliente)
+Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/stripe/route.ts` genera un ticket y hace **POST** del JSON de venta a `VENTA_WEBHOOK_URL`. Es idempotente (columna `id_ticket` en `shop_orders` evita reenvíos en los reintentos de Stripe). Formato:
+
+```json
+{
+  "API_Key": "llave de DECManager (env VENTA_WEBHOOK_API_KEY)",
+  "Id_Ticket": "GUID (generado con crypto.randomUUID)",
+  "Id_Terminal": "branches.Id_Terminal de la sucursal elegida",
+  "Total": 300,
+  "Articulos": [{ "Id_Articulo": "meta del producto en Stripe", "Cantidad": 3, "Total": 100 }],
+  "Fecha_Visita": "YYYY-MM-DD",
+  "Forma_Pago": "credito | debito",
+  "Detalle_Pago": "últimos 4 dígitos de la tarjeta"
+}
+```
+- `API_Key` sale de `VENTA_WEBHOOK_API_KEY`; va **dentro del JSON**, no en los headers. Si no está configurada se envía `null`.
+- `Id_Terminal` sale de la columna `branches.Id_Terminal` (Supabase) según `branch_id`.
+- `Forma_Pago` mapea el `funding` de Stripe (`credit`→`credito`, `debit`→`debito`).
+- `Detalle_Pago` = `last4` de la tarjeta (leído del `latest_charge` del PaymentIntent).
+- El JSON de ejemplo vive en `public/assets/docs/Json Venta En Linea Jump-In - v2.json`.
+
+### Confirmación al cliente (QR + correo)
+Al confirmarse el pago, el mismo webhook también:
+- Genera un **QR** cuyo contenido es el `Id_Ticket` (librería `qrcode`).
+- Envía un **correo de confirmación** con el QR (inline + adjunto descargable) vía SMTP de Google Workspace (`src/lib/mail.ts`, Nodemailer). Si SMTP no está configurado, se omite sin romper el pago.
+- La página `/shop/success` hace *polling* a `/api/stripe/session` hasta que el webhook guarda el `id_ticket`, muestra el **QR en pantalla** y un **botón "Descargar QR"**.
 
 ---
 

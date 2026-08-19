@@ -12,6 +12,7 @@ import VideoBackground from '@/components/video-background';
 import WhatsappButton from '@/components/whatsapp-button';
 import WavyDivider from '@/components/wavy-divider';
 import PromocionesForm from '@/components/sections/promociones-form';
+import TopBannerServer from '@/components/top-banner-server';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -93,6 +94,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(navJsonLd) }}
       />
+      <TopBannerServer />
       <VideoBackground />
       <Header />
       <SocialIcons />
