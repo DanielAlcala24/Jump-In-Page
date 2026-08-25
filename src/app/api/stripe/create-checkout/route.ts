@@ -21,6 +21,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 })
     }
 
+    // La fecha de visita es obligatoria para cualquier producto (acceso, articulo o
+    // promocion): el webhook de venta a DECManager siempre debe enviar Fecha_Visita.
+    if (!visit_date || !/^\d{4}-\d{2}-\d{2}$/.test(visit_date)) {
+      return NextResponse.json(
+        { error: 'La fecha de visita es requerida (formato YYYY-MM-DD)' },
+        { status: 400 }
+      )
+    }
+
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'
 
     const session = await stripe.checkout.sessions.create({
@@ -30,7 +39,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         branch_id,
         branch_name,
-        visit_date: visit_date ?? '',
+        visit_date,
         product_names: items.map((i) => `${i.quantity}x ${i.name}`).join(', '),
       },
       success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,

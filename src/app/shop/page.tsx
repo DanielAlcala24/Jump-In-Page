@@ -72,6 +72,7 @@ export default function ShopPage() {
   const [loadingBranches, setLoadingBranches] = useState(true)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingCheckout, setLoadingCheckout] = useState(false)
+  const [loadingRestrictions, setLoadingRestrictions] = useState(false)
   const supabase = createClientComponentClient()
 
   useEffect(() => {
@@ -91,16 +92,16 @@ export default function ShopPage() {
     setLoadingProducts(false)
   }, [])
 
-  // Load restrictions for all access items in the cart (union of all)
+  // Restricciones de TODOS los productos del carrito (union de todas), sin importar
+  // el tipo: la fecha de visita es obligatoria en cualquier compra porque el webhook
+  // de venta siempre debe enviar Fecha_Visita.
   const loadRestrictionsForCart = useCallback(async (cartItems: Record<string, CartItem>, branchId: string) => {
-    const accessIds = Object.values(cartItems)
-      .filter((i) => i.product.product_type === 'access')
-      .map((i) => i.product.id)
+    const productIds = Object.values(cartItems).map((i) => i.product.id)
 
-    if (accessIds.length === 0) { setRestrictions([]); return }
+    if (productIds.length === 0) { setRestrictions([]); return }
 
     const results = await Promise.all(
-      accessIds.map((id) =>
+      productIds.map((id) =>
         fetch(`/api/shop/date-restrictions?product_id=${id}&branch_id=${branchId}`).then((r) => r.json())
       )
     )
@@ -137,21 +138,21 @@ export default function ShopPage() {
   const cartItems = Object.values(cart)
   const cartTotal = cartItems.reduce((sum, i) => sum + (i.product.unit_amount ?? 0) * i.quantity, 0)
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
-  const hasAccessItems = cartItems.some((i) => i.product.product_type === 'access')
   const currency = cartItems[0]?.product.currency ?? 'mxn'
 
+  // Siempre se pasa por el paso de fecha, sea acceso, articulo o promocion.
   const handleGoToCheckout = async () => {
-    if (hasAccessItems) {
-      await loadRestrictionsForCart(cart, selectedBranch!.id)
-      setSelectedDate(undefined)
-      setStep('date')
-    } else {
-      setStep('confirm')
-    }
+    setLoadingRestrictions(true)
+    await loadRestrictionsForCart(cart, selectedBranch!.id)
+    setLoadingRestrictions(false)
+    setSelectedDate(undefined)
+    setStep('date')
   }
 
   const handleCheckout = async () => {
     if (!selectedBranch || cartItems.length === 0) return
+    // La fecha es obligatoria: el webhook de venta siempre debe enviar Fecha_Visita.
+    if (!selectedDate) { setStep('date'); return }
     setLoadingCheckout(true)
 
     const res = await fetch('/api/stripe/create-checkout', {
@@ -161,7 +162,7 @@ export default function ShopPage() {
         items: cartItems.map((i) => ({ price_id: i.product.price_id, quantity: i.quantity, name: i.product.name })),
         branch_id: selectedBranch.id,
         branch_name: selectedBranch.name,
-        visit_date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+        visit_date: format(selectedDate, 'yyyy-MM-dd'),
       }),
     })
 
@@ -365,7 +366,7 @@ export default function ShopPage() {
               <h2 className="text-2xl font-bold font-headline mb-2 text-center">
                 ¿Qué día vas a visitar <span className="text-orange-500">{selectedBranch?.name}</span>?
               </h2>
-              <p className="text-gray-500 text-center mb-6 text-sm">Selecciona la fecha de tu visita. Los días desactivados no están disponibles para los accesos que elegiste.</p>
+              <p className="text-gray-500 text-center mb-6 text-sm">Selecciona la fecha de tu visita. Los días desactivados no están disponibles para los productos que elegiste.</p>
 
               <div className="flex flex-col items-center gap-6">
                 <div className="bg-white rounded-xl shadow p-4 border">
@@ -391,7 +392,7 @@ export default function ShopPage() {
           {/* STEP 4 — Confirmación */}
           {step === 'confirm' && (
             <div className="max-w-md mx-auto">
-              <button onClick={() => setStep(hasAccessItems ? 'date' : 'products')} className="flex items-center gap-1 text-sm text-gray-500 hover:text-orange-500 mb-4 transition-colors">
+              <button onClick={() => setStep('date')} className="flex items-center gap-1 text-sm text-gray-500 hover:text-orange-500 mb-4 transition-colors">
                 <ArrowLeft className="h-4 w-4" /> Regresar
               </button>
               <h2 className="text-2xl font-bold font-headline mb-6 text-center">Resumen de tu compra</h2>
@@ -460,9 +461,10 @@ export default function ShopPage() {
               <p className="font-bold text-gray-900">{cartCount} {cartCount === 1 ? 'producto' : 'productos'}</p>
               <p className="text-orange-500 font-extrabold text-lg">{formatPrice(cartTotal)}</p>
             </div>
-            <Button onClick={handleGoToCheckout} className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base font-bold">
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Continuar
+            <Button onClick={handleGoToCheckout} disabled={loadingRestrictions} className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base font-bold">
+              {loadingRestrictions
+                ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando fechas...</>
+                : <><ShoppingCart className="mr-2 h-5 w-5" /> Continuar</>}
             </Button>
           </div>
         </div>
