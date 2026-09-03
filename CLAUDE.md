@@ -161,7 +161,7 @@ La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checko
 
 **Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. apiVersion de Stripe: `2026-05-27.dahlia`.
 
-**Archivos:** `src/lib/stripe.ts` · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha).
+**Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha).
 
 ### Gestión de productos desde el admin (`/admin/articulos`)
 Los productos de Stripe se pueden crear/editar/archivar desde el admin sin entrar al Dashboard de Stripe. La página llena la metadata automáticamente (`Id_Articulo`, `product_type`, `branch_id`) y las sucursales se eligen con casillas (se convierten a UUID). La imagen se toma de la biblioteca Multimedia (bucket `media`). Rutas API protegidas con sesión de Supabase (`src/lib/admin-auth.ts` → `getAdminUser`): `GET/POST /api/admin/stripe-products` y `PATCH /api/admin/stripe-products/[id]`. Los precios de Stripe son inmutables: al cambiar el precio se crea uno nuevo y se archiva el anterior.
@@ -180,7 +180,7 @@ Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/str
 ```json
 {
   "API_Key": "llave de DECManager (env VENTA_WEBHOOK_API_KEY)",
-  "Id_Ticket": "GUID (generado con crypto.randomUUID)",
+  "Id_Ticket": "GUID (generado con crypto.randomUUID, sin el prefijo 07/ del QR)",
   "Id_Terminal": "branches.Id_Terminal de la sucursal elegida",
   "Total": 300,
   "Articulos": [{ "Id_Articulo": "meta del producto en Stripe", "Cantidad": 3, "Total": 100 }],
@@ -197,7 +197,7 @@ Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/str
 
 ### Confirmación al cliente (QR + correo)
 Al confirmarse el pago, el mismo webhook también:
-- Genera un **QR** cuyo contenido es el `Id_Ticket` (librería `qrcode`).
+- Genera un **QR** cuyo contenido es `07/` + el `Id_Ticket` (librería `qrcode`), p. ej. `07/22222222-2222-2222-2222-222222222222`. El prefijo vive en `src/lib/ticket.ts` (`QR_TICKET_PREFIX` / `buildQrContent`), que usan tanto el webhook como `/shop/success` para que ambos QR sean idénticos. **El prefijo es solo del QR**: el `Id_Ticket` que se guarda en `shop_orders` y el que se envía a DECManager siguen siendo el GUID puro, sin prefijo.
 - Envía un **correo de confirmación** con el QR (inline + adjunto descargable) vía SMTP de Google Workspace (`src/lib/mail.ts`, Nodemailer). Si SMTP no está configurado, se omite sin romper el pago.
 - La página `/shop/success` hace *polling* a `/api/stripe/session` hasta que el webhook guarda el `id_ticket`, muestra el **QR en pantalla** y un **botón "Descargar QR"**.
 

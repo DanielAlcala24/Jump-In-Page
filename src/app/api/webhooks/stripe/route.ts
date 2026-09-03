@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto'
 import QRCode from 'qrcode'
 import Stripe from 'stripe'
 import { getTransporter, getFromAddress } from '@/lib/mail'
+import { buildQrContent } from '@/lib/ticket'
 
 // Supabase admin client (bypasses RLS — only used server-side in webhook)
 const supabaseAdmin = createClient(
@@ -41,8 +42,8 @@ async function enviarCorreoConfirmacion(opts: {
     return
   }
 
-  // QR con el Id_Ticket como contenido.
-  const qrBuffer = await QRCode.toBuffer(opts.idTicket, { width: 320, margin: 2 })
+  // QR con el prefijo + el Id_Ticket como contenido ("07/<guid>").
+  const qrBuffer = await QRCode.toBuffer(buildQrContent(opts.idTicket), { width: 320, margin: 2 })
 
   const totalFmt = new Intl.NumberFormat('es-MX', {
     style: 'currency',

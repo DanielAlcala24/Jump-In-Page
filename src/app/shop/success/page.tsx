@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, Suspense, useCallback } from 'react'
 import QRCode from 'qrcode'
+import { buildQrContent } from '@/lib/ticket'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import WhatsappButton from '@/components/whatsapp-button'
@@ -53,10 +54,10 @@ function SuccessContent() {
     return () => { cancelled = true }
   }, [sessionId])
 
-  // Genera el QR cuando ya hay Id_Ticket.
+  // Genera el QR cuando ya hay Id_Ticket. El contenido lleva el prefijo: "07/<guid>".
   useEffect(() => {
     if (!idTicket) return
-    QRCode.toDataURL(idTicket, { width: 320, margin: 2 })
+    QRCode.toDataURL(buildQrContent(idTicket), { width: 320, margin: 2 })
       .then(setQrDataUrl)
       .catch(() => setQrDataUrl(null))
   }, [idTicket])
