@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash } from "lucide-react";
+import { LayoutGrid, X, Menu, Search, Facebook, Youtube, Instagram, HelpCircle, FileText, Utensils, Hash, MapPin, Ticket, Cake, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,14 @@ const getResultIcon = (type: SearchResult['type']) => {
       return <Utensils className="h-4 w-4" />
     case 'section':
       return <Hash className="h-4 w-4" />
+    case 'branch':
+      return <MapPin className="h-4 w-4" />
+    case 'promotion':
+      return <Ticket className="h-4 w-4" />
+    case 'birthday':
+      return <Cake className="h-4 w-4" />
+    case 'attraction':
+      return <Sparkles className="h-4 w-4" />
     default:
       return <Search className="h-4 w-4" />
   }
@@ -55,6 +63,14 @@ const getResultTypeLabel = (type: SearchResult['type']) => {
       return 'Sección'
     case 'page':
       return 'Página'
+    case 'branch':
+      return 'Sucursal'
+    case 'promotion':
+      return 'Promoción'
+    case 'birthday':
+      return 'Paquete de Cumpleaños'
+    case 'attraction':
+      return 'Atracción'
     default:
       return 'Resultado'
   }
@@ -103,6 +119,12 @@ export default function Header() {
     setSearchTerm('');
     setSuggestions([]);
     setIsSheetOpen(false);
+
+    // Sistemas fuera del sitio (portal de responsivas): pestaña nueva.
+    if (result.external || /^https?:\/\//.test(result.href)) {
+      window.open(result.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
 
     // Construir la URL con hash si hay sectionId
     let url = result.href;
