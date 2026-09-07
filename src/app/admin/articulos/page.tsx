@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import MediaSelector from '@/components/admin/media-selector'
-import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X } from 'lucide-react'
+import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface StripeProduct {
@@ -253,9 +253,16 @@ export default function AdminArticulosPage() {
             <p className="text-sm text-gray-500">Productos que se venden en la tienda /shop</p>
           </div>
         </div>
-        <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
-          <Plus className="h-4 w-4 mr-2" /> Nuevo producto
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/articulos/grupos">
+            <Button variant="outline">
+              <Layers className="h-4 w-4 mr-2" /> Grupos
+            </Button>
+          </Link>
+          <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
+            <Plus className="h-4 w-4 mr-2" /> Nuevo producto
+          </Button>
+        </div>
       </div>
 
       {loading ? (

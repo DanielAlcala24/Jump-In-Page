@@ -36,6 +36,27 @@ interface Product {
   branch_id: string | null
 }
 
+// Grupo configurado en el admin (tabla `shop_product_groups`): varios productos
+// de Stripe que se muestran como UNA tarjeta con selector, p. ej. las tallas de
+// un mismo artículo. Cada producto conserva su propia descripción y precio.
+interface ProductGroup {
+  id: string
+  name: string
+  description: string | null
+  image_url: string | null
+  product_ids: string[]
+  sort_order: number
+}
+
+// Una tarjeta de la tienda: un producto suelto, o un grupo con sus opciones.
+interface ProductEntry {
+  key: string
+  name: string
+  description: string | null
+  image: string | null
+  variants: Product[]
+}
+
 interface CartItem {
   product: Product
   quantity: number
@@ -61,6 +82,57 @@ const TYPE_COLORS = {
   promotion: 'bg-green-100 text-green-700',
 }
 
+// Arma las tarjetas: primero los grupos activos (en su orden), después los
+// productos sueltos que no quedaron dentro de ningún grupo.
+function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
+  const byId = new Map(list.map((p) => [p.id, p]))
+  const grouped = new Set<string>()
+  const entries: ProductEntry[] = []
+
+  for (const g of groups) {
+    // Solo las opciones disponibles en la sucursal elegida.
+    const variants = (g.product_ids ?? [])
+      .map((id) => byId.get(id))
+      .filter((p): p is Product => Boolean(p))
+
+    if (variants.length === 0) continue
+
+    variants.forEach((v) => grouped.add(v.id))
+    entries.push({
+      key: `group:${g.id}`,
+      name: g.name,
+      description: g.description,
+      image: g.image_url,
+      variants,
+    })
+  }
+
+  for (const product of list) {
+    if (grouped.has(product.id)) continue
+    entries.push({
+      key: product.id,
+      name: product.name,
+      description: product.description,
+      image: product.image,
+      variants: [product],
+    })
+  }
+
+  return entries
+}
+
+// Etiqueta de cada opción dentro de un grupo: se le quita el nombre del grupo al
+// del producto ("Calcetines Jump-In - Chica" → "Chica") para que quepa el botón.
+function optionLabel(product: Product, groupName: string): string {
+  const name = product.name.trim()
+  const group = groupName.trim()
+  if (group && name.toLowerCase().startsWith(group.toLowerCase())) {
+    const rest = name.slice(group.length).replace(/^[\s\-–—:·,]+/, '').trim()
+    if (rest) return rest
+  }
+  return name
+}
+
 export default function ShopPage() {
   const [step, setStep] = useState<Step>('branch')
   const [branches, setBranches] = useState<Branch[]>([])
@@ -69,6 +141,9 @@ export default function ShopPage() {
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null)
   const [cart, setCart] = useState<Record<string, CartItem>>({})
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [groups, setGroups] = useState<ProductGroup[]>([])
+  // Opción elegida en cada tarjeta agrupada: { 'group:<uuid>': 'prod_123' }
+  const [selectedOption, setSelectedOption] = useState<Record<string, string>>({})
   const [loadingBranches, setLoadingBranches] = useState(true)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingCheckout, setLoadingCheckout] = useState(false)
@@ -82,6 +157,16 @@ export default function ShopPage() {
       .eq('is_active', true)
       .order('name')
       .then(({ data }) => { setBranches(data ?? []); setLoadingBranches(false) })
+  }, [supabase])
+
+  // Grupos de productos configurados en /admin/articulos/grupos.
+  useEffect(() => {
+    supabase
+      .from('shop_product_groups')
+      .select('id, name, description, image_url, product_ids, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .then(({ data }) => setGroups(data ?? []))
   }, [supabase])
 
   const loadProducts = useCallback(async (branchId: string) => {
@@ -111,6 +196,7 @@ export default function ShopPage() {
   const handleSelectBranch = (branch: Branch) => {
     setSelectedBranch(branch)
     setCart({})
+    setSelectedOption({})
     setSelectedDate(undefined)
     setStep('products')
     loadProducts(branch.id)
@@ -199,6 +285,9 @@ export default function ShopPage() {
     }).format(amount / 100)
   }
 
+  // Tarjetas de la tienda con los grupos ya aplicados.
+  const allEntries = buildEntries(products, groups)
+
   const steps: Step[] = ['branch', 'products', 'date', 'confirm']
   const stepLabels = { branch: 'Sucursal', products: 'Productos', date: 'Fecha', confirm: 'Pago' }
   const currentIdx = steps.indexOf(step)
@@ -284,8 +373,9 @@ export default function ShopPage() {
               ) : (
                 <div>
                   {(['access', 'promotion', 'article'] as const).map((type) => {
-                    const group = products.filter((p) => p.product_type === type)
-                    if (group.length === 0) return null
+                    // Cada tarjeta cae en la sección del tipo de su primera opción.
+                    const typeEntries = allEntries.filter((e) => e.variants[0].product_type === type)
+                    if (typeEntries.length === 0) return null
                     const Icon = TYPE_ICONS[type]
                     return (
                       <div key={type} className="mb-8">
@@ -294,28 +384,70 @@ export default function ShopPage() {
                           <h3 className="text-lg font-bold font-headline">{TYPE_LABELS[type]}s</h3>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {group.map((product) => {
+                          {typeEntries.map((entry) => {
+                            // La tarjeta es un grupo cuando tiene más de una opción disponible.
+                            const isGroup = entry.variants.length > 1
+                            const product =
+                              entry.variants.find((v) => v.id === selectedOption[entry.key]) ?? entry.variants[0]
                             const qty = cart[product.id]?.quantity ?? 0
+                            // El contador de la esquina suma todas las opciones del grupo.
+                            const entryQty = entry.variants.reduce((sum, v) => sum + (cart[v.id]?.quantity ?? 0), 0)
+                            const title = isGroup ? entry.name : product.name
+                            // La descripción del grupo es opcional: si no hay, se usa la del producto.
+                            const description = isGroup ? (entry.description ?? product.description) : product.description
+                            const image = (isGroup ? entry.image : null) ?? product.image ?? entry.variants.find((v) => v.image)?.image ?? null
                             return (
                               <div
-                                key={product.id}
+                                key={entry.key}
                                 className={`bg-white rounded-xl overflow-hidden shadow transition-all flex flex-col border-2
-                                  ${qty > 0 ? 'border-orange-500' : 'border-transparent'}`}
+                                  ${entryQty > 0 ? 'border-orange-500' : 'border-transparent'}`}
                               >
-                                {product.image && (
+                                {image && (
                                   <div className="relative h-36 bg-gray-100">
-                                    <Image src={product.image} alt={product.name} fill className="object-cover" />
-                                    {qty > 0 && (
+                                    <Image src={image} alt={title} fill className="object-cover" />
+                                    {entryQty > 0 && (
                                       <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow">
-                                        {qty}
+                                        {entryQty}
                                       </div>
                                     )}
                                   </div>
                                 )}
                                 <div className="p-4 flex-1 flex flex-col">
                                   <Badge className={`${TYPE_COLORS[type]} text-xs w-fit mb-2`}>{TYPE_LABELS[type]}</Badge>
-                                  <h4 className="font-bold text-gray-900 font-headline">{product.name}</h4>
-                                  {product.description && <p className="text-gray-500 text-sm mt-1 flex-1 line-clamp-2">{product.description}</p>}
+                                  <h4 className="font-bold text-gray-900 font-headline">{title}</h4>
+                                  {description && <p className="text-gray-500 text-sm mt-1 flex-1 line-clamp-2">{description}</p>}
+
+                                  {isGroup && (
+                                    <div className="mt-3">
+                                      <p className="text-xs text-gray-500 mb-1.5">Elige una opción</p>
+                                      <div className="flex flex-wrap gap-1.5">
+                                        {entry.variants.map((v) => {
+                                          const vQty = cart[v.id]?.quantity ?? 0
+                                          const isSelected = v.id === product.id
+                                          return (
+                                            <button
+                                              key={v.id}
+                                              onClick={() => setSelectedOption((prev) => ({ ...prev, [entry.key]: v.id }))}
+                                              title={v.name}
+                                              className={`text-xs font-semibold px-2.5 py-1.5 rounded-full border transition-colors flex items-center gap-1
+                                                ${isSelected
+                                                  ? 'bg-orange-500 text-white border-orange-500'
+                                                  : 'bg-white text-gray-600 border-gray-300 hover:border-orange-500 hover:text-orange-500'}`}
+                                            >
+                                              {optionLabel(v, entry.name)}
+                                              {vQty > 0 && (
+                                                <span className={`rounded-full px-1.5 text-[10px] font-bold
+                                                  ${isSelected ? 'bg-white/25 text-white' : 'bg-orange-100 text-orange-700'}`}>
+                                                  {vQty}
+                                                </span>
+                                              )}
+                                            </button>
+                                          )
+                                        })}
+                                      </div>
+                                    </div>
+                                  )}
+
                                   <div className="mt-3 pt-3 border-t flex items-center justify-between gap-2">
                                     <span className="text-lg font-extrabold text-orange-500">{formatPrice(product.unit_amount, product.currency)}</span>
                                     {qty === 0 ? (
