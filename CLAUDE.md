@@ -82,6 +82,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Atracciones | `/admin/atracciones` | `attractions` |
 | Sucursales | `/admin/sucursales` | — |
 | Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) |
+| Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` |
 | Promociones | `/admin/promociones` | `promotions` |
 | Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` |
 | Galería cumpleaños | `/admin/cumpleanos/gallery` | — |
@@ -155,13 +156,13 @@ Presentes en prácticamente todas las páginas públicas:
 
 ## Tienda / Pagos (Stripe)
 
-La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checkout**. Los **productos NO viven en Supabase**: viven en el catálogo de Stripe y se leen en vivo. Supabase solo guarda las restricciones de fecha por producto (`shop_date_restrictions`) y las órdenes pagadas (`shop_orders`).
+La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checkout**. Los **productos NO viven en Supabase**: viven en el catálogo de Stripe y se leen en vivo. Supabase solo guarda las restricciones de fecha por producto (`shop_date_restrictions`), las órdenes pagadas (`shop_orders`) y la agrupación visual de productos (`shop_product_groups`).
 
 **Flujo `/shop`:** Sucursal → Productos → Fecha (calendario) → Pago (Stripe Checkout) → `/shop/success`.
 
 **Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. apiVersion de Stripe: `2026-05-27.dahlia`.
 
-**Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha).
+**Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha) · `src/app/admin/articulos/grupos` (gestiona los grupos de productos).
 
 ### Gestión de productos desde el admin (`/admin/articulos`)
 Los productos de Stripe se pueden crear/editar/archivar desde el admin sin entrar al Dashboard de Stripe. La página llena la metadata automáticamente (`Id_Articulo`, `product_type`, `branch_id`) y las sucursales se eligen con casillas (se convierten a UUID). La imagen se toma de la biblioteca Multimedia (bucket `media`). Rutas API protegidas con sesión de Supabase (`src/lib/admin-auth.ts` → `getAdminUser`): `GET/POST /api/admin/stripe-products` y `PATCH /api/admin/stripe-products/[id]`. Los precios de Stripe son inmutables: al cambiar el precio se crea uno nuevo y se archiva el anterior.
@@ -173,6 +174,15 @@ Al crear un producto en el Dashboard de Stripe se agregan estos campos de metada
 - `branch_id`: UUID(s) de la sucursal (columna `id` de la tabla `branches`). Vacío = todas las sucursales; un solo UUID = esa sucursal; varios UUID separados por coma (`uuid1,uuid2`) = solo esas sucursales.
 - `product_type`: `access` | `article` | `promotion` (default `access`).
 - `Id_Articulo`: identificador del artículo. Se envía en el webhook de venta (ver abajo) por cada artículo comprado.
+
+### Grupos de productos (`/admin/articulos/grupos`)
+Varios productos de Stripe se pueden mostrar en `/shop` como **una sola tarjeta con selector** (p. ej. las tallas de unos calcetines). La agrupación es **solo visual y vive en Supabase**, en la tabla `shop_product_groups`: **la metadata de los productos en Stripe no se toca** — cada producto conserva su nombre, descripción, precio, imagen e `Id_Articulo` propios.
+
+- Columnas: `name` (título de la tarjeta), `description` e `image_url` (ambas opcionales; si van vacías se usan las del producto seleccionado), `product_ids` (array de IDs de Stripe **en el orden en que se muestran las opciones**), `sort_order`, `is_active`.
+- SQL de creación: `supabase-shop-product-groups.sql` (lectura pública, escritura solo autenticados).
+- El **carrito sigue siendo por producto individual**: cada opción entra a Stripe, al webhook de venta y al correo como su propia línea con su `Id_Articulo`.
+- La etiqueta de cada botón se deriva del nombre del producto quitándole el nombre del grupo (`"Calcetines Jump-In - Chica"` + grupo `"Calcetines Jump-In"` → botón **"Chica"**); si no coincide el prefijo, se muestra el nombre completo.
+- Si en la sucursal elegida solo está disponible un producto del grupo, la tarjeta se muestra como producto normal, sin selector.
 
 ### Webhook de venta en línea (saliente)
 Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/stripe/route.ts` genera un ticket y hace **POST** del JSON de venta a `VENTA_WEBHOOK_URL`. Es idempotente (columna `id_ticket` en `shop_orders` evita reenvíos en los reintentos de Stripe). Formato:
@@ -198,8 +208,12 @@ Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/str
 ### Confirmación al cliente (QR + correo)
 Al confirmarse el pago, el mismo webhook también:
 - Genera un **QR** cuyo contenido es `07/` + el `Id_Ticket` (librería `qrcode`), p. ej. `07/22222222-2222-2222-2222-222222222222`. El prefijo vive en `src/lib/ticket.ts` (`QR_TICKET_PREFIX` / `buildQrContent`), que usan tanto el webhook como `/shop/success` para que ambos QR sean idénticos. **El prefijo es solo del QR**: el `Id_Ticket` que se guarda en `shop_orders` y el que se envía a DECManager siguen siendo el GUID puro, sin prefijo.
-- Envía un **correo de confirmación** con el QR (inline + adjunto descargable) vía SMTP de Google Workspace (`src/lib/mail.ts`, Nodemailer). Si SMTP no está configurado, se omite sin romper el pago.
-- La página `/shop/success` hace *polling* a `/api/stripe/session` hasta que el webhook guarda el `id_ticket`, muestra el **QR en pantalla** y un **botón "Descargar QR"**.
+- Envía un **correo de confirmación** vía SMTP de Google Workspace (`src/lib/mail.ts`, Nodemailer). Si SMTP no está configurado, se omite sin romper el pago. El correo lleva, en este orden: **logo** de Jump-In, QR (inline + adjunto descargable), datos del ticket (no. de ticket, sucursal, fecha de visita, total), **tabla de productos comprados** (producto · cantidad · importe + total) y el bloque de **registro digital**.
+- La página `/shop/success` hace *polling* a `/api/stripe/session` hasta que el webhook guarda el `id_ticket`, muestra el **QR en pantalla**, un **botón "Descargar QR"** y el bloque de **registro digital**.
+
+**Imágenes del correo** (`src/app/api/webhooks/stripe/route.ts`): el logo se descarga de `LOGO_URL` (bucket `media` de Supabase) y se adjunta **inline con CID**, porque Outlook de escritorio bloquea imágenes remotas; si la descarga falla, cae a la URL remota sin romper el envío. Se usa **PNG y no WebP**: el motor de Word que usa Outlook de escritorio no renderiza WebP.
+
+**Registro digital (responsiva anticipada):** botón "Registro digital" que lleva a `https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx`, el portal externo (Databiz) donde el cliente llena su responsiva antes de llegar y evita filas; en sucursal se imprime para que la firme. La URL está **duplicada** en `src/app/api/webhooks/stripe/route.ts` (const `WAIVER_URL`) y en `src/app/shop/success/page.tsx` — si cambia, hay que actualizarla en ambos.
 
 ---
 
