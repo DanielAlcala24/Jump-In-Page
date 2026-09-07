@@ -11,6 +11,12 @@ import { buildQrContent } from '@/lib/ticket'
 // también en /shop/success; si cambia la URL hay que actualizarla en ambos lados.
 const WAIVER_URL = 'https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx'
 
+// Logo del encabezado del correo. Se sirve desde el bucket `media` de Supabase.
+// Se usa PNG y no WebP porque Outlook de escritorio (motor de Word) no renderiza
+// WebP y el logo saldría roto.
+const LOGO_URL =
+  'https://pcxunmtwgfechivixjkc.supabase.co/storage/v1/object/public/media/logojumpin.png'
+
 // Supabase admin client (bypasses RLS — only used server-side in webhook)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -59,6 +65,17 @@ async function enviarCorreoConfirmacion(opts: {
   // QR con el prefijo + el Id_Ticket como contenido ("07/<guid>").
   const qrBuffer = await QRCode.toBuffer(buildQrContent(opts.idTicket), { width: 320, margin: 2 })
 
+  // Logo inline: se descarga y se adjunta como CID para que no dependa de que el
+  // cliente de correo permita imágenes remotas. Si falla, se cae a la URL remota.
+  let logoBuffer: Buffer | null = null
+  try {
+    const logoRes = await fetch(LOGO_URL)
+    if (logoRes.ok) logoBuffer = Buffer.from(await logoRes.arrayBuffer())
+  } catch {
+    /* se usa la URL remota como respaldo */
+  }
+  const logoSrc = logoBuffer ? 'cid:jumpinlogo' : LOGO_URL
+
   const money = new Intl.NumberFormat('es-MX', {
     style: 'currency',
     currency: (opts.currency || 'mxn').toUpperCase(),
@@ -101,6 +118,9 @@ async function enviarCorreoConfirmacion(opts: {
 
   const html = `
   <div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;padding:24px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <img src="${logoSrc}" alt="Jump-In" width="240" style="max-width:100%;height:auto;border:0;display:inline-block;" />
+    </div>
     <h1 style="color:#f97316;font-size:24px;margin-bottom:8px;">¡Gracias por tu compra en Jump-In!</h1>
     <p style="color:#374151;">Tu pago fue procesado correctamente. Presenta este código QR al llegar a la sucursal.</p>
     <div style="text-align:center;margin:24px 0;">
@@ -128,6 +148,10 @@ async function enviarCorreoConfirmacion(opts: {
     subject: `Tu ticket Jump-In · ${opts.idTicket}`,
     html,
     attachments: [
+      // Logo del encabezado (inline, no se lista como adjunto descargable).
+      ...(logoBuffer
+        ? [{ filename: 'jumpin.png', content: logoBuffer, cid: 'jumpinlogo', contentDisposition: 'inline' as const }]
+        : []),
       // Inline: se muestra dentro del correo.
       { filename: 'qr-ticket.png', content: qrBuffer, cid: 'qrticket' },
       // Adjunto descargable independiente.
