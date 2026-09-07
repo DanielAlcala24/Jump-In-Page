@@ -7,6 +7,10 @@ import Stripe from 'stripe'
 import { getTransporter, getFromAddress } from '@/lib/mail'
 import { buildQrContent } from '@/lib/ticket'
 
+// Registro anticipado de la responsiva (sistema externo Databiz). Se muestra
+// también en /shop/success; si cambia la URL hay que actualizarla en ambos lados.
+const WAIVER_URL = 'https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx'
+
 // Supabase admin client (bypasses RLS — only used server-side in webhook)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,6 +31,15 @@ function mapFormaPago(funding?: string | null): string {
   }
 }
 
+// Escapa el texto que se interpola en el HTML del correo (nombres de producto).
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
 // Envía el correo de confirmación con el QR del Id_Ticket (inline + adjunto descargable).
 async function enviarCorreoConfirmacion(opts: {
   to: string
@@ -35,6 +48,7 @@ async function enviarCorreoConfirmacion(opts: {
   visitDate: string | null
   total: number
   currency: string
+  items: { description: string | null; quantity: number | null; amount_total: number | null }[]
 }) {
   const transporter = getTransporter()
   if (!transporter || !opts.to) {
@@ -45,10 +59,41 @@ async function enviarCorreoConfirmacion(opts: {
   // QR con el prefijo + el Id_Ticket como contenido ("07/<guid>").
   const qrBuffer = await QRCode.toBuffer(buildQrContent(opts.idTicket), { width: 320, margin: 2 })
 
-  const totalFmt = new Intl.NumberFormat('es-MX', {
+  const money = new Intl.NumberFormat('es-MX', {
     style: 'currency',
     currency: (opts.currency || 'mxn').toUpperCase(),
-  }).format(opts.total)
+  })
+  const totalFmt = money.format(opts.total)
+
+  // Detalle de los productos comprados (amount_total viene en centavos).
+  const itemsHtml = opts.items.length
+    ? `
+    <table style="width:100%;border-collapse:collapse;margin:24px 0;">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:8px 0;border-bottom:2px solid #f97316;color:#111827;font-size:13px;">Producto</th>
+          <th style="text-align:center;padding:8px 0;border-bottom:2px solid #f97316;color:#111827;font-size:13px;">Cant.</th>
+          <th style="text-align:right;padding:8px 0;border-bottom:2px solid #f97316;color:#111827;font-size:13px;">Importe</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${opts.items
+          .map(
+            (it) => `
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#374151;font-size:14px;">${escapeHtml(it.description ?? 'Producto')}</td>
+          <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#374151;font-size:14px;text-align:center;">${it.quantity ?? 1}</td>
+          <td style="padding:8px 0;border-bottom:1px solid #e5e7eb;color:#374151;font-size:14px;text-align:right;">${money.format((it.amount_total ?? 0) / 100)}</td>
+        </tr>`
+          )
+          .join('')}
+        <tr>
+          <td colspan="2" style="padding:10px 0;color:#111827;font-size:14px;font-weight:bold;">Total</td>
+          <td style="padding:10px 0;color:#f97316;font-size:16px;font-weight:bold;text-align:right;">${totalFmt}</td>
+        </tr>
+      </tbody>
+    </table>`
+    : ''
 
   const fechaHtml = opts.visitDate
     ? `<p style="margin:4px 0;color:#374151;"><strong>Fecha de visita:</strong> ${opts.visitDate}</p>`
@@ -66,6 +111,13 @@ async function enviarCorreoConfirmacion(opts: {
       ${opts.branchName ? `<p style="margin:4px 0;color:#374151;"><strong>Sucursal:</strong> ${opts.branchName}</p>` : ''}
       ${fechaHtml}
       <p style="margin:4px 0;color:#374151;"><strong>Total:</strong> ${totalFmt}</p>
+    </div>
+    ${itemsHtml}
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:20px;text-align:center;margin-top:24px;">
+      <h2 style="color:#111827;font-size:18px;margin:0 0 6px;">Agiliza tu acceso registrando tu visita</h2>
+      <p style="color:#4b5563;font-size:14px;margin:0 0 16px;">Llena tu responsiva en línea y evita filas al llegar a la sucursal.</p>
+      <a href="${WAIVER_URL}" style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;padding:12px 24px;border-radius:9999px;">Registro digital</a>
+      <p style="color:#9ca3af;font-size:11px;margin:14px 0 0;word-break:break-all;">Si el botón no funciona, copia esta liga:<br />${WAIVER_URL}</p>
     </div>
     <p style="color:#9ca3af;font-size:12px;margin-top:24px;">Si tienes dudas, contáctanos por WhatsApp. ¡Te esperamos! 🧡</p>
   </div>`
@@ -239,6 +291,7 @@ export async function POST(req: NextRequest) {
         visitDate: meta.visit_date || null,
         total: (session.amount_total ?? 0) / 100,
         currency: session.currency ?? 'mxn',
+        items,
       })
     } catch (err) {
       // No fallar el webhook de Stripe si el correo no se pudo enviar.

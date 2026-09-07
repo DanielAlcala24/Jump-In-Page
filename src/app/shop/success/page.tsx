@@ -7,7 +7,7 @@ import { buildQrContent } from '@/lib/ticket'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import WhatsappButton from '@/components/whatsapp-button'
-import { CheckCircle2, Loader2, Download } from 'lucide-react'
+import { CheckCircle2, Loader2, Download, ClipboardCheck, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
@@ -111,6 +111,28 @@ function SuccessContent() {
           Tu código QR se está generando y llegará a tu correo en unos momentos.
         </p>
       )}
+
+      {/* Registro anticipado de la responsiva (sistema externo Databiz) */}
+      <div className="w-full max-w-md bg-orange-50 border border-orange-200 rounded-2xl p-6 mb-6 flex flex-col items-center">
+        <div className="bg-orange-100 rounded-full p-3 mb-3">
+          <ClipboardCheck className="h-7 w-7 text-orange-500" />
+        </div>
+        <h2 className="text-lg md:text-xl font-bold font-headline text-gray-900 mb-1">
+          Agiliza tu acceso registrando tu visita
+        </h2>
+        <p className="text-gray-600 text-sm mb-4">
+          Llena tu responsiva en línea y evita filas al llegar a la sucursal.
+        </p>
+        <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white">
+          <a
+            href="https://databiz.mx:300/Jump-in_Waiver/registroResponsable.aspx"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Registro digital <ExternalLink className="h-4 w-4 ml-2" />
+          </a>
+        </Button>
+      </div>
 
       <div className="flex gap-3 flex-wrap justify-center">
         <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white">
