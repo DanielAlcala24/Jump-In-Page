@@ -177,7 +177,7 @@ function PreciosPromocionesContentComponent() {
                 <p>No hay promociones disponibles en este momento.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
                 {promotions.map((promo, index) => (
                   <Card key={promo.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white dark:bg-gray-950 border-none">
                     <CardHeader className="p-0">
@@ -193,7 +193,7 @@ function PreciosPromocionesContentComponent() {
                       </div>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <CardTitle className="font-headline text-2xl text-center mb-3 text-primary">{promo.title}</CardTitle>
+                      <CardTitle className="font-headline text-2xl lg:text-xl text-center mb-3 text-primary">{promo.title}</CardTitle>
                       {promo.description && (
                         <CardDescription className="text-base text-center text-gray-700 dark:text-gray-300 mb-4">{promo.description}</CardDescription>
                       )}
