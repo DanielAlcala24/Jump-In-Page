@@ -9,7 +9,8 @@ import SocialIcons from '@/components/social-icons'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, ShoppingCart, Calendar, ArrowLeft, Loader2, Tag, Ticket, Package, Plus, Minus, Trash2 } from 'lucide-react'
+import { MapPin, ShoppingCart, Calendar, ArrowLeft, Loader2, Tag, Ticket, Package, Plus, Minus, Trash2, ChevronDown, Check } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DayPicker } from 'react-day-picker'
 import { es } from 'date-fns/locale'
 import { format, isBefore, startOfDay, parseISO, isWithinInterval } from 'date-fns'
@@ -142,8 +143,8 @@ export default function ShopPage() {
   const [cart, setCart] = useState<Record<string, CartItem>>({})
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [groups, setGroups] = useState<ProductGroup[]>([])
-  // Opción elegida en cada tarjeta agrupada: { 'group:<uuid>': 'prod_123' }
-  const [selectedOption, setSelectedOption] = useState<Record<string, string>>({})
+  // Grupo cuyo desplegable de opciones está abierto (su `key`), o null.
+  const [openGroupKey, setOpenGroupKey] = useState<string | null>(null)
   const [loadingBranches, setLoadingBranches] = useState(true)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingCheckout, setLoadingCheckout] = useState(false)
@@ -196,7 +197,7 @@ export default function ShopPage() {
   const handleSelectBranch = (branch: Branch) => {
     setSelectedBranch(branch)
     setCart({})
-    setSelectedOption({})
+    setOpenGroupKey(null)
     setSelectedDate(undefined)
     setStep('products')
     loadProducts(branch.id)
@@ -287,6 +288,11 @@ export default function ShopPage() {
 
   // Tarjetas de la tienda con los grupos ya aplicados.
   const allEntries = buildEntries(products, groups)
+  const openEntry = allEntries.find((e) => e.key === openGroupKey) ?? null
+  // Cuántas piezas del grupo abierto van en el carrito.
+  const openEntryQty = openEntry
+    ? openEntry.variants.reduce((sum, v) => sum + (cart[v.id]?.quantity ?? 0), 0)
+    : 0
 
   const steps: Step[] = ['branch', 'products', 'date', 'confirm']
   const stepLabels = { branch: 'Sucursal', products: 'Productos', date: 'Fecha', confirm: 'Pago' }
@@ -387,15 +393,16 @@ export default function ShopPage() {
                           {typeEntries.map((entry) => {
                             // La tarjeta es un grupo cuando tiene más de una opción disponible.
                             const isGroup = entry.variants.length > 1
-                            const product =
-                              entry.variants.find((v) => v.id === selectedOption[entry.key]) ?? entry.variants[0]
+                            const product = entry.variants[0]
                             const qty = cart[product.id]?.quantity ?? 0
                             // El contador de la esquina suma todas las opciones del grupo.
                             const entryQty = entry.variants.reduce((sum, v) => sum + (cart[v.id]?.quantity ?? 0), 0)
                             const title = isGroup ? entry.name : product.name
-                            // La descripción del grupo es opcional: si no hay, se usa la del producto.
+                            // La descripción del grupo es opcional: si no hay, se usa la del primer producto.
                             const description = isGroup ? (entry.description ?? product.description) : product.description
                             const image = (isGroup ? entry.image : null) ?? product.image ?? entry.variants.find((v) => v.image)?.image ?? null
+                            // Precio más bajo del grupo, para el "Desde $…".
+                            const minPrice = Math.min(...entry.variants.map((v) => v.unit_amount ?? Infinity))
                             return (
                               <div
                                 key={entry.key}
@@ -403,7 +410,10 @@ export default function ShopPage() {
                                   ${entryQty > 0 ? 'border-orange-500' : 'border-transparent'}`}
                               >
                                 {image && (
-                                  <div className="relative h-36 bg-gray-100">
+                                  <div
+                                    className={`relative h-36 bg-gray-100 ${isGroup ? 'cursor-pointer' : ''}`}
+                                    onClick={isGroup ? () => setOpenGroupKey(entry.key) : undefined}
+                                  >
                                     <Image src={image} alt={title} fill className="object-cover" />
                                     {entryQty > 0 && (
                                       <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow">
@@ -413,69 +423,66 @@ export default function ShopPage() {
                                   </div>
                                 )}
                                 <div className="p-4 flex-1 flex flex-col">
-                                  <Badge className={`${TYPE_COLORS[type]} text-xs w-fit mb-2`}>{TYPE_LABELS[type]}</Badge>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Badge className={`${TYPE_COLORS[type]} text-xs w-fit`}>{TYPE_LABELS[type]}</Badge>
+                                    {isGroup && (
+                                      <Badge variant="outline" className="text-xs w-fit border-orange-200 text-orange-700 bg-orange-50">
+                                        {entry.variants.length} opciones
+                                      </Badge>
+                                    )}
+                                  </div>
                                   <h4 className="font-bold text-gray-900 font-headline">{title}</h4>
                                   {description && <p className="text-gray-500 text-sm mt-1 flex-1 line-clamp-2">{description}</p>}
 
-                                  {isGroup && (
-                                    <div className="mt-3">
-                                      <p className="text-xs text-gray-500 mb-1.5">Elige una opción</p>
-                                      <div className="flex flex-wrap gap-1.5">
-                                        {entry.variants.map((v) => {
-                                          const vQty = cart[v.id]?.quantity ?? 0
-                                          const isSelected = v.id === product.id
-                                          return (
-                                            <button
-                                              key={v.id}
-                                              onClick={() => setSelectedOption((prev) => ({ ...prev, [entry.key]: v.id }))}
-                                              title={v.name}
-                                              className={`text-xs font-semibold px-2.5 py-1.5 rounded-full border transition-colors flex items-center gap-1
-                                                ${isSelected
-                                                  ? 'bg-orange-500 text-white border-orange-500'
-                                                  : 'bg-white text-gray-600 border-gray-300 hover:border-orange-500 hover:text-orange-500'}`}
-                                            >
-                                              {optionLabel(v, entry.name)}
-                                              {vQty > 0 && (
-                                                <span className={`rounded-full px-1.5 text-[10px] font-bold
-                                                  ${isSelected ? 'bg-white/25 text-white' : 'bg-orange-100 text-orange-700'}`}>
-                                                  {vQty}
-                                                </span>
-                                              )}
-                                            </button>
-                                          )
-                                        })}
+                                  {isGroup ? (
+                                    <div className="mt-3 pt-3 border-t">
+                                      <div className="flex items-center justify-between gap-2 mb-2">
+                                        <span className="text-xs text-gray-500">Desde</span>
+                                        <span className="text-lg font-extrabold text-orange-500">
+                                          {formatPrice(Number.isFinite(minPrice) ? minPrice : null, product.currency)}
+                                        </span>
                                       </div>
+                                      <Button
+                                        onClick={() => setOpenGroupKey(entry.key)}
+                                        className={`w-full h-9 ${entryQty > 0
+                                          ? 'bg-white text-orange-600 border-2 border-orange-500 hover:bg-orange-50'
+                                          : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
+                                      >
+                                        {entryQty > 0
+                                          ? <><Check className="h-4 w-4 mr-1" /> {entryQty} en el carrito</>
+                                          : <>Ver opciones <ChevronDown className="h-4 w-4 ml-1" /></>}
+                                      </Button>
+                                    </div>
+                                  ) : (
+                                    <div className="mt-3 pt-3 border-t flex items-center justify-between gap-2">
+                                      <span className="text-lg font-extrabold text-orange-500">{formatPrice(product.unit_amount, product.currency)}</span>
+                                      {qty === 0 ? (
+                                        <Button
+                                          size="sm"
+                                          onClick={() => addToCart(product)}
+                                          className="bg-orange-500 hover:bg-orange-600 text-white h-8 px-3"
+                                        >
+                                          <Plus className="h-3.5 w-3.5 mr-1" /> Agregar
+                                        </Button>
+                                      ) : (
+                                        <div className="flex items-center gap-1">
+                                          <button
+                                            onClick={() => removeFromCart(product)}
+                                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
+                                          >
+                                            {qty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+                                          </button>
+                                          <span className="w-6 text-center font-bold text-gray-900">{qty}</span>
+                                          <button
+                                            onClick={() => addToCart(product)}
+                                            className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
+                                          >
+                                            <Plus className="h-3.5 w-3.5" />
+                                          </button>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
-
-                                  <div className="mt-3 pt-3 border-t flex items-center justify-between gap-2">
-                                    <span className="text-lg font-extrabold text-orange-500">{formatPrice(product.unit_amount, product.currency)}</span>
-                                    {qty === 0 ? (
-                                      <Button
-                                        size="sm"
-                                        onClick={() => addToCart(product)}
-                                        className="bg-orange-500 hover:bg-orange-600 text-white h-8 px-3"
-                                      >
-                                        <Plus className="h-3.5 w-3.5 mr-1" /> Agregar
-                                      </Button>
-                                    ) : (
-                                      <div className="flex items-center gap-1">
-                                        <button
-                                          onClick={() => removeFromCart(product)}
-                                          className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
-                                        >
-                                          {qty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
-                                        </button>
-                                        <span className="w-6 text-center font-bold text-gray-900">{qty}</span>
-                                        <button
-                                          onClick={() => addToCart(product)}
-                                          className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
-                                        >
-                                          <Plus className="h-3.5 w-3.5" />
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
                                 </div>
                               </div>
                             )
@@ -584,6 +591,85 @@ export default function ShopPage() {
           )}
         </div>
       </main>
+
+      {/* Desplegable de opciones de un grupo (p. ej. tallas) */}
+      <Dialog open={openEntry !== null} onOpenChange={(open) => !open && setOpenGroupKey(null)}>
+        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-headline text-xl">{openEntry?.name}</DialogTitle>
+          </DialogHeader>
+
+          {openEntry && (
+            <>
+              {openEntry.description && (
+                <p className="text-sm text-gray-500 -mt-2">{openEntry.description}</p>
+              )}
+              <p className="text-sm font-semibold text-gray-700">Elige las opciones que quieras:</p>
+
+              <div className="space-y-2">
+                {openEntry.variants.map((v) => {
+                  const vQty = cart[v.id]?.quantity ?? 0
+                  return (
+                    <div
+                      key={v.id}
+                      className={`flex items-center gap-3 rounded-xl border-2 p-3 transition-colors
+                        ${vQty > 0 ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}
+                    >
+                      {v.image && (
+                        <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                          <Image src={v.image} alt={v.name} fill className="object-cover" sizes="48px" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm text-gray-900">{optionLabel(v, openEntry.name)}</p>
+                        {v.description && <p className="text-xs text-gray-500 line-clamp-2">{v.description}</p>}
+                        <p className="text-sm font-extrabold text-orange-500 mt-0.5">
+                          {formatPrice(v.unit_amount, v.currency)}
+                        </p>
+                      </div>
+
+                      {vQty === 0 ? (
+                        <Button
+                          size="sm"
+                          onClick={() => addToCart(v)}
+                          className="bg-orange-500 hover:bg-orange-600 text-white h-8 px-3 shrink-0"
+                        >
+                          <Plus className="h-3.5 w-3.5 mr-1" /> Agregar
+                        </Button>
+                      ) : (
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => removeFromCart(v)}
+                            className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
+                          >
+                            {vQty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+                          </button>
+                          <span className="w-6 text-center font-bold text-gray-900">{vQty}</span>
+                          <button
+                            onClick={() => addToCart(v)}
+                            className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <Button
+                onClick={() => setOpenGroupKey(null)}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                {openEntryQty > 0
+                  ? `Listo · ${openEntryQty} ${openEntryQty === 1 ? 'artículo' : 'artículos'} agregados`
+                  : 'Cerrar'}
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Floating cart bar — visible on products step when cart has items */}
       {step === 'products' && cartCount > 0 && (
