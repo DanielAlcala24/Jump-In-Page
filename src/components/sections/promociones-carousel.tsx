@@ -110,7 +110,7 @@ export default function PromocionesCarousel() {
             align: 'start',
             loop: true,
           }}
-          className="w-full"
+          className="w-full md:px-6"
         >
           <CarouselContent className="-ml-2 md:-ml-4 items-start">
             {promotions.map((promo, index) => (
@@ -184,10 +184,12 @@ export default function PromocionesCarousel() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex justify-center gap-4 mt-8">
-            <CarouselPrevious className="relative static translate-y-0 bg-orange-500 hover:bg-orange-600 text-white border-orange-600 h-10 w-10" />
-            <CarouselNext className="relative static translate-y-0 bg-orange-500 hover:bg-orange-600 text-white border-orange-600 h-10 w-10" />
-          </div>
+          {/* Flechas a los costados. Van ligeramente encimadas sobre las tarjetas
+              porque la sección tiene overflow-hidden: sacarlas del contenedor
+              (el -left-12 que trae por defecto) las recortaría en pantallas
+              donde no sobra espacio a los lados. */}
+          <CarouselPrevious className="absolute left-0 md:-left-4 top-1/2 -translate-y-1/2 z-20 bg-orange-500 hover:bg-orange-600 text-white border-orange-600 shadow-lg h-10 w-10 md:h-12 md:w-12" />
+          <CarouselNext className="absolute right-0 md:-right-4 top-1/2 -translate-y-1/2 z-20 bg-orange-500 hover:bg-orange-600 text-white border-orange-600 shadow-lg h-10 w-10 md:h-12 md:w-12" />
         </Carousel>
 
         {/* Lightbox para Promociones */}

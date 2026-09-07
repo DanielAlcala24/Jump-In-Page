@@ -238,6 +238,16 @@ export default function EditBranchPage() {
     setPrices(prices.filter((_, i) => i !== index))
   }
 
+  // Reordena los precios: el orden de este array es el que se muestra en la
+  // página pública de la sucursal.
+  const movePrice = (index: number, direction: -1 | 1) => {
+    const target = index + direction
+    if (target < 0 || target >= prices.length) return
+    const updated = [...prices]
+    ;[updated[index], updated[target]] = [updated[target], updated[index]]
+    setPrices(updated)
+  }
+
   const updatePrice = (index: number, field: keyof Price, value: string) => {
     const updated = [...prices]
     updated[index] = { ...updated[index], [field]: value }
@@ -730,14 +740,37 @@ export default function EditBranchPage() {
                   <Card key={index} className="p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-semibold">Precio #{index + 1}</h4>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removePrice(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => movePrice(index, -1)}
+                          disabled={index === 0}
+                          title="Subir"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => movePrice(index, 1)}
+                          disabled={index === prices.length - 1}
+                          title="Bajar"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removePrice(index)}
+                          title="Eliminar"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
