@@ -167,7 +167,7 @@ La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checko
 ### Gestión de productos desde el admin (`/admin/articulos`)
 Los productos de Stripe se pueden crear/editar/archivar desde el admin sin entrar al Dashboard de Stripe. La página llena la metadata automáticamente (`Id_Articulo`, `product_type`, `branch_id`) y las sucursales se eligen con casillas (se convierten a UUID). La imagen se toma de la biblioteca Multimedia (bucket `media`). Rutas API protegidas con sesión de Supabase (`src/lib/admin-auth.ts` → `getAdminUser`): `GET/POST /api/admin/stripe-products` y `PATCH /api/admin/stripe-products/[id]`. Los precios de Stripe son inmutables: al cambiar el precio se crea uno nuevo y se archiva el anterior.
 
-**Webhook en Stripe:** `https://jumpin.com.mx/api/webhooks/stripe`, evento `checkout.session.completed`.
+**Webhook en Stripe:** `https://www.jumpin.com.mx/api/webhooks/stripe`, evento `checkout.session.completed`. **Con `www` obligatoriamente**: el dominio sin `www` responde 307 redirigiendo a `www`, y Stripe **no sigue redirecciones** en los webhooks (cuenta el 307 como entrega fallida, así que el pago se cobra pero no se guarda la orden, no se envía nada a DECManager y no sale el correo).
 
 ### Metadata de cada producto en Stripe
 Al crear un producto en el Dashboard de Stripe se agregan estos campos de metadata:
