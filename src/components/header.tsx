@@ -14,6 +14,7 @@ import { searchContent, SearchResult } from "@/lib/search";
 import { useRouter } from "next/navigation";
 
 const navLinks = [
+  { href: "/shop", label: "Tienda en línea", featured: true },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/compromiso-social", label: "Compromiso Social" },
   { href: "/fiestas-y-eventos/fiestas-cumpleanos", label: "Fiestas de cumpleaños", featured: true },
