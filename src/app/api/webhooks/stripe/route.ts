@@ -287,16 +287,22 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify(JSON.stringify(ventaPayload)),
         })
 
+        // El cuerpo se lee SIEMPRE (no solo en los errores): DECManager puede
+        // devolver aquí datos de la venta que hay que incluir en el correo.
+        const respBody = await res.text().catch(() => '')
+
         // fetch NO lanza en respuestas 4xx/5xx: hay que revisar el status a mano,
         // si no los rechazos de DECManager pasan inadvertidos.
         if (!res.ok) {
-          const respBody = await res.text().catch(() => '')
           console.error(
             `Webhook de venta rechazado por DECManager (HTTP ${res.status}): ${respBody} — payload:`,
             JSON.stringify(ventaPayload)
           )
         } else {
-          console.log(`Webhook de venta enviado a DECManager OK (HTTP ${res.status}) — Id_Ticket ${idTicket}`)
+          console.log(
+            `Webhook de venta enviado a DECManager OK (HTTP ${res.status}) — Id_Ticket ${idTicket} — respuesta:`,
+            respBody
+          )
         }
       } catch (err) {
         // No fallar el webhook de Stripe si el sistema externo no responde.
