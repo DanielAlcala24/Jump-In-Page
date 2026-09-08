@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      // Solo tarjeta. Con Link habilitado, el cargo queda como
+      // payment_method_details.type = 'link' y Stripe no expone la tarjeta que hay
+      // detras: el webhook se queda sin `funding` ni `last4`, y DECManager rechaza la
+      // venta completa (HTTP 400) porque Forma_Pago solo acepta credito/debito.
+      payment_method_types: ['card'],
       line_items: items.map((i) => ({ price: i.price_id, quantity: i.quantity })),
       billing_address_collection: 'auto',
       metadata: {

@@ -23,6 +23,12 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// DECManager SOLO acepta 'credito' o 'debito' en Forma_Pago: cualquier otro valor
+// (p. ej. 'desconocido') hace que rechace la venta completa con HTTP 400 y la compra
+// se pierde. Cuando Stripe no reporta el tipo de tarjeta se manda este valor por
+// defecto para que la venta sí quede registrada.
+const FORMA_PAGO_DEFAULT = 'credito'
+
 // Mapea el tipo de tarjeta de Stripe al formato en español requerido.
 // Las prepagadas (prepaid) se tratan como débito.
 function mapFormaPago(funding?: string | null): string {
@@ -32,8 +38,64 @@ function mapFormaPago(funding?: string | null): string {
     case 'debit':
     case 'prepaid':
       return 'debito'
+    // 'unknown', null o cualquier método que no sea tarjeta.
     default:
-      return funding ?? 'desconocido'
+      return FORMA_PAGO_DEFAULT
+  }
+}
+
+/**
+ * Obtiene tipo de tarjeta (funding) y últimos 4 dígitos de una sesión de Checkout.
+ *
+ * Se intenta por varias vías porque no todos los pagos exponen los datos en el mismo
+ * lugar (wallets, Link, expansiones que vuelven sin expandir). Nunca lanza: si no se
+ * puede resolver, devuelve nulos y deja el motivo en el log para diagnosticarlo.
+ */
+async function resolverDatosTarjeta(
+  session: Stripe.Checkout.Session
+): Promise<{ funding: string | null; last4: string | null; diagnostico: string }> {
+  const piId =
+    typeof session.payment_intent === 'string'
+      ? session.payment_intent
+      : session.payment_intent?.id
+
+  if (!piId) return { funding: null, last4: null, diagnostico: 'la sesión no tiene payment_intent' }
+
+  try {
+    const pi = await stripe.paymentIntents.retrieve(piId, {
+      expand: ['latest_charge.payment_method', 'payment_method'],
+    })
+
+    // latest_charge puede llegar como objeto (expandido) o como id (string).
+    let charge: Stripe.Charge | null = null
+    if (pi.latest_charge && typeof pi.latest_charge === 'object') {
+      charge = pi.latest_charge as Stripe.Charge
+    } else if (typeof pi.latest_charge === 'string') {
+      charge = await stripe.charges.retrieve(pi.latest_charge)
+    }
+
+    // 1) Datos desde el cargo. Apple Pay / Google Pay / Link con tarjeta cuelgan de .card.
+    const details = charge?.payment_method_details as any
+    const card = details?.card ?? details?.card_present ?? details?.link?.card
+
+    // 2) Respaldo: el PaymentMethod (expandido en el cargo o en el PaymentIntent).
+    const pm =
+      (charge?.payment_method && typeof charge.payment_method === 'object'
+        ? (charge.payment_method as any)
+        : null) ??
+      (pi.payment_method && typeof pi.payment_method === 'object' ? (pi.payment_method as any) : null)
+
+    const funding = card?.funding ?? pm?.card?.funding ?? null
+    const last4 = card?.last4 ?? pm?.card?.last4 ?? null
+
+    return {
+      funding,
+      last4,
+      diagnostico: `pi=${pi.id} pi_status=${pi.status} charge=${charge?.id ?? 'ninguno'} metodo=${details?.type ?? pm?.type ?? 'desconocido'}`,
+    }
+  } catch (err) {
+    // Un fallo aquí no debe tirar el webhook: la venta y el correo importan más.
+    return { funding: null, last4: null, diagnostico: `error consultando Stripe: ${err}` }
   }
 }
 
@@ -203,16 +265,12 @@ export async function POST(req: NextRequest) {
     }))
 
     // --- Datos de la tarjeta (últimos 4 dígitos y crédito/débito) ---
-    let last4: string | null = null
-    let funding: string | null = null
-    if (session.payment_intent) {
-      const pi = await stripe.paymentIntents.retrieve(session.payment_intent as string, {
-        expand: ['latest_charge'],
-      })
-      const charge = pi.latest_charge as Stripe.Charge | null
-      const card = charge?.payment_method_details?.card
-      last4 = card?.last4 ?? null
-      funding = card?.funding ?? null
+    const { funding, last4, diagnostico } = await resolverDatosTarjeta(session)
+    if (funding !== 'credit' && funding !== 'debit' && funding !== 'prepaid') {
+      console.warn(
+        `No se pudo determinar el tipo de tarjeta (funding=${funding ?? 'null'}, last4=${last4 ?? 'null'}); ` +
+          `se envía Forma_Pago='${FORMA_PAGO_DEFAULT}' — ${diagnostico}`
+      )
     }
 
     // --- Id_Terminal de la sucursal desde Supabase ---

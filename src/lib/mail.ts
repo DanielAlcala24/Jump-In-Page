@@ -15,11 +15,26 @@ export function getTransporter() {
 
   if (!host || !user || !pass) return null
 
+  // Un puerto mal escrito (p. ej. 456 en vez de 465) no da error de configuración:
+  // el socket simplemente se queda colgado hasta agotar el tiempo y el correo nunca
+  // sale. Se avisa en el log para que se note de inmediato.
+  if (![465, 587, 25, 2525].includes(port)) {
+    console.warn(
+      `SMTP_PORT=${port} no es un puerto SMTP habitual (465 SSL / 587 STARTTLS). ` +
+        'Revisa la variable de entorno: un puerto equivocado hace que el envío falle por timeout.'
+    )
+  }
+
   return nodemailer.createTransport({
     host,
     port,
     secure: port === 465, // 465 = SSL, 587 = STARTTLS
     auth: { user, pass },
+    // Sin estos límites, un puerto/host inalcanzable deja la función colgada ~2 min
+    // (el default del SO) antes de fallar.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   })
 }
 
