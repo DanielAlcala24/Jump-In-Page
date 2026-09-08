@@ -54,7 +54,9 @@ export async function POST(req: NextRequest) {
       },
       success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/shop`,
-      locale: 'es',
+      // 'es-419' (español latinoamericano) y no 'es' (España): el de España formatea
+      // los importes como 1000,00 MXN, con la coma como separador decimal.
+      locale: 'es-419',
     })
 
     return NextResponse.json({ url: session.url })
