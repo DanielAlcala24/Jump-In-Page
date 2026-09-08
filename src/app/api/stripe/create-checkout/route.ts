@@ -39,6 +39,11 @@ export async function POST(req: NextRequest) {
       // detras: el webhook se queda sin `funding` ni `last4`, y DECManager rechaza la
       // venta completa (HTTP 400) porque Forma_Pago solo acepta credito/debito.
       payment_method_types: ['card'],
+      // `payment_method_types` no basta para ocultar Link: además de método de pago,
+      // Link es un *wallet* dentro del formulario de tarjeta y se sigue mostrando.
+      // Esto lo apaga de verdad. (Apple Pay / Google Pay no tienen equivalente en la
+      // API: esos solo se desactivan desde el Dashboard de Stripe.)
+      wallet_options: { link: { display: 'never' } },
       line_items: items.map((i) => ({ price: i.price_id, quantity: i.quantity })),
       billing_address_collection: 'auto',
       metadata: {
