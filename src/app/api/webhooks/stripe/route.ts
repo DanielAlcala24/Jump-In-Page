@@ -62,9 +62,19 @@ async function resolverDatosTarjeta(
   if (!piId) return { funding: null, last4: null, diagnostico: 'la sesión no tiene payment_intent' }
 
   try {
-    const pi = await stripe.paymentIntents.retrieve(piId, {
-      expand: ['latest_charge.payment_method', 'payment_method'],
-    })
+    // OJO con los `expand`: `payment_method` y `latest_charge` sí son expandibles en el
+    // PaymentIntent, pero `latest_charge.payment_method` NO ("This property cannot be
+    // expanded"), y un expand inválido hace fallar TODA la consulta. Por eso el método de
+    // pago del cargo, si hiciera falta, se consulta después por separado.
+    let pi: Stripe.PaymentIntent
+    try {
+      pi = await stripe.paymentIntents.retrieve(piId, {
+        expand: ['latest_charge', 'payment_method'],
+      })
+    } catch {
+      // Último recurso: sin expandir nada, para no quedarnos sin datos por culpa del expand.
+      pi = await stripe.paymentIntents.retrieve(piId)
+    }
 
     // latest_charge puede llegar como objeto (expandido) o como id (string).
     let charge: Stripe.Charge | null = null
@@ -78,12 +88,24 @@ async function resolverDatosTarjeta(
     const details = charge?.payment_method_details as any
     const card = details?.card ?? details?.card_present ?? details?.link?.card
 
-    // 2) Respaldo: el PaymentMethod (expandido en el cargo o en el PaymentIntent).
-    const pm =
-      (charge?.payment_method && typeof charge.payment_method === 'object'
-        ? (charge.payment_method as any)
-        : null) ??
-      (pi.payment_method && typeof pi.payment_method === 'object' ? (pi.payment_method as any) : null)
+    // 2) Respaldo: el PaymentMethod, ya expandido en el PaymentIntent o consultado por id.
+    let pm: any =
+      pi.payment_method && typeof pi.payment_method === 'object' ? (pi.payment_method as any) : null
+    if (!card && !pm) {
+      const pmId =
+        typeof charge?.payment_method === 'string'
+          ? charge.payment_method
+          : typeof pi.payment_method === 'string'
+            ? pi.payment_method
+            : null
+      if (pmId) {
+        try {
+          pm = await stripe.paymentMethods.retrieve(pmId)
+        } catch {
+          /* se sigue con lo que haya */
+        }
+      }
+    }
 
     const funding = card?.funding ?? pm?.card?.funding ?? null
     const last4 = card?.last4 ?? pm?.card?.last4 ?? null
