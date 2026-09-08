@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { SonnerToaster } from '@/components/sonner-toaster';
 import Script from 'next/script';
 import { PopupClient } from '@/components/popup-client';
+import ShopButton from '@/components/shop-button';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://jumpin.com.mx'),
@@ -81,6 +82,7 @@ export default function RootLayout({
         </noscript>
 
         {children}
+        <ShopButton />
         <PopupClient />
         <Toaster />
         <SonnerToaster />
