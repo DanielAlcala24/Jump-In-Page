@@ -64,6 +64,8 @@ Todos se cargan en `src/app/layout.tsx`.
 | `/aviso-de-privacidad` | Aviso de privacidad |
 | `/terminos-y-condiciones` | Términos y condiciones |
 | `/casafutbol` | Colaboración Jump-In × Casa Fútbol |
+| `/shop` | Tienda en línea (compra de entradas y artículos) |
+| `/shop/success` | Confirmación de compra con el QR del ticket |
 
 ---
 
@@ -83,6 +85,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Sucursales | `/admin/sucursales` | — |
 | Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) |
 | Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` |
+| Restricciones de fecha (Shop) | `/admin/shop` | `shop_date_restrictions` |
 | Promociones | `/admin/promociones` | `promotions` |
 | Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` |
 | Galería cumpleaños | `/admin/cumpleanos/gallery` | — |
@@ -101,7 +104,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 
 ## Tablas Supabase
 
-`posts` · `menu_items` · `faqs` · `knowledge_base` · `attractions` · `promotions` · `birthday_packages` · `leads`
+`posts` · `menu_items` · `faqs` · `knowledge_base` · `attractions` · `promotions` · `birthday_packages` · `leads` · `branches` · `banner_config` · `shop_orders` · `shop_date_restrictions` · `shop_product_groups`
 
 > La tabla `attractions` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
 >
@@ -137,12 +140,15 @@ Presentes en prácticamente todas las páginas públicas:
 | `<WavyDivider>` | `src/components/wavy-divider.tsx` | Divisor ondulado (prop `fromColor`) |
 | `<PopupClient>` | `src/components/popup-client.tsx` | Popup configurable desde admin |
 | `<TopBannerServer>` | `src/components/top-banner-server.tsx` | Banner superior configurable desde admin (solo `/`) |
+| `<ShopButton>` | `src/components/shop-button.tsx` | Botón flotante "Compra tus entradas" (abajo a la izquierda) |
 
 ---
 
 ## Convenciones del proyecto
 
 - Todas las páginas públicas incluyen `<Header>`, `<Footer>` y `<WhatsappButton>`.
+- `<ShopButton>` es la excepción: va montado **una sola vez en `src/app/layout.tsx`**, no página por página, y se oculta solo (`usePathname`) en `/shop`, `/shop/success` y todo `/admin`. La lista está en la constante `RUTAS_OCULTAS` del propio componente.
+- El menú de navegación (`navLinks` en `header.tsx`) es compartido por el menú de escritorio y el móvil: agregar un enlace ahí lo agrega en los dos.
 - El video hero se controla con `<VideoBackground videoSrc="/assets/...">`.
 - Los separadores entre secciones usan `<WavyDivider fromColor="bg-...">`.
 - Cada página exporta `metadata` con `title`, `description`, `keywords` y `openGraph`.
@@ -160,7 +166,13 @@ La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checko
 
 **Flujo `/shop`:** Sucursal → Productos → Fecha (calendario) → Pago (Stripe Checkout) → `/shop/success`.
 
-**Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. apiVersion de Stripe: `2026-05-27.dahlia`.
+**Métodos de pago (`create-checkout`): solo tarjeta, y Link deshabilitado a propósito.**
+- `payment_method_types: ['card']` + `wallet_options: { link: { display: 'never' } }`. Se necesitan **los dos**: `payment_method_types` no oculta Link, porque además de método de pago Link es un *wallet* dentro del formulario de tarjeta y se sigue mostrando.
+- Motivo: en un pago con Link el cargo queda como `payment_method_details.type = 'link'` y Stripe **no expone la tarjeta de fondo**, así que el webhook se queda sin `funding` ni `last4` para DECManager.
+- **Apple Pay / Google Pay sí se pueden dejar encendidos** (probado): se liquidan como cargo de tarjeta normal y entregan `funding` y el `last4` de la tarjeta física — el número tokenizado del dispositivo va aparte, en `card.wallet.dynamic_last4`. No hay forma de apagarlos desde la API (`wallet_options` solo acepta `link`); eso solo se hace desde el Dashboard de Stripe.
+- `locale: 'es-419'` (español latinoamericano) y **no** `'es'`: el de España formatea los importes como `1000,00 MXN`, con coma decimal.
+
+**Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST` (`smtp.gmail.com`), `SMTP_PORT` (**465** = SSL, o 587 = STARTTLS), `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. Cuidado con el `SMTP_PORT`: un puerto mal escrito no da error de configuración, solo `ETIMEDOUT` al enviar (ya pasó en producción con `456`); `src/lib/mail.ts` avisa en el log si el puerto no es de los habituales y corta a los 10 s. apiVersion de Stripe: `2026-05-27.dahlia`.
 
 **Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha) · `src/app/admin/articulos/grupos` (gestiona los grupos de productos).
 
@@ -201,8 +213,9 @@ Al completarse un pago (`checkout.session.completed`), `src/app/api/webhooks/str
 ```
 - `API_Key` sale de `VENTA_WEBHOOK_API_KEY`; va **dentro del JSON**, no en los headers. Si no está configurada se envía `null`.
 - `Id_Terminal` sale de la columna `branches.Id_Terminal` (Supabase) según `branch_id`.
-- `Forma_Pago` mapea el `funding` de Stripe (`credit`→`credito`, `debit`→`debito`).
-- `Detalle_Pago` = `last4` de la tarjeta (leído del `latest_charge` del PaymentIntent).
+- `Forma_Pago` mapea el `funding` de Stripe (`credit`→`credito`, `debit`/`prepaid`→`debito`). **DECManager solo acepta `credito` o `debito`**: cualquier otro valor (p. ej. `desconocido`) devuelve HTTP 400 y **se pierde la venta completa**. Por eso, cuando Stripe no reporta el `funding`, se envía la constante `FORMA_PAGO_DEFAULT` (`'credito'`) y se deja un warning en el log con el diagnóstico del PaymentIntent.
+- `Detalle_Pago` = `last4` de la tarjeta. Puede ir `null` sin problema: **DECManager sí acepta el nulo** (probado); el campo que valida estrictamente es `Forma_Pago`.
+- Los datos de la tarjeta los resuelve `resolverDatosTarjeta()` por varias vías (cargo expandido, cargo consultado por id, `PaymentMethod`), y nunca lanza: si falla, devuelve nulos y sigue. Ojo con los `expand`: `latest_charge` y `payment_method` sí son expandibles en el PaymentIntent, pero **`latest_charge.payment_method` no** ("This property cannot be expanded") y un expand inválido hace fallar toda la consulta.
 - El JSON de ejemplo vive en `public/assets/docs/Json Venta En Linea Jump-In - v2.json`.
 
 ### Confirmación al cliente (QR + correo)
