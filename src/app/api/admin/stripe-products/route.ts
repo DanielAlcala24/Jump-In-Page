@@ -18,6 +18,9 @@ function mapProduct(p: Stripe.Product) {
     id_articulo: p.metadata?.Id_Articulo ?? '',
     product_type: p.metadata?.product_type ?? 'access',
     branch_id: p.metadata?.branch_id ?? '',
+    // Sin la metadata = visible. Solo el 'false' explícito lo oculta, así los
+    // productos que ya existían siguen apareciendo en /shop.
+    visible: p.metadata?.visible_en_shop !== 'false',
   }
 }
 
@@ -44,7 +47,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const { name, description, image, price, product_type, id_articulo, branch_ids } = body as {
+    const { name, description, image, price, product_type, id_articulo, branch_ids, visible } = body as {
       name: string
       description?: string
       image?: string
@@ -52,6 +55,7 @@ export async function POST(req: NextRequest) {
       product_type: string
       id_articulo?: string
       branch_ids?: string[]
+      visible?: boolean
     }
 
     if (!name || !price || price <= 0) {
@@ -66,6 +70,8 @@ export async function POST(req: NextRequest) {
         Id_Articulo: id_articulo || '',
         product_type: product_type || 'access',
         branch_id: (branch_ids ?? []).join(','), // vacío = todas las sucursales
+        // Controla si el producto se muestra a los clientes en /shop.
+        visible_en_shop: visible === false ? 'false' : 'true',
       },
     })
 

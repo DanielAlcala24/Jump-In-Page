@@ -11,11 +11,12 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import MediaSelector from '@/components/admin/media-selector'
-import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers } from 'lucide-react'
+import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface StripeProduct {
@@ -30,6 +31,7 @@ interface StripeProduct {
   id_articulo: string
   product_type: string
   branch_id: string
+  visible: boolean
 }
 
 interface Branch {
@@ -51,6 +53,7 @@ const emptyForm = {
   product_type: 'access',
   id_articulo: '',
   branch_ids: [] as string[],
+  visible: true, // los productos nuevos nacen visibles en /shop
 }
 
 export default function AdminArticulosPage() {
@@ -120,6 +123,7 @@ export default function AdminArticulosPage() {
       product_type: p.product_type || 'access',
       id_articulo: p.id_articulo || '',
       branch_ids: p.branch_id ? p.branch_id.split(',').map((b) => b.trim()).filter(Boolean) : [],
+      visible: p.visible,
     })
     setDialogOpen(true)
   }
@@ -148,6 +152,7 @@ export default function AdminArticulosPage() {
         product_type: form.product_type,
         id_articulo: form.id_articulo.trim(),
         branch_ids: form.branch_ids,
+        visible: form.visible,
       }
 
       const res = editingId
@@ -185,6 +190,23 @@ export default function AdminArticulosPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast.success(p.active ? 'Producto archivado' : 'Producto activado')
+      fetchProducts()
+    } catch (err: any) {
+      toast.error(err.message || 'Error al actualizar')
+    }
+  }
+
+  // Mostrar/ocultar en /shop sin abrir el diálogo.
+  const toggleVisible = async (p: StripeProduct) => {
+    try {
+      const res = await fetch(`/api/admin/stripe-products/${p.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visible: !p.visible }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      toast.success(p.visible ? 'Producto oculto en la tienda' : 'Producto visible en la tienda')
       fetchProducts()
     } catch (err: any) {
       toast.error(err.message || 'Error al actualizar')
@@ -233,6 +255,7 @@ export default function AdminArticulosPage() {
     // Estado
     if (filterStatus === 'active' && !p.active) return false
     if (filterStatus === 'archived' && p.active) return false
+    if (filterStatus === 'hidden' && p.visible) return false
 
     return true
   })
@@ -319,6 +342,7 @@ export default function AdminArticulosPage() {
                   <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="active">Activos</SelectItem>
                   <SelectItem value="archived">Archivados</SelectItem>
+                  <SelectItem value="hidden">Ocultos en la tienda</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -351,6 +375,7 @@ export default function AdminArticulosPage() {
                   <TableHead>Sucursales</TableHead>
                   <TableHead>Id_Articulo</TableHead>
                   <TableHead>Estado</TableHead>
+                  <TableHead>Visible</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -377,6 +402,19 @@ export default function AdminArticulosPage() {
                     {p.active
                       ? <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Activo</Badge>
                       : <Badge variant="outline">Archivado</Badge>}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={p.visible}
+                        onCheckedChange={() => toggleVisible(p)}
+                        aria-label={p.visible ? 'Ocultar en la tienda' : 'Mostrar en la tienda'}
+                        className="data-[state=checked]:bg-orange-500"
+                      />
+                      {p.visible
+                        ? <Eye className="h-4 w-4 text-gray-400" />
+                        : <EyeOff className="h-4 w-4 text-gray-400" />}
+                    </div>
                   </TableCell>
                   <TableCell className="text-right whitespace-nowrap">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(p)} title="Editar">
@@ -436,6 +474,20 @@ export default function AdminArticulosPage() {
             <div>
               <Label>Id_Articulo</Label>
               <Input value={form.id_articulo} onChange={(e) => setForm({ ...form, id_articulo: e.target.value })} placeholder="Identificador para el webhook de venta" />
+            </div>
+
+            <div className="flex items-start justify-between gap-4 rounded-lg border p-3">
+              <div>
+                <Label className="mb-1 block">Visible en la tienda</Label>
+                <p className="text-xs text-gray-500">
+                  Apagado, el producto sigue existiendo pero no se le muestra a los clientes en /shop.
+                </p>
+              </div>
+              <Switch
+                checked={form.visible}
+                onCheckedChange={(v) => setForm({ ...form, visible: v })}
+                className="mt-1 data-[state=checked]:bg-orange-500"
+              />
             </div>
 
             <div>

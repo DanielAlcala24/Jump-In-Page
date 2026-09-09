@@ -186,6 +186,7 @@ Al crear un producto en el Dashboard de Stripe se agregan estos campos de metada
 - `branch_id`: UUID(s) de la sucursal (columna `id` de la tabla `branches`). Vacío = todas las sucursales; un solo UUID = esa sucursal; varios UUID separados por coma (`uuid1,uuid2`) = solo esas sucursales.
 - `product_type`: `access` | `article` | `promotion` (default `access`).
 - `Id_Articulo`: identificador del artículo. Se envía en el webhook de venta (ver abajo) por cada artículo comprado.
+- `visible_en_shop`: `'true'` | `'false'`. Controla si el producto se le muestra a los clientes en `/shop` (switch **"Visible en la tienda"** en `/admin/articulos`, tanto en el diálogo de crear/editar como en la columna *Visible* de la tabla). **Sin la metadata = visible**, para que los productos anteriores a esta bandera sigan apareciendo. Es distinto de archivar: oculto sigue activo en Stripe y conserva su precio e historial; archivado desaparece del catálogo. El filtro lo aplica `src/app/api/stripe/products/route.ts`.
 
 ### Grupos de productos (`/admin/articulos/grupos`)
 Varios productos de Stripe se pueden mostrar en `/shop` como **una sola tarjeta con selector** (p. ej. las tallas de unos calcetines). La agrupación es **solo visual y vive en Supabase**, en la tabla `shop_product_groups`: **la metadata de los productos en Stripe no se toca** — cada producto conserva su nombre, descripción, precio, imagen e `Id_Articulo` propios.

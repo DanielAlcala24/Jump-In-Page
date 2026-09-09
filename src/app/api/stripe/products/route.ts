@@ -13,6 +13,10 @@ export async function GET(req: NextRequest) {
     })
 
     const filtered = products.data.filter((p) => {
+      // Oculto desde el admin: no se muestra a los clientes (sin la metadata = visible,
+      // para que los productos anteriores a esta bandera sigan apareciendo).
+      if (p.metadata?.visible_en_shop === 'false') return false
+
       if (!branchId) return true
       const productBranch = p.metadata?.branch_id
       // Vacío = disponible en todas las sucursales.

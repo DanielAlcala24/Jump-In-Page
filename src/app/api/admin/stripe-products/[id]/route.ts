@@ -12,7 +12,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   try {
     const body = await req.json()
-    const { name, description, image, price, product_type, id_articulo, branch_ids, active } = body as {
+    const { name, description, image, price, product_type, id_articulo, branch_ids, active, visible } = body as {
       name?: string
       description?: string
       image?: string
@@ -21,6 +21,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       id_articulo?: string
       branch_ids?: string[]
       active?: boolean
+      visible?: boolean
     }
 
     // Campos base del producto.
@@ -31,11 +32,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (active !== undefined) updateData.active = active
 
     // Metadata (solo si se mandó alguno de sus campos).
-    if (product_type !== undefined || id_articulo !== undefined || branch_ids !== undefined) {
+    // Stripe hace merge de la metadata, así que mandar solo algunas llaves no borra el resto.
+    if (
+      product_type !== undefined ||
+      id_articulo !== undefined ||
+      branch_ids !== undefined ||
+      visible !== undefined
+    ) {
       updateData.metadata = {}
       if (product_type !== undefined) updateData.metadata.product_type = product_type
       if (id_articulo !== undefined) updateData.metadata.Id_Articulo = id_articulo || ''
       if (branch_ids !== undefined) updateData.metadata.branch_id = (branch_ids ?? []).join(',')
+      if (visible !== undefined) updateData.metadata.visible_en_shop = visible ? 'true' : 'false'
     }
 
     // Si cambia el precio: los precios de Stripe son inmutables, se crea uno nuevo
