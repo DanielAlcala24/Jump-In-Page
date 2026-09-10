@@ -153,11 +153,17 @@ export default function AdminGruposPage() {
   }
 
   // Mueve un producto dentro del grupo: ese orden es el que ve el cliente.
+  // Con el filtro de sucursal puesto, intercambia con el vecino VISIBLE (no con el de
+  // otra sucursal que está escondido), así se puede ordenar una sucursal a la vez.
   const moveProduct = (index: number, direction: -1 | 1) => {
     setForm((prev) => {
       const next = [...prev.product_ids]
-      const target = index + direction
-      if (target < 0 || target >= next.length) return prev
+      const visibles = next
+        .map((pid, i) => i)
+        .filter((i) => productInBranch(productById(next[i]), productBranch))
+      const pos = visibles.indexOf(index)
+      const target = visibles[pos + direction]
+      if (pos === -1 || target === undefined) return prev
       ;[next[index], next[target]] = [next[target], next[index]]
       return { ...prev, product_ids: next }
     })
@@ -236,6 +242,12 @@ export default function AdminGruposPage() {
     const ids = branchIdsOf(p.branch_id)
     return ids.length === 0 || ids.includes(branchId)
   }
+
+  // Productos ya elegidos que pasan el filtro de sucursal, con su índice real dentro del
+  // grupo (el array completo es el que se guarda; el filtro solo cambia lo que se ve).
+  const visibleSelected = form.product_ids
+    .map((pid, index) => ({ pid, index }))
+    .filter(({ pid }) => productInBranch(productById(pid), productBranch))
 
   // Productos disponibles para agregar: activos, no elegidos ya, de la sucursal filtrada
   // y que casen con la búsqueda.
@@ -439,20 +451,50 @@ export default function AdminGruposPage() {
 
             {/* Productos del grupo */}
             <div className="rounded-lg border p-3 space-y-3">
-              <div>
-                <Label className="font-semibold">Productos del grupo *</Label>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Mínimo 2. El orden de esta lista es el orden de las opciones en /shop.
-                </p>
+              <div className="flex items-end justify-between gap-3 flex-wrap">
+                <div>
+                  <Label className="font-semibold">Productos del grupo *</Label>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Mínimo 2. El orden de esta lista es el orden de las opciones en /shop.
+                  </p>
+                </div>
+                <div className="w-[190px] shrink-0">
+                  <Label className="text-xs text-gray-500 mb-1 block">Filtrar por sucursal</Label>
+                  <Select value={productBranch} onValueChange={setProductBranch}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas las sucursales</SelectItem>
+                      {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+
+              {productBranch !== 'all' && (
+                <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1.5">
+                  Mostrando {visibleSelected.length} de {form.product_ids.length} productos del grupo.
+                  Las flechas mueven el producto dentro de los de esta sucursal; los de las otras
+                  sucursales no se tocan y conservan su lugar.
+                </p>
+              )}
 
               {form.product_ids.length > 0 && (
                 <div className="space-y-1.5">
-                  {form.product_ids.map((pid, index) => {
+                  {visibleSelected.length === 0 && (
+                    <p className="text-sm text-gray-400 border rounded p-3 text-center">
+                      Ningún producto del grupo es de esta sucursal.
+                    </p>
+                  )}
+                  {visibleSelected.map(({ pid, index }, visibleIndex) => {
                     const p = productById(pid)
                     return (
                       <div key={pid} className="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded px-2 py-1.5">
-                        <span className="text-xs font-bold text-orange-500 w-5 shrink-0">{index + 1}.</span>
+                        <span
+                          className="text-xs font-bold text-orange-500 w-5 shrink-0"
+                          title={`Posición ${index + 1} de ${form.product_ids.length} en el grupo`}
+                        >
+                          {index + 1}.
+                        </span>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{p ? p.name : `⚠ ${pid} (no existe en Stripe)`}</p>
                           {p && (
@@ -464,7 +506,7 @@ export default function AdminGruposPage() {
                         </div>
                         <button
                           onClick={() => moveProduct(index, -1)}
-                          disabled={index === 0}
+                          disabled={visibleIndex === 0}
                           className="p-1 text-gray-400 hover:text-orange-500 disabled:opacity-30"
                           title="Subir"
                         >
@@ -472,7 +514,7 @@ export default function AdminGruposPage() {
                         </button>
                         <button
                           onClick={() => moveProduct(index, 1)}
-                          disabled={index === form.product_ids.length - 1}
+                          disabled={visibleIndex === visibleSelected.length - 1}
                           className="p-1 text-gray-400 hover:text-orange-500 disabled:opacity-30"
                           title="Bajar"
                         >
@@ -492,31 +534,15 @@ export default function AdminGruposPage() {
               )}
 
               <div>
-                <div className="flex gap-2 mb-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      placeholder="Buscar producto para agregar…"
-                      className="pl-8"
-                    />
-                  </div>
-                  <div className="w-[180px] shrink-0">
-                    <Select value={productBranch} onValueChange={setProductBranch}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todas las sucursales</SelectItem>
-                        {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="relative mb-2">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    value={productSearch}
+                    onChange={(e) => setProductSearch(e.target.value)}
+                    placeholder="Buscar producto para agregar…"
+                    className="pl-8"
+                  />
                 </div>
-                {productBranch !== 'all' && (
-                  <p className="text-xs text-gray-500 mb-2">
-                    Se muestran los productos de esa sucursal y los que aplican a todas.
-                  </p>
-                )}
                 <div className="max-h-48 overflow-y-auto border rounded divide-y">
                   {availableProducts.length === 0 ? (
                     <p className="text-sm text-gray-400 p-3 text-center">
