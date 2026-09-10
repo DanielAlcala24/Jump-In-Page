@@ -11,10 +11,11 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import MediaSelector from '@/components/admin/media-selector'
 import {
-  ArrowLeft, Plus, Pencil, Loader2, Trash2, Layers, Search, ChevronUp, ChevronDown, X,
+  ArrowLeft, Plus, Pencil, Loader2, Trash2, Layers, Search, ChevronUp, ChevronDown, X, MapPin,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -37,6 +38,12 @@ interface StripeProduct {
   unit_amount: number | null
   currency: string
   product_type: string
+  branch_id: string
+}
+
+interface Branch {
+  id: string
+  name: string
 }
 
 const emptyForm = {
@@ -55,12 +62,17 @@ export default function AdminGruposPage() {
   const [user, setUser] = useState<any>(null)
   const [groups, setGroups] = useState<ProductGroup[]>([])
   const [products, setProducts] = useState<StripeProduct[]>([])
+  const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({ ...emptyForm })
   const [productSearch, setProductSearch] = useState('')
+  // Filtro de sucursal del selector de productos (dentro del diálogo).
+  const [productBranch, setProductBranch] = useState('all')
+  // Filtro de sucursal de la lista de grupos.
+  const [filterBranch, setFilterBranch] = useState('all')
 
   const fetchGroups = useCallback(async () => {
     const { data, error } = await supabase
@@ -81,6 +93,14 @@ export default function AdminGruposPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/admin/login'); return }
       setUser(user)
+
+      // Sucursales (para filtrar y etiquetar los productos por sucursal).
+      const { data: branchData } = await supabase
+        .from('branches')
+        .select('id, name')
+        .eq('is_active', true)
+        .order('name', { ascending: true })
+      setBranches(branchData ?? [])
 
       // Productos de Stripe (para elegir cuáles entran al grupo).
       try {
@@ -103,6 +123,8 @@ export default function AdminGruposPage() {
     setEditingId(null)
     setForm({ ...emptyForm, sort_order: String(groups.length) })
     setProductSearch('')
+    // El grupo nuevo arranca con la sucursal que se esté viendo en la lista.
+    setProductBranch(filterBranch)
     setDialogOpen(true)
   }
 
@@ -117,6 +139,7 @@ export default function AdminGruposPage() {
       is_active: g.is_active,
     })
     setProductSearch('')
+    setProductBranch(filterBranch)
     setDialogOpen(true)
   }
 
@@ -196,13 +219,55 @@ export default function AdminGruposPage() {
     }).format(amount / 100)
   }
 
-  // Productos disponibles para agregar: activos, no elegidos ya, y que casen con la búsqueda.
+  // Metadata branch_id de Stripe: vacío = todas las sucursales, o varios UUID separados por coma.
+  const branchIdsOf = (branchId: string | null | undefined) =>
+    branchId ? branchId.split(',').map((b) => b.trim()).filter(Boolean) : []
+
+  const branchNames = (branchId: string | null | undefined) => {
+    const ids = branchIdsOf(branchId)
+    if (ids.length === 0) return 'Todas las sucursales'
+    return ids.map((id) => branches.find((b) => b.id === id)?.name ?? '¿?').join(', ')
+  }
+
+  // Un producto sin sucursal está en todas, así que siempre casa con el filtro.
+  const productInBranch = (p: StripeProduct | undefined, branchId: string) => {
+    if (branchId === 'all') return true
+    if (!p) return false
+    const ids = branchIdsOf(p.branch_id)
+    return ids.length === 0 || ids.includes(branchId)
+  }
+
+  // Productos disponibles para agregar: activos, no elegidos ya, de la sucursal filtrada
+  // y que casen con la búsqueda.
   const availableProducts = products.filter((p) => {
     if (!p.active) return false
     if (form.product_ids.includes(p.id)) return false
+    if (!productInBranch(p, productBranch)) return false
     const q = productSearch.trim().toLowerCase()
     return !q || p.name.toLowerCase().includes(q)
   })
+
+  // Un grupo entra al filtro si alguno de sus productos pertenece a esa sucursal.
+  const filteredGroups = groups.filter((g) => {
+    if (filterBranch === 'all') return true
+    return (g.product_ids ?? []).some((pid) => productInBranch(productById(pid), filterBranch))
+  })
+
+  // Sucursales distintas dentro de un grupo: si son varias conviene avisarlo.
+  const groupBranchNames = (g: ProductGroup) => {
+    const ids = new Set<string>()
+    let hasAll = false
+    for (const pid of g.product_ids ?? []) {
+      const p = productById(pid)
+      if (!p) continue
+      const bids = branchIdsOf(p.branch_id)
+      if (bids.length === 0) hasAll = true
+      bids.forEach((b) => ids.add(b))
+    }
+    const names = [...ids].map((id) => branches.find((b) => b.id === id)?.name ?? '¿?')
+    if (hasAll) names.unshift('Todas las sucursales')
+    return names
+  }
 
   // Un producto en dos grupos se mostraría dos veces en /shop: se avisa en la tabla.
   const groupsOfProduct = (productId: string) =>
@@ -231,6 +296,27 @@ export default function AdminGruposPage() {
         </Button>
       </div>
 
+      {/* Filtro por sucursal: los grupos mezclan productos de varias sucursales. */}
+      {!loading && groups.length > 0 && (
+        <div className="flex flex-wrap items-end gap-3 mb-4">
+          <div className="w-[240px]">
+            <Label className="text-xs text-gray-500 mb-1 block">Sucursal</Label>
+            <Select value={filterBranch} onValueChange={setFilterBranch}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas las sucursales</SelectItem>
+                {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <p className="text-xs text-gray-500 pb-2.5">
+            {filterBranch === 'all'
+              ? `${groups.length} grupo(s)`
+              : `${filteredGroups.length} de ${groups.length} grupo(s) con productos de esta sucursal`}
+          </p>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-orange-500" /></div>
       ) : groups.length === 0 ? (
@@ -241,9 +327,17 @@ export default function AdminGruposPage() {
             Crea uno para juntar, por ejemplo, todas las tallas de un mismo artículo.
           </p>
         </div>
+      ) : filteredGroups.length === 0 ? (
+        <div className="text-center py-16 text-gray-500 border rounded-lg bg-white">
+          <MapPin className="h-10 w-10 mx-auto mb-3 opacity-40" />
+          <p className="mb-1">Ningún grupo tiene productos de esta sucursal.</p>
+          <button className="text-sm text-orange-500 hover:underline" onClick={() => setFilterBranch('all')}>
+            Ver todas las sucursales
+          </button>
+        </div>
       ) : (
         <div className="space-y-3">
-          {groups.map((g) => (
+          {filteredGroups.map((g) => (
             <div key={g.id} className={`border rounded-lg bg-white p-4 ${!g.is_active ? 'opacity-60' : ''}`}>
               <div className="flex items-start gap-4">
                 <div className="relative h-16 w-16 rounded bg-gray-100 overflow-hidden flex-shrink-0">
@@ -265,6 +359,11 @@ export default function AdminGruposPage() {
                       ? <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Activo</Badge>
                       : <Badge variant="outline">Oculto</Badge>}
                     <Badge variant="secondary">{g.product_ids?.length ?? 0} productos</Badge>
+                    {groupBranchNames(g).map((name) => (
+                      <Badge key={name} variant="outline" className="text-gray-600 font-normal">
+                        <MapPin className="h-3 w-3 mr-1" /> {name}
+                      </Badge>
+                    ))}
                   </div>
                   {g.description && <p className="text-sm text-gray-500 mt-1">{g.description}</p>}
 
@@ -277,7 +376,7 @@ export default function AdminGruposPage() {
                           className={`text-xs px-2 py-1 rounded-full border ${
                             p ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-red-50 text-red-600 border-red-200'
                           }`}
-                          title={p ? formatPrice(p.unit_amount, p.currency) : 'Este producto ya no existe en Stripe'}
+                          title={p ? `${formatPrice(p.unit_amount, p.currency)} · ${branchNames(p.branch_id)}` : 'Este producto ya no existe en Stripe'}
                         >
                           {p ? p.name : `⚠ ${pid}`}
                           {p && !p.active && ' (archivado)'}
@@ -357,8 +456,8 @@ export default function AdminGruposPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{p ? p.name : `⚠ ${pid} (no existe en Stripe)`}</p>
                           {p && (
-                            <p className="text-xs text-gray-500">
-                              {formatPrice(p.unit_amount, p.currency)}
+                            <p className="text-xs text-gray-500 truncate">
+                              {formatPrice(p.unit_amount, p.currency)} · {branchNames(p.branch_id)}
                               {!p.active && ' · archivado'}
                             </p>
                           )}
@@ -393,15 +492,31 @@ export default function AdminGruposPage() {
               )}
 
               <div>
-                <div className="relative mb-2">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    value={productSearch}
-                    onChange={(e) => setProductSearch(e.target.value)}
-                    placeholder="Buscar producto para agregar…"
-                    className="pl-8"
-                  />
+                <div className="flex gap-2 mb-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      value={productSearch}
+                      onChange={(e) => setProductSearch(e.target.value)}
+                      placeholder="Buscar producto para agregar…"
+                      className="pl-8"
+                    />
+                  </div>
+                  <div className="w-[180px] shrink-0">
+                    <Select value={productBranch} onValueChange={setProductBranch}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todas las sucursales</SelectItem>
+                        {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+                {productBranch !== 'all' && (
+                  <p className="text-xs text-gray-500 mb-2">
+                    Se muestran los productos de esa sucursal y los que aplican a todas.
+                  </p>
+                )}
                 <div className="max-h-48 overflow-y-auto border rounded divide-y">
                   {availableProducts.length === 0 ? (
                     <p className="text-sm text-gray-400 p-3 text-center">
@@ -417,7 +532,10 @@ export default function AdminGruposPage() {
                           className="w-full text-left px-3 py-2 hover:bg-orange-50 flex items-center gap-2"
                         >
                           <Plus className="h-3.5 w-3.5 text-orange-500 shrink-0" />
-                          <span className="flex-1 min-w-0 truncate text-sm">{p.name}</span>
+                          <span className="flex-1 min-w-0 truncate text-sm">
+                            {p.name}
+                            <span className="block text-[11px] text-gray-400 truncate">{branchNames(p.branch_id)}</span>
+                          </span>
                           {otherGroups.length > 0 && (
                             <span className="text-[10px] text-amber-600 shrink-0" title={`Ya está en: ${otherGroups.map((g) => g.name).join(', ')}`}>
                               ya agrupado
