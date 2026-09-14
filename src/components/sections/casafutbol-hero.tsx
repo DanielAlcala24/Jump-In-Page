@@ -102,6 +102,7 @@ export default function CasaFutbolHero() {
           muted
           playsInline
           preload="auto"
+          poster="/assets/jumpincasafutbol-poster.jpg"
           className="absolute inset-0 w-full h-full object-cover"
           aria-hidden="true"
         >

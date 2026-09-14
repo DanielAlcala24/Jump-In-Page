@@ -54,7 +54,7 @@ export default function FiestasCumpleanosPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <VideoBackground videoSrc="/assets/Cumple.mp4" />
+      <VideoBackground videoSrc="/assets/Cumple.mp4" poster="/assets/Cumple-poster.jpg" />
       <Header />
       <SocialIcons />
       <main className="flex-1">
