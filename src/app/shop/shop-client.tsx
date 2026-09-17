@@ -134,7 +134,9 @@ function optionLabel(product: Product, groupName: string): string {
   return name
 }
 
-export default function ShopPage() {
+// La página (`page.tsx`) es un Server Component que exporta la metadata SEO y
+// pasa como `children` el contenido indexable, que se muestra debajo del flujo.
+export default function ShopClient({ children }: { children?: React.ReactNode }) {
   const [step, setStep] = useState<Step>('branch')
   const [branches, setBranches] = useState<Branch[]>([])
   const [products, setProducts] = useState<Product[]>([])
@@ -318,12 +320,12 @@ export default function ShopPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <SocialIcons />
-      <main className="flex-1 bg-gray-50 pb-32">
+      <main className="flex-1 bg-gray-50 pb-12">
         {/* Hero */}
         <section className="bg-orange-500 text-white py-14 px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold font-headline mb-3">Compra tu acceso</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold font-headline mb-3">Compra tus entradas en línea</h1>
           <p className="text-orange-100 text-lg max-w-xl mx-auto">
-            Elige tu sucursal, agrega lo que quieras al carrito y paga de forma segura.
+            Accesos y calcetines Jump-In. Elige tu sucursal, agrega lo que quieras al carrito y paga de forma segura.
           </p>
         </section>
 
@@ -610,6 +612,8 @@ export default function ShopPage() {
           )}
         </div>
       </main>
+
+      {children}
 
       {/* Desplegable de opciones de un grupo (p. ej. tallas) */}
       <Dialog open={openEntry !== null} onOpenChange={(open) => !open && setOpenGroupKey(null)}>

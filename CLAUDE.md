@@ -166,6 +166,8 @@ La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checko
 
 **Flujo `/shop`:** Sucursal → Productos → Fecha (calendario) → Pago (Stripe Checkout) → `/shop/success`.
 
+**Archivos de la página `/shop`:** `src/app/shop/page.tsx` es un **Server Component** (metadata SEO, JSON-LD `WebPage` + `BreadcrumbList` + `FAQPage`, y el bloque de texto/FAQ indexable) que renderiza `shop-client.tsx` (todo el flujo interactivo) y le pasa ese bloque como `children`, que se muestra debajo del flujo. Las FAQ usan `<details>` nativo y no el `Accordion` de Radix, porque este no monta las respuestas cerradas y Google no las leería. `/shop/success` lleva `noindex` (`src/app/shop/success/layout.tsx`) y está en el `disallow` de `robots.ts`; `/shop` está en `sitemap.ts`.
+
 **Métodos de pago (`create-checkout`): solo tarjeta, y Link deshabilitado a propósito.**
 - `payment_method_types: ['card']` + `wallet_options: { link: { display: 'never' } }`. Se necesitan **los dos**: `payment_method_types` no oculta Link, porque además de método de pago Link es un *wallet* dentro del formulario de tarjeta y se sigue mostrando.
 - Motivo: en un pago con Link el cargo queda como `payment_method_details.type = 'link'` y Stripe **no expone la tarjeta de fondo**, así que el webhook se queda sin `funding` ni `last4` para DECManager.
