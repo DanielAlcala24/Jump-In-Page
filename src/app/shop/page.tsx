@@ -9,7 +9,7 @@ import SocialIcons from '@/components/social-icons'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, ShoppingCart, Calendar, ArrowLeft, Loader2, Tag, Ticket, Package, Plus, Minus, Trash2, ChevronDown, Check } from 'lucide-react'
+import { MapPin, ShoppingCart, Calendar, ArrowLeft, Loader2, Tag, Ticket, Package, Plus, Minus, Trash2, ChevronDown, ChevronUp, Check, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DayPicker } from 'react-day-picker'
 import { es } from 'date-fns/locale'
@@ -145,6 +145,8 @@ export default function ShopPage() {
   const [groups, setGroups] = useState<ProductGroup[]>([])
   // Grupo cuyo desplegable de opciones está abierto (su `key`), o null.
   const [openGroupKey, setOpenGroupKey] = useState<string | null>(null)
+  // Desplegable del carrito (se abre desde la barra flotante del paso de productos).
+  const [cartOpen, setCartOpen] = useState(false)
   const [loadingBranches, setLoadingBranches] = useState(true)
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingCheckout, setLoadingCheckout] = useState(false)
@@ -222,10 +224,24 @@ export default function ShopPage() {
     })
   }
 
+  // Quita el producto completo del carrito, sin importar la cantidad.
+  const deleteFromCart = (product: Product) => {
+    setCart((prev) => {
+      const next = { ...prev }
+      delete next[product.id]
+      return next
+    })
+  }
+
   const cartItems = Object.values(cart)
   const cartTotal = cartItems.reduce((sum, i) => sum + (i.product.unit_amount ?? 0) * i.quantity, 0)
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
   const currency = cartItems[0]?.product.currency ?? 'mxn'
+
+  // Si se vacía el carrito desde el desplegable, se cierra solo.
+  useEffect(() => {
+    if (cartCount === 0) setCartOpen(false)
+  }, [cartCount])
 
   // Siempre se pasa por el paso de fecha, sea acceso, articulo o promocion.
   const handleGoToCheckout = async () => {
@@ -389,7 +405,9 @@ export default function ShopPage() {
                           <Icon className="h-5 w-5 text-orange-500" />
                           <h3 className="text-lg font-bold font-headline">{TYPE_LABELS[type]}s</h3>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {/* Flex en vez de grid para que las filas incompletas (1 o 2 tarjetas) queden centradas.
+                            Los anchos reproducen las columnas 1 / 2 / 3 descontando el gap de 1rem. */}
+                        <div className="flex flex-wrap justify-center gap-4">
                           {typeEntries.map((entry) => {
                             // La tarjeta es un grupo cuando tiene más de una opción disponible.
                             const isGroup = entry.variants.length > 1
@@ -407,6 +425,7 @@ export default function ShopPage() {
                               <div
                                 key={entry.key}
                                 className={`bg-white rounded-xl overflow-hidden shadow transition-all flex flex-col border-2
+                                  w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]
                                   ${entryQty > 0 ? 'border-orange-500' : 'border-transparent'}`}
                               >
                                 {image && (
@@ -671,14 +690,106 @@ export default function ShopPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Desplegable del carrito: ver, ajustar cantidades o eliminar productos */}
+      <Dialog open={cartOpen} onOpenChange={setCartOpen}>
+        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-headline text-xl flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-orange-500" /> Tu carrito
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            {cartItems.map((item) => (
+              <div key={item.product.id} className="flex items-center gap-3 rounded-xl border border-gray-200 p-3">
+                {item.product.image && (
+                  <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                    <Image src={item.product.image} alt={item.product.name} fill className="object-cover" sizes="48px" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-gray-900 line-clamp-2">{item.product.name}</p>
+                  <p className="text-xs text-gray-400">{formatPrice(item.product.unit_amount, item.product.currency)} c/u</p>
+                  <p className="text-sm font-extrabold text-orange-500">
+                    {formatPrice((item.product.unit_amount ?? 0) * item.quantity, item.product.currency)}
+                  </p>
+                </div>
+
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <button
+                    onClick={() => deleteFromCart(item.product)}
+                    aria-label={`Eliminar ${item.product.name}`}
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => removeFromCart(item.product)}
+                      aria-label={item.quantity === 1 ? 'Eliminar' : 'Quitar uno'}
+                      className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
+                    >
+                      {item.quantity === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+                    </button>
+                    <span className="w-6 text-center font-bold text-gray-900">{item.quantity}</span>
+                    <button
+                      onClick={() => addToCart(item.product)}
+                      aria-label="Agregar uno"
+                      className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center pt-2 border-t">
+            <span className="font-bold text-gray-800">Total</span>
+            <span className="text-2xl font-extrabold text-orange-500">{formatPrice(cartTotal)}</span>
+          </div>
+
+          <div className="flex flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setCartOpen(false)} className="flex-1">
+              Seguir comprando
+            </Button>
+            <Button
+              onClick={() => { setCartOpen(false); handleGoToCheckout() }}
+              disabled={loadingRestrictions}
+              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold"
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" /> Continuar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Floating cart bar — visible on products step when cart has items */}
       {step === 'products' && cartCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white border-t shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white border-t border-gray-200 shadow-[0_-8px_24px_-4px_rgba(0,0,0,0.35)]">
           <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
-            <div>
-              <p className="font-bold text-gray-900">{cartCount} {cartCount === 1 ? 'producto' : 'productos'}</p>
-              <p className="text-orange-500 font-extrabold text-lg">{formatPrice(cartTotal)}</p>
-            </div>
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              aria-label="Ver productos en el carrito"
+              className="flex items-center gap-3 rounded-xl px-2 py-1 -mx-2 text-left hover:bg-orange-50 transition-colors"
+            >
+              <div className="relative shrink-0">
+                <ShoppingCart className="h-7 w-7 text-orange-500" />
+                <span className="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 flex items-center gap-1">
+                  {cartCount} {cartCount === 1 ? 'producto' : 'productos'}
+                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                </p>
+                <p className="text-orange-500 font-extrabold text-lg leading-tight">{formatPrice(cartTotal)}</p>
+                <p className="text-xs text-gray-400 underline">Ver carrito</p>
+              </div>
+            </button>
             <Button onClick={handleGoToCheckout} disabled={loadingRestrictions} className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base font-bold">
               {loadingRestrictions
                 ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando fechas...</>
