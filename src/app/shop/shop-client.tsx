@@ -135,7 +135,8 @@ function optionLabel(product: Product, groupName: string): string {
 }
 
 // La página (`page.tsx`) es un Server Component que exporta la metadata SEO y
-// pasa como `children` el contenido indexable, que se muestra debajo del flujo.
+// pasa como `children` el contenido indexable, que se muestra debajo del flujo
+// solo en el paso de selección de sucursal.
 export default function ShopClient({ children }: { children?: React.ReactNode }) {
   const [step, setStep] = useState<Step>('branch')
   const [branches, setBranches] = useState<Branch[]>([])
@@ -613,7 +614,9 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
         </div>
       </main>
 
-      {children}
+      {/* Solo en el primer paso: en los demás estorba al flujo de compra. Como
+          'branch' es el paso inicial, el HTML del servidor sí lo incluye y Google lo lee. */}
+      {step === 'branch' && children}
 
       {/* Desplegable de opciones de un grupo (p. ej. tallas) */}
       <Dialog open={openEntry !== null} onOpenChange={(open) => !open && setOpenGroupKey(null)}>
