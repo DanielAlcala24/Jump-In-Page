@@ -71,7 +71,15 @@ Todos se cargan en `src/app/layout.tsx`.
 
 ## Panel de administración (`/admin/...`)
 
-Requiere autenticación Supabase. Login en `/admin/login`.
+Requiere autenticación Supabase. Login en `/admin/login`, **solo con Google** (no hay correo/contraseña).
+
+El botón llama a `signInWithOAuth({ provider: 'google' })` y regresa a `GET /api/auth/callback`, que canjea el code por sesión (PKCE) y **verifica que el correo ya estuviera dado de alta como admin**; si no, cierra la sesión y regresa a `/admin/login?error=no_autorizado`. La barrera principal es el ajuste **"Allow new users to sign up" apagado** en Supabase (sin él, cualquier cuenta de Google entraría, porque Supabase da de alta al usuario en su primer login); la verificación del callback es la segunda barrera. Pasos de configuración de Google Cloud y Supabase: **`google-oauth-setup.md`**.
+
+Ojo con el callback: `exchangeCodeForSession` y `signOut` escriben cookies sobre el objeto `NextResponse`, así que al rechazar hay que devolver **ese mismo objeto** cambiándole el `location`, no uno nuevo, o la sesión rechazada se queda viva en el navegador.
+
+**Alta de admins:** `/admin/usuarios` → `POST /api/admin/create-user`, que usa `admin.createUser({ email, email_confirm: true })`. **No se envía ningún correo** y la cuenta nace sin contraseña: la persona entra directo con "Continuar con Google". El `email_confirm: true` es imprescindible — Google solo se enlaza con cuentas cuyo correo está confirmado, así que una cuenta sin confirmar no podría entrar por ningún medio.
+
+Se eliminaron el flujo de invitación (`inviteUserByEmail`) y la página `/admin/set-password`, junto con su excepción en el middleware.
 
 | Sección | Ruta | Tabla Supabase |
 |---------|------|----------------|
@@ -96,8 +104,9 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Leads/Registros | `/admin/leads` | `leads` |
 
 **APIs internas:**
+- `GET /api/auth/callback` (retorno del login con Google)
 - `GET /api/admin/shop-orders`
-- `POST /api/admin/invite-user`
+- `POST /api/admin/create-user` (alta de admin, sin correo de invitación)
 - `GET /api/admin/list-users`
 - `DELETE /api/admin/delete-user`
 - `GET /api/verify-email`

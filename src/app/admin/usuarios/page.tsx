@@ -81,13 +81,13 @@ export default function UsuariosAdminPage() {
     }
   }
 
-  const handleInvite = async (e: React.FormEvent) => {
+  const handleCrearUsuario = async (e: React.FormEvent) => {
     e.preventDefault()
     setInviting(true)
     setError('')
 
     try {
-      const response = await fetch('/api/admin/invite-user', {
+      const response = await fetch('/api/admin/create-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,15 +101,15 @@ export default function UsuariosAdminPage() {
         setError(data.error)
         toast.error(data.error)
       } else {
-        toast.success(`Invitación enviada a ${email}`)
+        toast.success(`${email} ya puede entrar con Google`)
         setEmail('')
         setDialogOpen(false)
         fetchUsers() // Recargar lista de usuarios
       }
     } catch (err) {
-      console.error('Error inviting user:', err)
-      setError('Error al enviar la invitación')
-      toast.error('Error al enviar la invitación')
+      console.error('Error creating user:', err)
+      setError('Error al crear el usuario')
+      toast.error('Error al crear el usuario')
     } finally {
       setInviting(false)
     }
@@ -163,23 +163,25 @@ export default function UsuariosAdminPage() {
               <DialogTrigger asChild>
                 <Button>
                   <UserPlus className="mr-2 h-4 w-4" />
-                  Invitar Usuario
+                  Agregar Usuario
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Invitar Nuevo Usuario</DialogTitle>
+                  <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
                   <DialogDescription>
-                    Ingresa el correo electrónico del usuario. Se le enviará una invitación para crear su contraseña.
+                    Escribe el correo de <strong>su cuenta de Google</strong>. Entra de
+                    inmediato desde el panel con &quot;Continuar con Google&quot;: no se
+                    le envía ningún correo ni tiene que crear contraseña.
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleInvite} className="space-y-4">
+                <form onSubmit={handleCrearUsuario} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Correo Electrónico</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="usuario@ejemplo.com"
+                      placeholder="usuario@jumpin.com.mx"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -203,7 +205,7 @@ export default function UsuariosAdminPage() {
                       Cancelar
                     </Button>
                     <Button type="submit" disabled={inviting}>
-                      {inviting ? 'Enviando...' : 'Enviar Invitación'}
+                      {inviting ? 'Agregando...' : 'Agregar Usuario'}
                     </Button>
                   </div>
                 </form>
@@ -242,7 +244,7 @@ export default function UsuariosAdminPage() {
                     <DialogTrigger asChild>
                       <Button className="mt-4">
                         <UserPlus className="mr-2 h-4 w-4" />
-                        Invitar Primer Usuario
+                        Agregar Primer Usuario
                       </Button>
                     </DialogTrigger>
                   </Dialog>
