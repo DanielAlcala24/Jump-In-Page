@@ -86,6 +86,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) |
 | Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` |
 | Restricciones de fecha (Shop) | `/admin/shop` | `shop_date_restrictions` |
+| Ventas en línea (Shop) | `/admin/ventas` | `shop_orders` (solo lectura) |
 | Promociones | `/admin/promociones` | `promotions` |
 | Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` |
 | Galería cumpleaños | `/admin/cumpleanos/gallery` | — |
@@ -95,6 +96,7 @@ Requiere autenticación Supabase. Login en `/admin/login`.
 | Leads/Registros | `/admin/leads` | `leads` |
 
 **APIs internas:**
+- `GET /api/admin/shop-orders`
 - `POST /api/admin/invite-user`
 - `GET /api/admin/list-users`
 - `DELETE /api/admin/delete-user`
@@ -176,7 +178,10 @@ La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checko
 
 **Variables de entorno:** `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VENTA_WEBHOOK_URL` (destino del webhook de venta), `VENTA_WEBHOOK_API_KEY` (campo `API_Key` dentro del JSON de venta), `VENTA_WEBHOOK_TOKEN` (opcional, se envía como `Authorization: Bearer`). Correo (Google Workspace SMTP, ver `src/lib/mail.ts`): `SMTP_HOST` (`smtp.gmail.com`), `SMTP_PORT` (**465** = SSL, o 587 = STARTTLS), `SMTP_USER`, `SMTP_PASS` (App Password de Google), `SMTP_FROM`. Cuidado con el `SMTP_PORT`: un puerto mal escrito no da error de configuración, solo `ETIMEDOUT` al enviar (ya pasó en producción con `456`); `src/lib/mail.ts` avisa en el log si el puerto no es de los habituales y corta a los 10 s. apiVersion de Stripe: `2026-05-27.dahlia`.
 
-**Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha) · `src/app/admin/articulos/grupos` (gestiona los grupos de productos).
+**Archivos:** `src/lib/stripe.ts` · `src/lib/ticket.ts` (prefijo del contenido del QR) · `src/app/api/stripe/products` · `.../create-checkout` · `src/app/api/webhooks/stripe` (evento `checkout.session.completed` → `shop_orders`) · `src/app/api/shop/date-restrictions` · `src/app/admin/shop` (gestiona restricciones de fecha) · `src/app/admin/articulos/grupos` (gestiona los grupos de productos) · `src/app/admin/ventas` + `src/app/api/admin/shop-orders` (consulta de ventas).
+
+### Consulta de ventas desde el admin (`/admin/ventas`)
+Lista las órdenes pagadas (`shop_orders`) para no tener que entrar al Dashboard de Stripe: resumen (ingresos, ventas, piezas, clientes y ticket promedio), filtros por rango de fechas de compra (server-side), sucursal y búsqueda (correo, no. de ticket, sesión de Stripe o producto), detalle desplegable con los artículos de cada orden y descarga en CSV. Los datos los sirve `GET /api/admin/shop-orders` (params `from`, `to`, `limit`), protegida con `getAdminUser`: **usa la service role key** porque `shop_orders` solo la escribe el webhook y no hay política de lectura para el rol `authenticated`. Los importes se guardan en **centavos** (`amount_total`), por eso se dividen entre 100 al mostrarlos.
 
 ### Gestión de productos desde el admin (`/admin/articulos`)
 Los productos de Stripe se pueden crear/editar/archivar desde el admin sin entrar al Dashboard de Stripe. La página llena la metadata automáticamente (`Id_Articulo`, `product_type`, `branch_id`) y las sucursales se eligen con casillas (se convierten a UUID). La imagen se toma de la biblioteca Multimedia (bucket `media`). Rutas API protegidas con sesión de Supabase (`src/lib/admin-auth.ts` → `getAdminUser`): `GET/POST /api/admin/stripe-products` y `PATCH /api/admin/stripe-products/[id]`. Los precios de Stripe son inmutables: al cambiar el precio se crea uno nuevo y se archiva el anterior.

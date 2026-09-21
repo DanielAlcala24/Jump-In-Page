@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift, ShoppingCart, BookOpen, Package, Megaphone } from 'lucide-react'
+import { FileText, Image, Users, LogOut, Utensils, HelpCircle, Menu, Zap, Tag, MapPin, PanelTop, Gift, ShoppingCart, BookOpen, Package, Megaphone, Receipt } from 'lucide-react'
 import ImageComponent from 'next/image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -23,6 +23,8 @@ export default function AdminDashboard() {
   const [branchesCount, setBranchesCount] = useState(0)
   const [leadsCount, setLeadsCount] = useState(0)
   const [birthdayPackagesCount, setBirthdayPackagesCount] = useState(0)
+  const [ordersCount, setOrdersCount] = useState(0)
+  const [ordersTotal, setOrdersTotal] = useState(0)
   const router = useRouter()
   const supabase = createClientComponentClient()
 
@@ -106,6 +108,16 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
 
       setLeadsCount(leadsCount || 0)
+
+      // Ventas de la tienda en línea (via API: shop_orders solo se lee con service role)
+      const ordersRes = await fetch('/api/admin/shop-orders')
+      if (ordersRes.ok) {
+        const orders = await ordersRes.json()
+        setOrdersCount(orders.length)
+        setOrdersTotal(
+          orders.reduce((acc: number, o: any) => acc + (o.amount_total || 0), 0) / 100
+        )
+      }
 
     } catch (err) {
       console.error('Error fetching stats:', err)
@@ -245,6 +257,12 @@ export default function AdminDashboard() {
                   <Button variant="ghost" className="w-full justify-start">
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Shop — Fechas
+                  </Button>
+                </Link>
+                <Link href="/admin/ventas" className="block">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Receipt className="h-4 w-4 mr-2" />
+                    Ventas en Línea
                   </Button>
                 </Link>
                 <Link href="/admin/usuarios" className="block">
@@ -511,6 +529,25 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
+        {/* Ventas en Línea Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ventas en Línea</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{ordersCount}</div>
+            <p className="text-xs text-muted-foreground">
+              {ordersTotal.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })} vendidos
+            </p>
+            <Link href="/admin/ventas" className="mt-4 block">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                Ver Ventas
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Articulos (Stripe) Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -645,6 +682,12 @@ export default function AdminDashboard() {
               <Button className="w-full justify-start" variant="outline">
                 <ShoppingCart className="h-4 w-4 mr-2" />
                 Shop — Control de Fechas
+              </Button>
+            </Link>
+            <Link href="/admin/ventas">
+              <Button className="w-full justify-start" variant="outline">
+                <Receipt className="h-4 w-4 mr-2" />
+                Ver Ventas en Línea
               </Button>
             </Link>
             <Link href="/admin/usuarios">
