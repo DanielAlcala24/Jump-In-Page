@@ -22,9 +22,17 @@ CREATE TABLE IF NOT EXISTS public.shop_product_groups (
   -- Orden de la tarjeta del grupo dentro de su sección.
   sort_order INTEGER DEFAULT 0 NOT NULL,
   is_active BOOLEAN DEFAULT true NOT NULL,
+  -- Cómo se muestran las opciones en /shop: 'modal' (botón "Ver opciones" que
+  -- abre una ventana) o 'expanded' (desplegadas dentro de la tarjeta).
+  display_mode TEXT DEFAULT 'modal' NOT NULL CHECK (display_mode IN ('modal', 'expanded')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Migración para tablas creadas antes de existir `display_mode` (no hace nada si ya está).
+ALTER TABLE public.shop_product_groups
+  ADD COLUMN IF NOT EXISTS display_mode TEXT DEFAULT 'modal' NOT NULL
+  CHECK (display_mode IN ('modal', 'expanded'));
 
 CREATE INDEX IF NOT EXISTS idx_shop_product_groups_active
   ON public.shop_product_groups(is_active);

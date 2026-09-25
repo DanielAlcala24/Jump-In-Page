@@ -47,6 +47,9 @@ interface ProductGroup {
   image_url: string | null
   product_ids: string[]
   sort_order: number
+  // 'modal' = botón "Ver opciones" que abre un modal; 'expanded' = opciones ya
+  // desplegadas dentro de la tarjeta. Puede venir vacío si falta la columna.
+  display_mode?: 'modal' | 'expanded' | null
 }
 
 // Una tarjeta de la tienda: un producto suelto, o un grupo con sus opciones.
@@ -56,6 +59,7 @@ interface ProductEntry {
   description: string | null
   image: string | null
   variants: Product[]
+  expanded: boolean
 }
 
 interface CartItem {
@@ -105,6 +109,7 @@ function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
       description: g.description,
       image: g.image_url,
       variants,
+      expanded: g.display_mode === 'expanded',
     })
   }
 
@@ -116,6 +121,7 @@ function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
       description: product.description,
       image: product.image,
       variants: [product],
+      expanded: false,
     })
   }
 
@@ -169,7 +175,9 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
   useEffect(() => {
     supabase
       .from('shop_product_groups')
-      .select('id, name, description, image_url, product_ids, sort_order')
+      // `*` y no la lista de columnas: si aún no se corre la migración de
+      // `display_mode`, pedirla por nombre haría fallar la consulta completa.
+      .select('*')
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
       .then(({ data }) => setGroups(data ?? []))
@@ -305,6 +313,39 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
     }).format(amount / 100)
   }
 
+  // Botón "Agregar" o controles − cantidad + de una opción de grupo (modal y modo desplegado).
+  const variantControls = (v: Product) => {
+    const vQty = cart[v.id]?.quantity ?? 0
+    if (vQty === 0) {
+      return (
+        <Button
+          size="sm"
+          onClick={() => addToCart(v)}
+          className="bg-orange-500 hover:bg-orange-600 text-white h-8 px-3 shrink-0"
+        >
+          <Plus className="h-3.5 w-3.5 mr-1" /> Agregar
+        </Button>
+      )
+    }
+    return (
+      <div className="flex items-center gap-1 shrink-0">
+        <button
+          onClick={() => removeFromCart(v)}
+          className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
+        >
+          {vQty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+        </button>
+        <span className="w-6 text-center font-bold text-gray-900">{vQty}</span>
+        <button
+          onClick={() => addToCart(v)}
+          className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    )
+  }
+
   // Tarjetas de la tienda con los grupos ya aplicados.
   const allEntries = buildEntries(products, groups)
   const openEntry = allEntries.find((e) => e.key === openGroupKey) ?? null
@@ -424,6 +465,8 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                             const image = (isGroup ? entry.image : null) ?? product.image ?? entry.variants.find((v) => v.image)?.image ?? null
                             // Precio más bajo del grupo, para el "Desde $…".
                             const minPrice = Math.min(...entry.variants.map((v) => v.unit_amount ?? Infinity))
+                            // Grupo con modal (default) o con las opciones ya desplegadas en la tarjeta.
+                            const usesModal = isGroup && !entry.expanded
                             return (
                               <div
                                 key={entry.key}
@@ -433,8 +476,8 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                               >
                                 {image && (
                                   <div
-                                    className={`relative h-36 bg-gray-100 ${isGroup ? 'cursor-pointer' : ''}`}
-                                    onClick={isGroup ? () => setOpenGroupKey(entry.key) : undefined}
+                                    className={`relative h-36 bg-gray-100 ${usesModal ? 'cursor-pointer' : ''}`}
+                                    onClick={usesModal ? () => setOpenGroupKey(entry.key) : undefined}
                                   >
                                     <Image src={image} alt={title} fill className="object-cover" />
                                     {entryQty > 0 && (
@@ -456,7 +499,23 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                                   <h4 className="font-bold text-gray-900 font-headline">{title}</h4>
                                   {description && <p className="text-gray-500 text-sm mt-1 flex-1 line-clamp-2">{description}</p>}
 
-                                  {isGroup ? (
+                                  {isGroup && entry.expanded ? (
+                                    <div className="mt-3 pt-3 border-t space-y-2">
+                                      {entry.variants.map((v) => (
+                                        <div
+                                          key={v.id}
+                                          className={`flex items-center gap-2 rounded-lg border-2 px-3 py-2 transition-colors
+                                            ${(cart[v.id]?.quantity ?? 0) > 0 ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}
+                                        >
+                                          <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-sm text-gray-900 leading-tight">{optionLabel(v, entry.name)}</p>
+                                            <p className="text-sm font-extrabold text-orange-500">{formatPrice(v.unit_amount, v.currency)}</p>
+                                          </div>
+                                          {variantControls(v)}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : isGroup ? (
                                     <div className="mt-3 pt-3 border-t">
                                       <div className="flex items-center justify-between gap-2 mb-2">
                                         <span className="text-xs text-gray-500">Desde</span>
@@ -654,31 +713,7 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                         </p>
                       </div>
 
-                      {vQty === 0 ? (
-                        <Button
-                          size="sm"
-                          onClick={() => addToCart(v)}
-                          className="bg-orange-500 hover:bg-orange-600 text-white h-8 px-3 shrink-0"
-                        >
-                          <Plus className="h-3.5 w-3.5 mr-1" /> Agregar
-                        </Button>
-                      ) : (
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            onClick={() => removeFromCart(v)}
-                            className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:border-orange-500 hover:text-orange-500 transition-colors"
-                          >
-                            {vQty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
-                          </button>
-                          <span className="w-6 text-center font-bold text-gray-900">{vQty}</span>
-                          <button
-                            onClick={() => addToCart(v)}
-                            className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      )}
+                      {variantControls(v)}
                     </div>
                   )
                 })}

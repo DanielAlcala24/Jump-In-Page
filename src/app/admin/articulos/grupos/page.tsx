@@ -27,6 +27,8 @@ interface ProductGroup {
   product_ids: string[]
   sort_order: number
   is_active: boolean
+  // Cómo se ven las opciones en /shop (ver supabase-shop-product-groups.sql).
+  display_mode: 'modal' | 'expanded' | null
 }
 
 interface StripeProduct {
@@ -53,6 +55,7 @@ const emptyForm = {
   product_ids: [] as string[],
   sort_order: '0',
   is_active: true,
+  display_mode: 'modal' as 'modal' | 'expanded',
 }
 
 export default function AdminGruposPage() {
@@ -137,6 +140,7 @@ export default function AdminGruposPage() {
       product_ids: [...(g.product_ids ?? [])],
       sort_order: String(g.sort_order ?? 0),
       is_active: g.is_active,
+      display_mode: g.display_mode === 'expanded' ? 'expanded' : 'modal',
     })
     setProductSearch('')
     setProductBranch(filterBranch)
@@ -184,6 +188,7 @@ export default function AdminGruposPage() {
       product_ids: form.product_ids,
       sort_order: parseInt(form.sort_order, 10) || 0,
       is_active: form.is_active,
+      display_mode: form.display_mode,
       updated_at: new Date().toISOString(),
     }
 
@@ -371,6 +376,9 @@ export default function AdminGruposPage() {
                       ? <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Activo</Badge>
                       : <Badge variant="outline">Oculto</Badge>}
                     <Badge variant="secondary">{g.product_ids?.length ?? 0} productos</Badge>
+                    <Badge variant="outline" className="text-gray-600 font-normal">
+                      {g.display_mode === 'expanded' ? 'Desplegado' : 'En modal'}
+                    </Badge>
                     {groupBranchNames(g).map((name) => (
                       <Badge key={name} variant="outline" className="text-gray-600 font-normal">
                         <MapPin className="h-3 w-3 mr-1" /> {name}
@@ -447,6 +455,29 @@ export default function AdminGruposPage() {
               <p className="text-xs text-gray-500 mt-1">
                 Opcional — si la dejas vacía se usa la imagen del producto que el cliente seleccione.
               </p>
+            </div>
+
+            {/* Cómo ve el cliente las opciones en /shop */}
+            <div>
+              <Label className="mb-1 block">Vista de las opciones en /shop</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {([
+                  { value: 'modal', title: 'En modal', hint: 'Botón "Ver opciones" que abre una ventana con las opciones.' },
+                  { value: 'expanded', title: 'Desplegado', hint: 'Las opciones se ven directo en la tarjeta, sin clic extra.' },
+                ] as const).map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setForm({ ...form, display_mode: opt.value })}
+                    className={`text-left rounded-lg border-2 p-3 transition-colors ${
+                      form.display_mode === opt.value ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-200'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold">{opt.title}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{opt.hint}</p>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Productos del grupo */}
