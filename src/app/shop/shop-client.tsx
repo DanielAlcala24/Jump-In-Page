@@ -497,7 +497,13 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                                     )}
                                   </div>
                                   <h4 className="font-bold text-gray-900 font-headline">{title}</h4>
-                                  {description && <p className="text-gray-500 text-sm mt-1 flex-1 line-clamp-2">{description}</p>}
+                                  {/* En los grupos la descripción va completa (y respeta los saltos de línea del
+                                      textarea del admin); en los productos sueltos se recorta a 2 líneas. */}
+                                  {description && (
+                                    <p className={`text-gray-500 text-sm mt-1 flex-1 ${isGroup ? 'whitespace-pre-line' : 'line-clamp-2'}`}>
+                                      {description}
+                                    </p>
+                                  )}
 
                                   {isGroup && entry.expanded ? (
                                     <div className="mt-3 pt-3 border-t space-y-2">
