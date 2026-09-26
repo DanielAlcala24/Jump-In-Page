@@ -461,7 +461,10 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                             const entryQty = entry.variants.reduce((sum, v) => sum + (cart[v.id]?.quantity ?? 0), 0)
                             const title = isGroup ? entry.name : product.name
                             // La descripción del grupo es opcional: si no hay, se usa la del primer producto.
-                            const description = isGroup ? (entry.description ?? product.description) : product.description
+                            // En modo desplegado no: cada opción ya muestra la suya y se vería repetida.
+                            const description = isGroup
+                              ? (entry.description ?? (entry.expanded ? null : product.description))
+                              : product.description
                             const image = (isGroup ? entry.image : null) ?? product.image ?? entry.variants.find((v) => v.image)?.image ?? null
                             // Precio más bajo del grupo, para el "Desde $…".
                             const minPrice = Math.min(...entry.variants.map((v) => v.unit_amount ?? Infinity))
@@ -515,6 +518,9 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                                         >
                                           <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-sm text-gray-900 leading-tight">{optionLabel(v, entry.name)}</p>
+                                            {v.description && (
+                                              <p className="text-xs text-gray-500 mt-0.5 whitespace-pre-line">{v.description}</p>
+                                            )}
                                             <p className="text-sm font-extrabold text-orange-500">{formatPrice(v.unit_amount, v.currency)}</p>
                                           </div>
                                           {variantControls(v)}
