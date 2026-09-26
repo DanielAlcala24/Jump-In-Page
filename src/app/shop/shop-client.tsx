@@ -443,13 +443,24 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                     const typeEntries = allEntries.filter((e) => e.variants[0].product_type === type)
                     if (typeEntries.length === 0) return null
                     const Icon = TYPE_ICONS[type]
+                    // Las tarjetas se reparten todo el ancho según cuántas haya en la sección:
+                    // 1 → ancho completo, 2 → mitades, 3 o más → tercios (en móvil, siempre una por fila).
+                    const count = typeEntries.length
+                    const widthClass = count === 1
+                      ? 'w-full'
+                      : count === 2
+                        ? 'w-full sm:w-[calc((100%-1rem)/2)]'
+                        : 'w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]'
+                    // Con una sola tarjeta a todo lo ancho, en escritorio la imagen va a la izquierda
+                    // para que no quede una franja muy delgada y estirada arriba.
+                    const wide = count === 1
                     return (
                       <div key={type} className="mb-8">
                         <div className="flex items-center gap-2 mb-4">
                           <Icon className="h-5 w-5 text-orange-500" />
                           <h3 className="text-lg font-bold font-headline">{TYPE_LABELS[type]}s</h3>
                         </div>
-                        {/* Flex en vez de grid para que las filas incompletas (1 o 2 tarjetas) queden centradas.
+                        {/* Flex en vez de grid para que las filas incompletas queden centradas.
                             Los anchos reproducen las columnas 1 / 2 / 3 descontando el gap de 1rem. */}
                         <div className="flex flex-wrap justify-center gap-4">
                           {typeEntries.map((entry) => {
@@ -474,12 +485,12 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                               <div
                                 key={entry.key}
                                 className={`bg-white rounded-xl overflow-hidden shadow transition-all flex flex-col border-2
-                                  w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]
+                                  ${widthClass} ${wide ? 'md:flex-row' : ''}
                                   ${entryQty > 0 ? 'border-orange-500' : 'border-transparent'}`}
                               >
                                 {image && (
                                   <div
-                                    className={`relative h-36 bg-gray-100 ${usesModal ? 'cursor-pointer' : ''}`}
+                                    className={`relative h-36 bg-gray-100 shrink-0 ${wide ? 'md:h-auto md:min-h-[16rem] md:w-2/5' : ''} ${usesModal ? 'cursor-pointer' : ''}`}
                                     onClick={usesModal ? () => setOpenGroupKey(entry.key) : undefined}
                                   >
                                     <Image src={image} alt={title} fill className="object-cover" />
