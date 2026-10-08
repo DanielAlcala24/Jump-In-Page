@@ -25,6 +25,7 @@ import { Plus, Edit, Trash2, Home, ArrowUp, ArrowDown } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface Promotion {
   id: string
@@ -166,12 +167,14 @@ export default function PromocionesAdminPage() {
               <h1 className="text-2xl font-bold text-gray-900">Promociones</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/promociones/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Promoción
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/promociones/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nueva Promoción
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -201,23 +204,29 @@ export default function PromocionesAdminPage() {
               ) : promotions.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <p>No hay promociones registradas.</p>
-                  <Link href="/admin/promociones/new" className="mt-4 inline-block">
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Crear Primera Promoción
-                    </Button>
-                  </Link>
+                  <SoloEditores>
+                    <Link href="/admin/promociones/new" className="mt-4 inline-block">
+                      <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Crear Primera Promoción
+                      </Button>
+                    </Link>
+                  </SoloEditores>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[100px]">Imagen</TableHead>
-                      <TableHead className="w-[80px]">Orden</TableHead>
+                      <SoloEditores>
+                        <TableHead className="w-[80px]">Orden</TableHead>
+                      </SoloEditores>
                       <TableHead>Título</TableHead>
                       <TableHead>Descripción</TableHead>
                       <TableHead>Sucursales</TableHead>
-                      <TableHead className="text-right">Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead className="text-right">Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -233,28 +242,30 @@ export default function PromocionesAdminPage() {
                             />
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col items-center">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleMovePromotion(promotion, 'up')}
-                              disabled={idx === 0}
-                            >
-                              <ArrowUp className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleMovePromotion(promotion, 'down')}
-                              disabled={idx === promotions.length - 1}
-                            >
-                              <ArrowDown className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex flex-col items-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleMovePromotion(promotion, 'up')}
+                                disabled={idx === 0}
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleMovePromotion(promotion, 'down')}
+                                disabled={idx === promotions.length - 1}
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                         <TableCell className="font-medium">{promotion.title}</TableCell>
                         <TableCell className="max-w-xs truncate">
                           {promotion.description}
@@ -277,23 +288,25 @@ export default function PromocionesAdminPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end space-x-2">
-                            <Link href={`/admin/promociones/${promotion.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end space-x-2">
+                              <Link href={`/admin/promociones/${promotion.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(promotion.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(promotion.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

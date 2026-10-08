@@ -24,9 +24,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Home, Plus, Mail, UserPlus, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import { Home, Mail, UserPlus, Trash2, CheckCircle, XCircle, ShieldCheck, KeyRound } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
+import { PermisosEditor, resumenPermisos } from '@/components/admin/permisos-editor'
+import type { PermisosAdmin, RolAdmin } from '@/lib/admin-permissions'
 
 interface User {
   id: string
@@ -34,7 +36,13 @@ interface User {
   created_at: string
   last_sign_in_at: string | null
   email_confirmed_at: string | null
+  role: RolAdmin
+  permissions: PermisosAdmin
 }
+
+// Un usuario personalizado sin ninguna sección no vería nada en el panel.
+const permisosVacios = (rol: RolAdmin, permisos: PermisosAdmin) =>
+  rol === 'custom' && Object.keys(permisos).length === 0
 
 export default function UsuariosAdminPage() {
   const [users, setUsers] = useState<User[]>([])
@@ -42,6 +50,12 @@ export default function UsuariosAdminPage() {
   const [inviting, setInviting] = useState(false)
   const [email, setEmail] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [nuevoRol, setNuevoRol] = useState<RolAdmin>('custom')
+  const [nuevosPermisos, setNuevosPermisos] = useState<PermisosAdmin>({})
+  const [editando, setEditando] = useState<User | null>(null)
+  const [editRol, setEditRol] = useState<RolAdmin>('custom')
+  const [editPermisos, setEditPermisos] = useState<PermisosAdmin>({})
+  const [guardando, setGuardando] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState('')
   const router = useRouter()
@@ -81,8 +95,19 @@ export default function UsuariosAdminPage() {
     }
   }
 
+  const resetNuevo = () => {
+    setEmail('')
+    setNuevoRol('custom')
+    setNuevosPermisos({})
+    setError('')
+  }
+
   const handleCrearUsuario = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (permisosVacios(nuevoRol, nuevosPermisos)) {
+      setError('Elige al menos una sección o hazlo super administrador.')
+      return
+    }
     setInviting(true)
     setError('')
 
@@ -92,7 +117,7 @@ export default function UsuariosAdminPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, role: nuevoRol, permissions: nuevosPermisos }),
       })
 
       const data = await response.json()
@@ -102,7 +127,7 @@ export default function UsuariosAdminPage() {
         toast.error(data.error)
       } else {
         toast.success(`${email} ya puede entrar con Google`)
-        setEmail('')
+        resetNuevo()
         setDialogOpen(false)
         fetchUsers() // Recargar lista de usuarios
       }
@@ -112,6 +137,41 @@ export default function UsuariosAdminPage() {
       toast.error('Error al crear el usuario')
     } finally {
       setInviting(false)
+    }
+  }
+
+  const abrirPermisos = (u: User) => {
+    setEditando(u)
+    setEditRol(u.role)
+    setEditPermisos(u.permissions || {})
+  }
+
+  const handleGuardarPermisos = async () => {
+    if (!editando) return
+    if (permisosVacios(editRol, editPermisos)) {
+      toast.error('Elige al menos una sección o hazlo super administrador.')
+      return
+    }
+    setGuardando(true)
+    try {
+      const response = await fetch('/api/admin/update-user', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: editando.id, role: editRol, permissions: editPermisos }),
+      })
+      const data = await response.json()
+      if (data.error) {
+        toast.error(data.error)
+      } else {
+        toast.success(`Permisos de ${editando.email} actualizados`)
+        setEditando(null)
+        fetchUsers()
+      }
+    } catch (err) {
+      console.error('Error updating permissions:', err)
+      toast.error('Error al actualizar los permisos')
+    } finally {
+      setGuardando(false)
     }
   }
 
@@ -159,14 +219,20 @@ export default function UsuariosAdminPage() {
               </Link>
               <h1 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
             </div>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <Dialog
+              open={dialogOpen}
+              onOpenChange={(open) => {
+                setDialogOpen(open)
+                if (!open) resetNuevo()
+              }}
+            >
               <DialogTrigger asChild>
                 <Button>
                   <UserPlus className="mr-2 h-4 w-4" />
                   Agregar Usuario
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
                   <DialogDescription>
@@ -187,6 +253,17 @@ export default function UsuariosAdminPage() {
                       required
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label>Permisos</Label>
+                    <PermisosEditor
+                      rol={nuevoRol}
+                      permisos={nuevosPermisos}
+                      onChange={(rol, permisos) => {
+                        setNuevoRol(rol)
+                        setNuevosPermisos(permisos)
+                      }}
+                    />
+                  </div>
                   {error && (
                     <Alert variant="destructive">
                       <AlertDescription>{error}</AlertDescription>
@@ -198,8 +275,7 @@ export default function UsuariosAdminPage() {
                       variant="outline"
                       onClick={() => {
                         setDialogOpen(false)
-                        setEmail('')
-                        setError('')
+                        resetNuevo()
                       }}
                     >
                       Cancelar
@@ -255,6 +331,7 @@ export default function UsuariosAdminPage() {
                     <TableRow>
                       <TableHead>Correo Electrónico</TableHead>
                       <TableHead>Estado</TableHead>
+                      <TableHead>Permisos</TableHead>
                       <TableHead>Último Acceso</TableHead>
                       <TableHead>Fecha de Registro</TableHead>
                       <TableHead className="text-right">Acciones</TableHead>
@@ -278,6 +355,18 @@ export default function UsuariosAdminPage() {
                           )}
                         </TableCell>
                         <TableCell>
+                          {userItem.role === 'super' ? (
+                            <Badge variant="outline" className="border-orange-500 text-orange-600">
+                              <ShieldCheck className="h-3 w-3 mr-1" />
+                              Super administrador
+                            </Badge>
+                          ) : (
+                            <span className="text-sm text-gray-600">
+                              {resumenPermisos(userItem.role, userItem.permissions)}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell>
                           {userItem.last_sign_in_at
                             ? new Date(userItem.last_sign_in_at).toLocaleDateString('es-ES', {
                                 year: 'numeric',
@@ -296,15 +385,28 @@ export default function UsuariosAdminPage() {
                           })}
                         </TableCell>
                         <TableCell className="text-right">
-                          {userItem.id !== user.id && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(userItem.id, userItem.email)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                          {userItem.id === user.id ? (
+                            <span className="text-xs text-gray-400">Tú</span>
+                          ) : (
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => abrirPermisos(userItem)}
+                                title="Editar permisos"
+                              >
+                                <KeyRound className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(userItem.id, userItem.email)}
+                                title="Eliminar usuario"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           )}
                         </TableCell>
                       </TableRow>
@@ -316,6 +418,38 @@ export default function UsuariosAdminPage() {
           </Card>
         </div>
       </main>
+
+      <Dialog open={!!editando} onOpenChange={(open) => !open && setEditando(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Permisos de {editando?.email}</DialogTitle>
+            <DialogDescription>
+              El cambio aplica en cuanto la persona navegue a otra sección del panel.
+            </DialogDescription>
+          </DialogHeader>
+          <PermisosEditor
+            rol={editRol}
+            permisos={editPermisos}
+            onChange={(rol, permisos) => {
+              setEditRol(rol)
+              setEditPermisos(permisos)
+            }}
+          />
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setEditando(null)}>
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={handleGuardarPermisos}
+              disabled={guardando}
+            >
+              {guardando ? 'Guardando...' : 'Guardar permisos'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

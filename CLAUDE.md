@@ -81,35 +81,68 @@ Ojo con el callback: `exchangeCodeForSession` y `signOut` escriben cookies sobre
 
 Se eliminaron el flujo de invitación (`inviteUserByEmail`) y la página `/admin/set-password`, junto con su excepción en el middleware.
 
-| Sección | Ruta | Tabla Supabase |
-|---------|------|----------------|
-| Dashboard | `/admin` | — |
-| Artículos (Blog) | `/admin/posts` | `posts` |
-| Multimedia | `/admin/media` | Storage bucket `media` |
-| Menú de alimentos | `/admin/menu` | `menu_items` |
-| Preguntas frecuentes | `/admin/faq` | `faqs` |
-| Base de conocimiento | `/admin/base-conocimiento` | `knowledge_base` |
-| Atracciones | `/admin/atracciones` | `attractions` |
-| Sucursales | `/admin/sucursales` | — |
-| Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) |
-| Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` |
-| Restricciones de fecha (Shop) | `/admin/shop` | `shop_date_restrictions` |
-| Ventas en línea (Shop) | `/admin/ventas` | `shop_orders` (solo lectura) |
-| Promociones | `/admin/promociones` | `promotions` |
-| Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` |
-| Galería cumpleaños | `/admin/cumpleanos/gallery` | — |
-| Popup del sitio | `/admin/popup` | — |
-| Banner superior | `/admin/banner` | `banner_config` |
-| Usuarios admin | `/admin/usuarios` | Supabase Auth |
-| Leads/Registros | `/admin/leads` | `leads` |
+### Permisos por sección
+
+Cada admin es **super administrador** (ve y edita todo y es el único que administra usuarios) o tiene **permisos personalizados**: por sección, *Sin acceso* / *Ver* / *Ver y editar*. Se asignan al dar de alta o con el botón de la llave en `/admin/usuarios` (`PATCH /api/admin/update-user`). Un super no puede cambiar sus propios permisos ni borrarse, así siempre queda al menos uno.
+
+- Se guardan en el **`app_metadata`** del usuario de Supabase Auth (`admin_role: 'super' | 'custom'`, `admin_permissions: { posts: 'edit', ventas: 'view', … }`), que solo escribe la service role. **Sin `admin_role` = super**: así quedaron los admins que existían antes.
+- Lista de secciones, claves y helpers: **`src/lib/admin-permissions.ts`** (`SECCIONES_ADMIN`). Una sección nueva del panel hay que agregarla ahí **y** en el mapeo de tablas de `supabase-admin-permissions.sql`. Ventas es solo lectura para todos.
+- Se aplican en 4 capas: **middleware** (sin *Ver* no se abre la sección; sin *Editar* no se abren `/new` ni `/edit`; `/admin/usuarios` solo super) · **rutas API** (`requireAdmin(seccion, nivel)` / `requireSuperAdmin()` de `src/lib/admin-auth.ts`) · **UI** (`src/app/admin/layout.tsx` carga los permisos en un contexto; `<SoloEditores>` oculta botones, `<BloqueEditable>` deshabilita formularios, y sale una franja de "solo lectura") · **RLS** en Supabase (`supabase-admin-permissions.sql`), que es la barrera real porque el panel escribe directo desde el navegador.
+- El SQL usa políticas **RESTRICTIVE** (se suman con AND a las existentes, no hay que borrarlas) y la función `admin_puede(seccion, nivel)` lee `auth.users` en cada consulta, así que un cambio de permisos aplica de inmediato. El bucket `media` deja subir a quien edite cualquier sección (los formularios suben imágenes) y borrar solo a quien edite Multimedia.
+- Excepciones a propósito: el UPDATE de `attractions`, `promotions`, `birthday_packages` y `menu_items` también lo permite *Editar* de Base de conocimiento (ahí se editan sus campos `knowledge_*`); el INSERT de `leads` no se limita (lo usa el formulario público).
+
+#### ✅ Checklist obligatorio al crear una sección nueva en `/admin`
+
+Toda sección nueva del panel **tiene que** quedar bajo los permisos *Ver* / *Editar*. Si se salta un paso, la sección queda abierta a todos los admins o, al revés, nadie con permisos personalizados la puede usar. Pasos, con `clave` = identificador corto de la sección (p. ej. `'cupones'`):
+
+1. **Registrar la sección** en `SECCIONES_ADMIN` (`src/lib/admin-permissions.ts`): `{ key: 'clave', label: 'Nombre visible', path: '/admin/ruta' }`. Si solo se consulta y no hay nada que editar, agregar `soloLectura: true`. Con este paso ya quedan solos:
+   - la fila de la sección en el editor de permisos de `/admin/usuarios` (alta y edición);
+   - el bloqueo en el middleware: sin *Ver* no se abre `/admin/ruta` ni sus subrutas, y sin *Editar* no se abren `/admin/ruta/new` ni `/admin/ruta/[id]/edit`;
+   - la franja de "solo lectura" para quien solo tiene *Ver*.
+2. **Rutas de alta y edición con los nombres `/new` y `/[id]/edit`.** El middleware las reconoce por esos nombres (`esRutaDeEdicion`). Si una pantalla de edición se llama de otra forma, el middleware no la bloquea.
+3. **Dashboard** (`src/app/admin/page.tsx`): envolver la tarjeta, el enlace del menú móvil y la acción rápida con `{permitido('/admin/ruta') && (...)}`. Si la tarjeta lee conteos de una API protegida, pedirlos solo `if (puedeVer('clave'))`.
+4. **Página de la sección:** envolver cada botón de crear, editar, eliminar, reordenar o activar con `<SoloEditores>` (y la columna "Acciones" de la tabla, encabezado y celda). Los formularios de una sola pantalla van dentro de `<BloqueEditable>`. Un `Switch` o botón que se deba ver pero no usar lleva `disabled={!puedeEditar}`, con `const puedeEditar = usePuedeEditar()`. Todo se importa de `@/components/admin/admin-access`, y el hook toma la sección de la ruta actual.
+5. **Controles que escriben en la tabla de otra sección** (como el gestor de sucursales dentro de Promociones): `<SoloEditores seccion="otra-clave">`.
+6. **Rutas API nuevas en `/api/admin/...`:** proteger cada handler con `requireAdmin('clave', 'view')` para leer o `requireAdmin('clave', 'edit')` para escribir (`src/lib/admin-auth.ts`), así: `const { respuesta } = await requireAdmin('clave', 'edit'); if (respuesta) return respuesta`. **No usar `getAdminUser` a secas**: solo comprueba que haya sesión. Lo que administre usuarios usa `requireSuperAdmin()`.
+7. **RLS en Supabase:** agregar `('tabla', 'clave')` a la lista `VALUES` de `supabase-admin-permissions.sql`, una fila por cada tabla que escriba la sección, y **volver a correr el archivo completo** en el SQL Editor (se puede correr las veces que sea). La tabla nueva sigue necesitando su política permisiva normal para `authenticated` (las RESTRICTIVE solo restringen; sin una permisiva no pasa nada). Dos casos especiales:
+   - si la tabla recibe INSERT desde el sitio público, excluirla del INSERT, como `leads`;
+   - si guarda datos personales, agregarle también la restricción de SELECT, como `leads`.
+8. **Usuarios existentes:** los super ven la sección nueva sin hacer nada. Los de permisos personalizados empiezan *Sin acceso*, hasta que un super se la asigne con la llave 🔑 en `/admin/usuarios`. No hace falta migración.
+
+⚠️ **No renombrar la `key` de una sección existente.** Los permisos guardados en `app_metadata` y las políticas del SQL usan esa clave: si se renombra, todos los usuarios personalizados pierden el acceso a esa sección. Si de verdad hay que renombrarla, también hay que actualizar el `admin_permissions` de cada usuario y el SQL.
+
+| Sección | Ruta | Tabla Supabase | Clave de permiso |
+|---------|------|----------------|------------------|
+| Dashboard | `/admin` | — | — (todos; muestra solo lo permitido) |
+| Artículos (Blog) | `/admin/posts` | `posts` | `posts` |
+| Multimedia | `/admin/media` | Storage bucket `media` (+ `media_metadata`) | `media` |
+| Menú de alimentos | `/admin/menu` | `menu_items`, `menu_categories` | `menu` |
+| Preguntas frecuentes | `/admin/faq` | `faqs` | `faq` |
+| Base de conocimiento | `/admin/base-conocimiento` | `knowledge_base` | `base-conocimiento` |
+| Atracciones | `/admin/atracciones` | `attractions` | `atracciones` |
+| Sucursales | `/admin/sucursales` | `branches` | `sucursales` |
+| Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) | `articulos` |
+| Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` | `articulos` |
+| Restricciones de fecha (Shop) | `/admin/shop` | `shop_date_restrictions` | `shop` |
+| Ventas en línea (Shop) | `/admin/ventas` | `shop_orders` (solo lectura) | `ventas` (solo *Ver*) |
+| Promociones | `/admin/promociones` | `promotions` | `promociones` |
+| Paquetes cumpleaños | `/admin/cumpleanos` | `birthday_packages` | `cumpleanos` |
+| Galería cumpleaños | `/admin/cumpleanos/gallery` | `birthday_gallery` | `cumpleanos` |
+| Popup del sitio | `/admin/popup` | `popup_config` | `popup` |
+| Banner superior | `/admin/banner` | `banner_config` | `banner` |
+| Usuarios admin | `/admin/usuarios` | Supabase Auth | — (solo super) |
+| Leads/Registros | `/admin/leads` | `leads` | `leads` |
 
 **APIs internas:**
 - `GET /api/auth/callback` (retorno del login con Google)
 - `GET /api/admin/shop-orders`
-- `POST /api/admin/create-user` (alta de admin, sin correo de invitación)
+- `POST /api/admin/create-user` (alta de admin con rol y permisos, sin correo de invitación)
 - `GET /api/admin/list-users`
-- `DELETE /api/admin/delete-user`
+- `PATCH /api/admin/update-user` (cambia rol y permisos)
+- `POST /api/admin/delete-user`
 - `GET /api/verify-email`
+
+Las de usuarios son solo para super admins; las demás de `/api/admin` exigen el permiso de su sección.
 
 ---
 
@@ -166,6 +199,7 @@ Presentes en prácticamente todas las páginas públicas:
 - Schema.org JSON-LD se inyecta con `<script type="application/ld+json">` en páginas clave.
 - Los íconos del admin usan **Lucide React**.
 - Los botones de acción del admin usan `bg-orange-500 hover:bg-orange-600`.
+- **Toda sección nueva del admin sigue el checklist de permisos** (ver *Permisos por sección* → *Checklist obligatorio*): registrarla en `SECCIONES_ADMIN`, ocultar los controles de edición con `<SoloEditores>`/`<BloqueEditable>`, proteger sus APIs con `requireAdmin` y agregar sus tablas a `supabase-admin-permissions.sql`.
 - Los assets estáticos (imágenes, videos) viven en `public/assets/`.
 - El **banner superior** se renderiza en `src/app/page.tsx` (antes de `<VideoBackground>` y `<Header>`) y publica su altura en la variable CSS `--banner-h` (definida en `globals.css` con valor `0px`). El header flotante se recorre con `top-[calc(1rem_+_var(--banner-h))]`, así que cualquier elemento nuevo fijado arriba debe usar ese mismo cálculo.
 

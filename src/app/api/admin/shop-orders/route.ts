@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { getAdminUser } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-auth'
 
 // Se lee con la service role key porque `shop_orders` solo la escribe el webhook
 // de Stripe (no hay política de lectura para el rol authenticated). La ruta queda
@@ -15,8 +15,8 @@ const LIMITE_DEFAULT = 500
 // GET — lista las ventas de la tienda en línea, de la más reciente a la más vieja.
 // Params: from / to (YYYY-MM-DD sobre la fecha de compra), limit.
 export async function GET(req: NextRequest) {
-  const user = await getAdminUser()
-  if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const { respuesta } = await requireAdmin('ventas', 'view')
+  if (respuesta) return respuesta
 
   const { searchParams } = req.nextUrl
   const from = searchParams.get('from')

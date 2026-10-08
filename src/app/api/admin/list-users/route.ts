@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSuperAdmin } from '@/lib/admin-auth'
+import { accesoDeUsuario } from '@/lib/admin-permissions'
 
 export async function GET(request: NextRequest) {
+  // Devuelve todas las cuentas admin: solo para super administradores.
+  const { respuesta } = await requireSuperAdmin()
+  if (respuesta) return respuesta
+
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -33,13 +39,18 @@ export async function GET(request: NextRequest) {
     }
 
     // Formatear usuarios para la respuesta
-    const users = data.users.map(user => ({
-      id: user.id,
-      email: user.email,
-      created_at: user.created_at,
-      last_sign_in_at: user.last_sign_in_at,
-      email_confirmed_at: user.email_confirmed_at
-    }))
+    const users = data.users.map(user => {
+      const acceso = accesoDeUsuario(user)
+      return {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at,
+        last_sign_in_at: user.last_sign_in_at,
+        email_confirmed_at: user.email_confirmed_at,
+        role: acceso.rol,
+        permissions: acceso.permisos
+      }
+    })
 
     return NextResponse.json({ users })
   } catch (error: any) {

@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Link from 'next/link'
 import { Plus, Edit, Trash2, Home } from 'lucide-react'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface Post {
   id: string
@@ -110,12 +111,14 @@ export default function PostsPage() {
               <h1 className="text-2xl font-bold text-gray-900">Posts del Blog</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/posts/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nuevo Post
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/posts/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nuevo Post
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -138,7 +141,9 @@ export default function PostsPage() {
                       <TableHead>Título</TableHead>
                       <TableHead>Slug</TableHead>
                       <TableHead>Fecha de Creación</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -147,23 +152,25 @@ export default function PostsPage() {
                         <TableCell className="font-medium">{post.title}</TableCell>
                         <TableCell>{post.slug}</TableCell>
                         <TableCell>{new Date(post.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/posts/${post.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/posts/${post.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(post.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(post.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

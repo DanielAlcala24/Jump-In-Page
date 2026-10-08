@@ -24,6 +24,7 @@ import {
 import { Plus, Edit, Trash2, Home, Tag, ArrowUp, ArrowDown } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface Category {
   id: string
@@ -267,12 +268,14 @@ export default function MenuAdminPage() {
               <h1 className="text-2xl font-bold text-gray-900">Menú de Alimentos</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/menu/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nuevo Platillo
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/menu/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nuevo Platillo
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -315,79 +318,81 @@ export default function MenuAdminPage() {
                     </div>
                   </div>
 
-                  {/* Sección de gestión de categorías */}
-                  <Card className="mb-4 border-dashed">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Tag className="h-4 w-4" />
-                        Gestionar Categorías
-                      </CardTitle>
-                      <CardDescription className="text-xs">
-                        Ordena las categorías y elimina las que no tengan platillos asociados
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {categories.length > 0 ? (
-                          categories.map((cat, idx) => {
-                            const itemsInCategory = items.filter((item) => item.category === cat.name).length
-                            return (
+                  <SoloEditores>
+                    {/* Sección de gestión de categorías */}
+                    <Card className="mb-4 border-dashed">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Tag className="h-4 w-4" />
+                          Gestionar Categorías
+                        </CardTitle>
+                        <CardDescription className="text-xs">
+                          Ordena las categorías y elimina las que no tengan platillos asociados
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-2">
+                          {categories.length > 0 ? (
+                            categories.map((cat, idx) => {
+                              const itemsInCategory = items.filter((item) => item.category === cat.name).length
+                              return (
+                                <div
+                                  key={cat.id}
+                                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md border"
+                                >
+                                  <div className="flex flex-col">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-4 w-4 p-0"
+                                      onClick={() => handleMoveCategory(cat, 'up')}
+                                      disabled={idx === 0}
+                                    >
+                                      <ArrowUp className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-4 w-4 p-0"
+                                      onClick={() => handleMoveCategory(cat, 'down')}
+                                      disabled={idx === categories.length - 1}
+                                    >
+                                      <ArrowDown className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                  <span className="text-sm font-medium">{cat.name}</span>
+                                  <span className="text-xs text-gray-500">
+                                    ({itemsInCategory} platillo{itemsInCategory !== 1 ? 's' : ''})
+                                  </span>
+                                  {itemsInCategory === 0 && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleDeleteCategory(cat.name)}
+                                      className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  )}
+                                </div>
+                              )
+                            })
+                          ) : (
+                            categoriesList.map((catName) => (
                               <div
-                                key={cat.id}
+                                key={catName}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md border"
                               >
-                                <div className="flex flex-col">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-4 w-4 p-0"
-                                    onClick={() => handleMoveCategory(cat, 'up')}
-                                    disabled={idx === 0}
-                                  >
-                                    <ArrowUp className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-4 w-4 p-0"
-                                    onClick={() => handleMoveCategory(cat, 'down')}
-                                    disabled={idx === categories.length - 1}
-                                  >
-                                    <ArrowDown className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                                <span className="text-sm font-medium">{cat.name}</span>
-                                <span className="text-xs text-gray-500">
-                                  ({itemsInCategory} platillo{itemsInCategory !== 1 ? 's' : ''})
-                                </span>
-                                {itemsInCategory === 0 && (
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleDeleteCategory(cat.name)}
-                                    className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button>
-                                )}
+                                <span className="text-sm font-medium">{catName}</span>
+                                <p className="text-[10px] text-orange-600 ml-2">Ejecuta el SQL para ordenar</p>
                               </div>
-                            )
-                          })
-                        ) : (
-                          categoriesList.map((catName) => (
-                            <div
-                              key={catName}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md border"
-                            >
-                              <span className="text-sm font-medium">{catName}</span>
-                              <p className="text-[10px] text-orange-600 ml-2">Ejecuta el SQL para ordenar</p>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                            ))
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </SoloEditores>
                 </>
               )}
 
@@ -411,12 +416,16 @@ export default function MenuAdminPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Imagen</TableHead>
-                      <TableHead>Orden</TableHead>
+                      <SoloEditores>
+                        <TableHead>Orden</TableHead>
+                      </SoloEditores>
                       <TableHead>Nombre</TableHead>
                       <TableHead>Categoría</TableHead>
                       <TableHead>Precio</TableHead>
                       <TableHead>Descripción</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -432,49 +441,53 @@ export default function MenuAdminPage() {
                             />
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleMoveProduct(item, 'up')}
-                            >
-                              <ArrowUp className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleMoveProduct(item, 'down')}
-                            >
-                              <ArrowDown className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleMoveProduct(item, 'up')}
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleMoveProduct(item, 'down')}
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                         <TableCell className="font-medium">{item.title}</TableCell>
                         <TableCell>{item.category}</TableCell>
                         <TableCell>{item.price}</TableCell>
                         <TableCell className="max-w-xs truncate">
                           {item.description}
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/menu/${item.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/menu/${item.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(item.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(item.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

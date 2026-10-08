@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 import Image from 'next/image'
 import MediaSelectorMultiple from '@/components/admin/media-selector-multiple'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { BloqueEditable } from '@/components/admin/admin-access'
 
 interface PopupImage {
   id?: string
@@ -252,137 +253,139 @@ export default function PopupAdminPage() {
                   Activa o desactiva el popup y selecciona las imágenes que se mostrarán cuando los visitantes ingresen al sitio
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
+              <CardContent>
+                <BloqueEditable className="space-y-6">
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
 
-                {/* Toggle para activar/desactivar popup */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="popup-active" className="text-base font-semibold">
-                      Activar Popup
-                    </Label>
-                    <p className="text-sm text-gray-500">
-                      Cuando esté activo, el popup aparecerá cuando los visitantes ingresen al sitio web
-                    </p>
-                  </div>
-                  <Switch
-                    id="popup-active"
-                    checked={config.is_active}
-                    onCheckedChange={handleToggleActive}
-                  />
-                </div>
-
-                {/* Selector de imágenes */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-base font-semibold">Imágenes del Popup</Label>
+                  {/* Toggle para activar/desactivar popup */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="popup-active" className="text-base font-semibold">
+                        Activar Popup
+                      </Label>
                       <p className="text-sm text-gray-500">
-                        Selecciona una o más imágenes para mostrar en el popup. Puedes agregar múltiples imágenes.
+                        Cuando esté activo, el popup aparecerá cuando los visitantes ingresen al sitio web
                       </p>
                     </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <MediaSelectorMultiple
-                      onSelect={handleAddImage}
-                      label="Agregar Imagen"
+                    <Switch
+                      id="popup-active"
+                      checked={config.is_active}
+                      onCheckedChange={handleToggleActive}
                     />
                   </div>
 
-                  {/* Lista de imágenes seleccionadas */}
-                  {config.images.length > 0 && (
-                    <div className="space-y-3">
-                      <Label className="text-sm font-medium">
-                        Imágenes Seleccionadas ({config.images.length})
-                      </Label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {config.images.map((imageUrl, index) => (
-                          <div
-                            key={index}
-                            className="relative group border rounded-lg overflow-hidden bg-gray-100 transition-all hover:ring-2 hover:ring-orange-500"
-                          >
-                            <div className="aspect-video relative">
-                              <Image
-                                src={imageUrl}
-                                alt={`Popup image ${index + 1}`}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              />
-                            </div>
-
-                            {/* Reordering Controls */}
-                            <div className="absolute top-2 left-2 flex gap-1">
-                              <Button
-                                variant="secondary"
-                                size="icon"
-                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === 0 ? 'hidden' : ''}`}
-                                onClick={() => handleMoveImage(index, 'prev')}
-                                title="Mover anterior"
-                              >
-                                <ArrowLeft className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="secondary"
-                                size="icon"
-                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === config.images.length - 1 ? 'hidden' : ''}`}
-                                onClick={() => handleMoveImage(index, 'next')}
-                                title="Mover posterior"
-                              >
-                                <ArrowRight className="h-4 w-4" />
-                              </Button>
-                            </div>
-
-                            <div className="absolute top-2 right-2">
-                              <Button
-                                variant="destructive"
-                                size="icon"
-                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                                onClick={() => handleRemoveImage(index)}
-                                title="Eliminar imagen"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <div className="p-2 bg-white flex items-center justify-between">
-                              <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded border border-orange-200">
-                                #{index + 1}
-                              </span>
-                              <p className="text-xs text-gray-600 truncate flex-1 ml-2" title={imageUrl}>
-                                {imageUrl.split('/').pop()}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
+                  {/* Selector de imágenes */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-base font-semibold">Imágenes del Popup</Label>
+                        <p className="text-sm text-gray-500">
+                          Selecciona una o más imágenes para mostrar en el popup. Puedes agregar múltiples imágenes.
+                        </p>
                       </div>
                     </div>
-                  )}
 
-                  {config.images.length === 0 && (
-                    <div className="text-center py-8 text-gray-500 border rounded-lg">
-                      <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No hay imágenes seleccionadas</p>
-                      <p className="text-xs mt-2">Usa el selector de arriba para agregar imágenes</p>
+                    <div className="border rounded-lg p-4">
+                      <MediaSelectorMultiple
+                        onSelect={handleAddImage}
+                        label="Agregar Imagen"
+                      />
                     </div>
-                  )}
-                </div>
 
-                {/* Botón de guardar */}
-                <div className="flex justify-end pt-4 border-t">
-                  <Button
-                    onClick={handleSave}
-                    disabled={saving || (config.is_active && config.images.length === 0)}
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {saving ? 'Guardando...' : 'Guardar Configuración'}
-                  </Button>
-                </div>
+                    {/* Lista de imágenes seleccionadas */}
+                    {config.images.length > 0 && (
+                      <div className="space-y-3">
+                        <Label className="text-sm font-medium">
+                          Imágenes Seleccionadas ({config.images.length})
+                        </Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {config.images.map((imageUrl, index) => (
+                            <div
+                              key={index}
+                              className="relative group border rounded-lg overflow-hidden bg-gray-100 transition-all hover:ring-2 hover:ring-orange-500"
+                            >
+                              <div className="aspect-video relative">
+                                <Image
+                                  src={imageUrl}
+                                  alt={`Popup image ${index + 1}`}
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                              </div>
+
+                              {/* Reordering Controls */}
+                              <div className="absolute top-2 left-2 flex gap-1">
+                                <Button
+                                  variant="secondary"
+                                  size="icon"
+                                  className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === 0 ? 'hidden' : ''}`}
+                                  onClick={() => handleMoveImage(index, 'prev')}
+                                  title="Mover anterior"
+                                >
+                                  <ArrowLeft className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="secondary"
+                                  size="icon"
+                                  className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === config.images.length - 1 ? 'hidden' : ''}`}
+                                  onClick={() => handleMoveImage(index, 'next')}
+                                  title="Mover posterior"
+                                >
+                                  <ArrowRight className="h-4 w-4" />
+                                </Button>
+                              </div>
+
+                              <div className="absolute top-2 right-2">
+                                <Button
+                                  variant="destructive"
+                                  size="icon"
+                                  className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                                  onClick={() => handleRemoveImage(index)}
+                                  title="Eliminar imagen"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <div className="p-2 bg-white flex items-center justify-between">
+                                <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded border border-orange-200">
+                                  #{index + 1}
+                                </span>
+                                <p className="text-xs text-gray-600 truncate flex-1 ml-2" title={imageUrl}>
+                                  {imageUrl.split('/').pop()}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {config.images.length === 0 && (
+                      <div className="text-center py-8 text-gray-500 border rounded-lg">
+                        <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No hay imágenes seleccionadas</p>
+                        <p className="text-xs mt-2">Usa el selector de arriba para agregar imágenes</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Botón de guardar */}
+                  <div className="flex justify-end pt-4 border-t">
+                    <Button
+                      onClick={handleSave}
+                      disabled={saving || (config.is_active && config.images.length === 0)}
+                      className="bg-orange-500 hover:bg-orange-600"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {saving ? 'Guardando...' : 'Guardar Configuración'}
+                    </Button>
+                  </div>
+                </BloqueEditable>
               </CardContent>
             </Card>
           )}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { getAdminUser } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-auth'
 import Stripe from 'stripe'
 
 // Da forma a un producto de Stripe para el admin (incluye metadata completa).
@@ -26,8 +26,8 @@ function mapProduct(p: Stripe.Product) {
 
 // GET — lista todos los productos (activos y archivados).
 export async function GET() {
-  const user = await getAdminUser()
-  if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const { respuesta } = await requireAdmin('articulos', 'view')
+  if (respuesta) return respuesta
 
   try {
     const products = await stripe.products.list({
@@ -42,8 +42,8 @@ export async function GET() {
 
 // POST — crea un producto nuevo con su precio y metadata.
 export async function POST(req: NextRequest) {
-  const user = await getAdminUser()
-  if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const { respuesta } = await requireAdmin('articulos', 'edit')
+  if (respuesta) return respuesta
 
   try {
     const body = await req.json()

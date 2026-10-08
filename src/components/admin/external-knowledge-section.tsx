@@ -17,6 +17,7 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { Save, ChevronDown, ChevronUp, LucideIcon } from 'lucide-react'
+import { BloqueEditable } from '@/components/admin/admin-access'
 
 interface ExternalKnowledgeItem {
   id: string
@@ -238,7 +239,7 @@ export default function ExternalKnowledgeSection({
                   </button>
 
                   {isOpen && (
-                    <div className="space-y-3 border-t px-4 py-3">
+                    <BloqueEditable seccion="base-conocimiento" className="space-y-3 border-t px-4 py-3">
                       <div className="space-y-1">
                         <Label htmlFor={`category-${item.id}`} className="text-sm">
                           Categoría
@@ -293,7 +294,7 @@ export default function ExternalKnowledgeSection({
                           {savingId === item.id ? 'Guardando...' : 'Guardar'}
                         </Button>
                       </div>
-                    </div>
+                    </BloqueEditable>
                   )}
                 </div>
               )

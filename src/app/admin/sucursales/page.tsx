@@ -24,6 +24,7 @@ import { Plus, Edit, Trash2, Home, MapPin, CheckCircle2, XCircle } from 'lucide-
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface Branch {
   id: string
@@ -167,12 +168,14 @@ export default function SucursalesAdminPage() {
               <h1 className="text-2xl font-bold text-gray-900">Sucursales</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/sucursales/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Sucursal
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/sucursales/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nueva Sucursal
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -202,12 +205,14 @@ export default function SucursalesAdminPage() {
               ) : branches.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <p>No hay sucursales registradas.</p>
-                  <Link href="/admin/sucursales/new" className="mt-4 inline-block">
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Crear Primera Sucursal
-                    </Button>
-                  </Link>
+                  <SoloEditores>
+                    <Link href="/admin/sucursales/new" className="mt-4 inline-block">
+                      <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Crear Primera Sucursal
+                      </Button>
+                    </Link>
+                  </SoloEditores>
                 </div>
               ) : (
                 <Table>
@@ -218,7 +223,9 @@ export default function SucursalesAdminPage() {
                       <TableHead>Slug</TableHead>
                       <TableHead>Estado</TableHead>
                       <TableHead>Fecha de Creación</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -253,35 +260,37 @@ export default function SucursalesAdminPage() {
                             day: 'numeric'
                           })}
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/sucursales/${branch.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/sucursales/${branch.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleToggleActive(branch)}
+                                title={branch.is_active ? 'Desactivar' : 'Activar'}
+                              >
+                                {branch.is_active ? (
+                                  <XCircle className="h-4 w-4" />
+                                ) : (
+                                  <CheckCircle2 className="h-4 w-4" />
+                                )}
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleToggleActive(branch)}
-                              title={branch.is_active ? 'Desactivar' : 'Activar'}
-                            >
-                              {branch.is_active ? (
-                                <XCircle className="h-4 w-4" />
-                              ) : (
-                                <CheckCircle2 className="h-4 w-4" />
-                              )}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(branch.id, branch.name)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(branch.id, branch.name)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

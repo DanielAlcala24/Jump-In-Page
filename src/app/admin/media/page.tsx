@@ -12,6 +12,7 @@ import { Upload, File, Image as ImageIcon, Trash2, Eye, Copy, Home } from 'lucid
 import { toast } from 'sonner'
 import Image from 'next/image'
 import Link from 'next/link'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface FileItem {
   name: string
@@ -573,153 +574,155 @@ export default function MediaPage() {
         </div>
       </div>
 
-      {/* Upload Section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Subir Archivos
-          </CardTitle>
-          <CardDescription>
-            Selecciona uno o múltiples archivos para subir al almacenamiento
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="file">Archivos (Múltiples)</Label>
-              <Input
-                id="file"
-                type="file"
-                onChange={handleFileSelect}
-                accept="image/*,video/*,audio/*,application/*,text/*"
-                multiple
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Puedes seleccionar múltiples archivos a la vez. Las imágenes se optimizarán automáticamente.
-              </p>
-            </div>
+      <SoloEditores>
+        {/* Upload Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Subir Archivos
+            </CardTitle>
+            <CardDescription>
+              Selecciona uno o múltiples archivos para subir al almacenamiento
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="file">Archivos (Múltiples)</Label>
+                <Input
+                  id="file"
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept="image/*,video/*,audio/*,application/*,text/*"
+                  multiple
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Puedes seleccionar múltiples archivos a la vez. Las imágenes se optimizarán automáticamente.
+                </p>
+              </div>
 
-            {pendingFiles.length > 0 && (
-              <div className="space-y-4 border-t pt-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">
-                    Archivos pendientes ({pendingFiles.length})
-                  </p>
-                  <Button
-                    onClick={uploadAllFiles}
-                    disabled={uploading || pendingFiles.some((pf) => pf.isOptimizing || pf.isUploading)}
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    {uploading ? 'Subiendo...' : 'Subir Todos'}
-                  </Button>
-                </div>
+              {pendingFiles.length > 0 && (
+                <div className="space-y-4 border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">
+                      Archivos pendientes ({pendingFiles.length})
+                    </p>
+                    <Button
+                      onClick={uploadAllFiles}
+                      disabled={uploading || pendingFiles.some((pf) => pf.isOptimizing || pf.isUploading)}
+                      className="bg-orange-500 hover:bg-orange-600"
+                    >
+                      {uploading ? 'Subiendo...' : 'Subir Todos'}
+                    </Button>
+                  </div>
 
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {pendingFiles.map((pendingFile) => (
-                    <Card key={pendingFile.id} className="border-2">
-                      <CardContent className="p-4 space-y-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">
-                              {pendingFile.originalFile.name}
-                            </p>
-                            <div className="text-xs text-gray-500 space-y-1 mt-1">
-                              <p>
-                                Tamaño original: {formatFileSize(pendingFile.originalSize)}
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {pendingFiles.map((pendingFile) => (
+                      <Card key={pendingFile.id} className="border-2">
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {pendingFile.originalFile.name}
                               </p>
-                              {pendingFile.optimizedFile && pendingFile.optimizedFile.size < pendingFile.originalSize && (
-                                <p className="text-green-600">
-                                  ✓ Optimizado: {formatFileSize(pendingFile.optimizedFile.size)} 
-                                  ({(100 - (pendingFile.optimizedFile.size / pendingFile.originalSize) * 100).toFixed(1)}% reducción)
+                              <div className="text-xs text-gray-500 space-y-1 mt-1">
+                                <p>
+                                  Tamaño original: {formatFileSize(pendingFile.originalSize)}
                                 </p>
-                              )}
-                              {pendingFile.isOptimizing && (
-                                <p className="text-orange-500">Optimizando imagen...</p>
-                              )}
-                              {pendingFile.error && (
-                                <p className="text-red-500">{pendingFile.error}</p>
-                              )}
+                                {pendingFile.optimizedFile && pendingFile.optimizedFile.size < pendingFile.originalSize && (
+                                  <p className="text-green-600">
+                                    ✓ Optimizado: {formatFileSize(pendingFile.optimizedFile.size)} 
+                                    ({(100 - (pendingFile.optimizedFile.size / pendingFile.originalSize) * 100).toFixed(1)}% reducción)
+                                  </p>
+                                )}
+                                {pendingFile.isOptimizing && (
+                                  <p className="text-orange-500">Optimizando imagen...</p>
+                                )}
+                                {pendingFile.error && (
+                                  <p className="text-red-500">{pendingFile.error}</p>
+                                )}
+                              </div>
                             </div>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => removePendingFile(pendingFile.id)}
+                              disabled={pendingFile.isUploading}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => removePendingFile(pendingFile.id)}
-                            disabled={pendingFile.isUploading}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
 
-                        <div>
-                          <Label htmlFor={`customFileName-${pendingFile.id}`} className="text-xs">
-                            Nombre del Archivo (Opcional)
-                          </Label>
-                          <Input
-                            id={`customFileName-${pendingFile.id}`}
-                            type="text"
-                            placeholder="Ej: logo-jump-in, imagen-hero, etc."
-                            value={pendingFile.customFileName}
-                            onChange={(e) =>
-                              updatePendingFile(pendingFile.id, {
-                                customFileName: e.target.value
-                              })
-                            }
-                            className="mt-1 text-sm"
-                            disabled={pendingFile.isUploading}
-                          />
-                          <p className="text-xs text-gray-500 mt-1">
-                            Solo letras, números, guiones y guiones bajos.
-                          </p>
-                        </div>
-
-                        {pendingFile.originalFile.type.startsWith('image/') && (
                           <div>
-                            <Label htmlFor={`imageHint-${pendingFile.id}`} className="text-xs">
-                              Hint para SEO (Opcional)
+                            <Label htmlFor={`customFileName-${pendingFile.id}`} className="text-xs">
+                              Nombre del Archivo (Opcional)
                             </Label>
                             <Input
-                              id={`imageHint-${pendingFile.id}`}
+                              id={`customFileName-${pendingFile.id}`}
                               type="text"
-                              placeholder="Ej: trampoline park, jumping friends, logo jump-in"
-                              value={pendingFile.imageHint}
+                              placeholder="Ej: logo-jump-in, imagen-hero, etc."
+                              value={pendingFile.customFileName}
                               onChange={(e) =>
                                 updatePendingFile(pendingFile.id, {
-                                  imageHint: e.target.value
+                                  customFileName: e.target.value
                                 })
                               }
                               className="mt-1 text-sm"
                               disabled={pendingFile.isUploading}
                             />
                             <p className="text-xs text-gray-500 mt-1">
-                              Descripción breve para SEO y accesibilidad.
+                              Solo letras, números, guiones y guiones bajos.
                             </p>
                           </div>
-                        )}
 
-                        <Button
-                          onClick={() => uploadFile(pendingFile.id)}
-                          disabled={pendingFile.isOptimizing || pendingFile.isUploading}
-                          className="w-full bg-orange-500 hover:bg-orange-600"
-                          size="sm"
-                        >
-                          {pendingFile.isOptimizing
-                            ? 'Optimizando...'
-                            : pendingFile.isUploading
-                            ? 'Subiendo...'
-                            : 'Subir Este Archivo'}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          {pendingFile.originalFile.type.startsWith('image/') && (
+                            <div>
+                              <Label htmlFor={`imageHint-${pendingFile.id}`} className="text-xs">
+                                Hint para SEO (Opcional)
+                              </Label>
+                              <Input
+                                id={`imageHint-${pendingFile.id}`}
+                                type="text"
+                                placeholder="Ej: trampoline park, jumping friends, logo jump-in"
+                                value={pendingFile.imageHint}
+                                onChange={(e) =>
+                                  updatePendingFile(pendingFile.id, {
+                                    imageHint: e.target.value
+                                  })
+                                }
+                                className="mt-1 text-sm"
+                                disabled={pendingFile.isUploading}
+                              />
+                              <p className="text-xs text-gray-500 mt-1">
+                                Descripción breve para SEO y accesibilidad.
+                              </p>
+                            </div>
+                          )}
+
+                          <Button
+                            onClick={() => uploadFile(pendingFile.id)}
+                            disabled={pendingFile.isOptimizing || pendingFile.isUploading}
+                            className="w-full bg-orange-500 hover:bg-orange-600"
+                            size="sm"
+                          >
+                            {pendingFile.isOptimizing
+                              ? 'Optimizando...'
+                              : pendingFile.isUploading
+                              ? 'Subiendo...'
+                              : 'Subir Este Archivo'}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </SoloEditores>
 
       {/* Files List */}
       <Card>
@@ -784,14 +787,16 @@ export default function MediaPage() {
                             <Copy className="h-3 w-3 mr-1" />
                             Copiar
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteFile(file.name)}
-                            className="px-2"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          <SoloEditores>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => deleteFile(file.name)}
+                              className="px-2"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </SoloEditores>
                         </div>
                       </div>
                     </>
@@ -828,14 +833,16 @@ export default function MediaPage() {
                             <Copy className="h-3 w-3 mr-1" />
                             Copiar
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteFile(file.name)}
-                            className="px-2"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          <SoloEditores>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => deleteFile(file.name)}
+                              className="px-2"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </SoloEditores>
                         </div>
                       </div>
                     </>

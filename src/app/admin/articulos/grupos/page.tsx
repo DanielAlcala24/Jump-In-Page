@@ -18,6 +18,7 @@ import {
   ArrowLeft, Plus, Pencil, Loader2, Trash2, Layers, Search, ChevronUp, ChevronDown, X, MapPin,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface ProductGroup {
   id: string
@@ -308,9 +309,11 @@ export default function AdminGruposPage() {
             </p>
           </div>
         </div>
-        <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
-          <Plus className="h-4 w-4 mr-2" /> Nuevo grupo
-        </Button>
+        <SoloEditores>
+          <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
+            <Plus className="h-4 w-4 mr-2" /> Nuevo grupo
+          </Button>
+        </SoloEditores>
       </div>
 
       {/* Filtro por sucursal: los grupos mezclan productos de varias sucursales. */}
@@ -406,15 +409,17 @@ export default function AdminGruposPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 shrink-0">
-                  <Switch checked={g.is_active} onCheckedChange={() => toggleActive(g)} />
-                  <Button variant="ghost" size="icon" onClick={() => openEdit(g)} title="Editar">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(g)} title="Eliminar">
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </div>
+                <SoloEditores>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Switch checked={g.is_active} onCheckedChange={() => toggleActive(g)} />
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(g)} title="Editar">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(g)} title="Eliminar">
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
+                </SoloEditores>
               </div>
             </div>
           ))}

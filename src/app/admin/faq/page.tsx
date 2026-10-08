@@ -24,6 +24,7 @@ import { Plus, Edit, Trash2, Home, HelpCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface FAQ {
   id: string
@@ -154,12 +155,14 @@ export default function FAQAdminPage() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/faq/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Pregunta
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/faq/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nueva Pregunta
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -195,38 +198,44 @@ export default function FAQAdminPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-20">Orden</TableHead>
+                      <SoloEditores>
+                        <TableHead className="w-20">Orden</TableHead>
+                      </SoloEditores>
                       <TableHead>Pregunta</TableHead>
                       <TableHead className="max-w-md">Respuesta</TableHead>
                       <TableHead>Sucursales</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {faqs.map((faq, index) => (
                       <TableRow key={faq.id}>
-                        <TableCell>
-                          <div className="flex flex-col gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleReorder(faq.id, 'up')}
-                              disabled={index === 0}
-                            >
-                              ↑
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => handleReorder(faq.id, 'down')}
-                              disabled={index === faqs.length - 1}
-                            >
-                              ↓
-                            </Button>
-                          </div>
-                        </TableCell>
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleReorder(faq.id, 'up')}
+                                disabled={index === 0}
+                              >
+                                ↑
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleReorder(faq.id, 'down')}
+                                disabled={index === faqs.length - 1}
+                              >
+                                ↓
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                         <TableCell className="font-medium">{faq.question}</TableCell>
                         <TableCell className="max-w-md truncate">
                           {faq.answer}
@@ -244,23 +253,25 @@ export default function FAQAdminPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/faq/${faq.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/faq/${faq.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(faq.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(faq.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

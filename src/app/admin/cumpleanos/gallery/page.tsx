@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import Image from 'next/image'
 import MediaSelectorMultiple from '@/components/admin/media-selector-multiple'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { BloqueEditable } from '@/components/admin/admin-access'
 
 interface GalleryImage {
     id?: string
@@ -177,118 +178,120 @@ export default function BirthdayGalleryAdminPage() {
                                     Agrega, elimina y ordena las fotos que aparecen en la sección de "Tu Fiesta en Jump-In"
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-6">
-                                {error && (
-                                    <Alert variant="destructive">
-                                        <AlertDescription>{error}</AlertDescription>
-                                    </Alert>
-                                )}
+                            <CardContent>
+                                <BloqueEditable className="space-y-6">
+                                    {error && (
+                                        <Alert variant="destructive">
+                                            <AlertDescription>{error}</AlertDescription>
+                                        </Alert>
+                                    )}
 
-                                {/* Selector de imágenes */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <Label className="text-base font-semibold">Subir o Seleccionar Imágenes</Label>
-                                        <p className="text-sm text-gray-500">
-                                            Selecciona las imágenes que capturan la diversión de los cumpleaños en Jump-In
-                                        </p>
-                                    </div>
+                                    {/* Selector de imágenes */}
+                                    <div className="space-y-4">
+                                        <div>
+                                            <Label className="text-base font-semibold">Subir o Seleccionar Imágenes</Label>
+                                            <p className="text-sm text-gray-500">
+                                                Selecciona las imágenes que capturan la diversión de los cumpleaños en Jump-In
+                                            </p>
+                                        </div>
 
-                                    <div className="border rounded-lg p-4 bg-gray-50/50">
-                                        <MediaSelectorMultiple
-                                            onSelect={handleAddImage}
-                                            label="Seleccionar Fotos"
-                                        />
-                                    </div>
+                                        <div className="border rounded-lg p-4 bg-gray-50/50">
+                                            <MediaSelectorMultiple
+                                                onSelect={handleAddImage}
+                                                label="Seleccionar Fotos"
+                                            />
+                                        </div>
 
-                                    {/* Lista de imágenes seleccionadas */}
-                                    {images.length > 0 && (
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-medium">
-                                                Fotos en el Carrusel ({images.length})
-                                            </Label>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                {images.map((imageUrl, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="relative group border rounded-lg overflow-hidden bg-gray-100 transition-all hover:ring-2 hover:ring-pink-500 shadow-sm"
-                                                    >
-                                                        <div className="aspect-square relative">
-                                                            <Image
-                                                                src={imageUrl}
-                                                                alt={`Gallery image ${index + 1}`}
-                                                                fill
-                                                                className="object-cover"
-                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                            />
+                                        {/* Lista de imágenes seleccionadas */}
+                                        {images.length > 0 && (
+                                            <div className="space-y-3">
+                                                <Label className="text-sm font-medium">
+                                                    Fotos en el Carrusel ({images.length})
+                                                </Label>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                    {images.map((imageUrl, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className="relative group border rounded-lg overflow-hidden bg-gray-100 transition-all hover:ring-2 hover:ring-pink-500 shadow-sm"
+                                                        >
+                                                            <div className="aspect-square relative">
+                                                                <Image
+                                                                    src={imageUrl}
+                                                                    alt={`Gallery image ${index + 1}`}
+                                                                    fill
+                                                                    className="object-cover"
+                                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                                />
+                                                            </div>
+
+                                                            {/* Reordering Controls */}
+                                                            <div className="absolute top-2 left-2 flex gap-1">
+                                                                <Button
+                                                                    variant="secondary"
+                                                                    size="icon"
+                                                                    className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === 0 ? 'hidden' : ''}`}
+                                                                    onClick={() => handleMoveImage(index, 'prev')}
+                                                                    title="Mover anterior"
+                                                                >
+                                                                    <ArrowLeft className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="secondary"
+                                                                    size="icon"
+                                                                    className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === images.length - 1 ? 'hidden' : ''}`}
+                                                                    onClick={() => handleMoveImage(index, 'next')}
+                                                                    title="Mover posterior"
+                                                                >
+                                                                    <ArrowRight className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+
+                                                            <div className="absolute top-2 right-2">
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="icon"
+                                                                    className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                                                                    onClick={() => handleRemoveImage(index)}
+                                                                    title="Eliminar imagen"
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                            <div className="p-2 bg-white flex items-center justify-between">
+                                                                <span className="text-[10px] font-bold bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded border border-pink-200">
+                                                                    #{index + 1}
+                                                                </span>
+                                                                <p className="text-xs text-gray-600 truncate flex-1 ml-2" title={imageUrl}>
+                                                                    {imageUrl.split('/').pop()}
+                                                                </p>
+                                                            </div>
                                                         </div>
-
-                                                        {/* Reordering Controls */}
-                                                        <div className="absolute top-2 left-2 flex gap-1">
-                                                            <Button
-                                                                variant="secondary"
-                                                                size="icon"
-                                                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === 0 ? 'hidden' : ''}`}
-                                                                onClick={() => handleMoveImage(index, 'prev')}
-                                                                title="Mover anterior"
-                                                            >
-                                                                <ArrowLeft className="h-4 w-4" />
-                                                            </Button>
-                                                            <Button
-                                                                variant="secondary"
-                                                                size="icon"
-                                                                className={`h-7 w-7 bg-white/90 hover:bg-white text-gray-700 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${index === images.length - 1 ? 'hidden' : ''}`}
-                                                                onClick={() => handleMoveImage(index, 'next')}
-                                                                title="Mover posterior"
-                                                            >
-                                                                <ArrowRight className="h-4 w-4" />
-                                                            </Button>
-                                                        </div>
-
-                                                        <div className="absolute top-2 right-2">
-                                                            <Button
-                                                                variant="destructive"
-                                                                size="icon"
-                                                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                                                                onClick={() => handleRemoveImage(index)}
-                                                                title="Eliminar imagen"
-                                                            >
-                                                                <X className="h-4 w-4" />
-                                                            </Button>
-                                                        </div>
-                                                        <div className="p-2 bg-white flex items-center justify-between">
-                                                            <span className="text-[10px] font-bold bg-pink-100 text-pink-700 px-1.5 py-0.5 rounded border border-pink-200">
-                                                                #{index + 1}
-                                                            </span>
-                                                            <p className="text-xs text-gray-600 truncate flex-1 ml-2" title={imageUrl}>
-                                                                {imageUrl.split('/').pop()}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
-                                    {images.length === 0 && (
-                                        <div className="text-center py-12 text-gray-500 border-2 border-dashed rounded-lg bg-white">
-                                            <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                            <p>No hay imágenes en la galería</p>
-                                            <p className="text-xs mt-2">Usa el botón de arriba para agregar fotos</p>
-                                        </div>
-                                    )}
-                                </div>
+                                        {images.length === 0 && (
+                                            <div className="text-center py-12 text-gray-500 border-2 border-dashed rounded-lg bg-white">
+                                                <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                                <p>No hay imágenes en la galería</p>
+                                                <p className="text-xs mt-2">Usa el botón de arriba para agregar fotos</p>
+                                            </div>
+                                        )}
+                                    </div>
 
-                                {/* Botón de guardar */}
-                                <div className="flex justify-end pt-4 border-t">
-                                    <Button
-                                        onClick={handleSave}
-                                        disabled={saving}
-                                        className="bg-pink-600 hover:bg-pink-700 text-white"
-                                    >
-                                        <Save className="h-4 w-4 mr-2" />
-                                        {saving ? 'Guardando...' : 'Guardar Galería'}
-                                    </Button>
-                                </div>
+                                    {/* Botón de guardar */}
+                                    <div className="flex justify-end pt-4 border-t">
+                                        <Button
+                                            onClick={handleSave}
+                                            disabled={saving}
+                                            className="bg-pink-600 hover:bg-pink-700 text-white"
+                                        >
+                                            <Save className="h-4 w-4 mr-2" />
+                                            {saving ? 'Guardando...' : 'Guardar Galería'}
+                                        </Button>
+                                    </div>
+                                </BloqueEditable>
                             </CardContent>
                         </Card>
                     )}

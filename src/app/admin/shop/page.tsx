@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
 interface Branch { id: string; name: string }
 interface StripeProduct { id: string; name: string; product_type: string }
@@ -50,6 +51,7 @@ const TYPE_LABELS: Record<string, string> = {
 export default function AdminShopPage() {
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const puedeEditar = usePuedeEditar()
 
   const [restrictions, setRestrictions] = useState<Restriction[]>([])
   const [branches, setBranches] = useState<Branch[]>([])
@@ -206,123 +208,125 @@ export default function AdminShopPage() {
             <Button variant="outline" size="sm" onClick={fetchData}>
               <RefreshCw className="h-4 w-4 mr-1" /> Refrescar
             </Button>
-            <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm() }}>
-              <DialogTrigger asChild>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => loadProductsForBranch('all')}>
-                  <Plus className="h-4 w-4 mr-1" /> Nueva restricción
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-lg">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    <CalendarOff className="h-5 w-5 text-orange-500" /> Agregar restricción de fechas
-                  </DialogTitle>
-                </DialogHeader>
+            <SoloEditores>
+              <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm() }}>
+                <DialogTrigger asChild>
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => loadProductsForBranch('all')}>
+                    <Plus className="h-4 w-4 mr-1" /> Nueva restricción
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <CalendarOff className="h-5 w-5 text-orange-500" /> Agregar restricción de fechas
+                    </DialogTitle>
+                  </DialogHeader>
 
-                <div className="space-y-4 py-2">
-                  {/* Branch filter */}
-                  <div className="space-y-1">
-                    <Label>Sucursal (para filtrar productos)</Label>
-                    <Select value={formBranchId} onValueChange={handleBranchChange}>
-                      <SelectTrigger><SelectValue placeholder="Selecciona sucursal..." /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todas las sucursales</SelectItem>
-                        {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Product */}
-                  <div className="space-y-1">
-                    <Label>Producto de Stripe <span className="text-red-500">*</span></Label>
-                    {loadingProducts ? (
-                      <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
-                        <Loader2 className="h-4 w-4 animate-spin" /> Cargando productos...
-                      </div>
-                    ) : (
-                      <Select value={formProductId} onValueChange={handleProductChange}>
-                        <SelectTrigger><SelectValue placeholder="Selecciona producto..." /></SelectTrigger>
+                  <div className="space-y-4 py-2">
+                    {/* Branch filter */}
+                    <div className="space-y-1">
+                      <Label>Sucursal (para filtrar productos)</Label>
+                      <Select value={formBranchId} onValueChange={handleBranchChange}>
+                        <SelectTrigger><SelectValue placeholder="Selecciona sucursal..." /></SelectTrigger>
                         <SelectContent>
-                          {products.map((p) => (
-                            <SelectItem key={p.id} value={p.id}>{p.name} ({p.product_type})</SelectItem>
-                          ))}
+                          <SelectItem value="all">Todas las sucursales</SelectItem>
+                          {branches.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
                         </SelectContent>
                       </Select>
-                    )}
-                  </div>
-
-                  {/* Type */}
-                  <div className="space-y-1">
-                    <Label>Tipo de restricción <span className="text-red-500">*</span></Label>
-                    <Select value={formType} onValueChange={(v) => setFormType(v as any)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="allowed_weekdays">Solo ciertos días de la semana</SelectItem>
-                        <SelectItem value="blocked_dates">Bloquear fechas específicas</SelectItem>
-                        <SelectItem value="blocked_date_range">Bloquear rango de fechas</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Weekdays */}
-                  {formType === 'allowed_weekdays' && (
-                    <div className="space-y-2">
-                      <Label>Días permitidos (los demás se bloquean)</Label>
-                      <div className="flex gap-2 flex-wrap">
-                        {WEEKDAYS.map((d) => (
-                          <label key={d.value} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border cursor-pointer text-sm transition-colors
-                            ${formWeekdays.includes(d.value) ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-700 hover:border-orange-300'}`}>
-                            <Checkbox
-                              checked={formWeekdays.includes(d.value)}
-                              onCheckedChange={() => toggleWeekday(d.value)}
-                              className="hidden"
-                            />
-                            {d.label}
-                          </label>
-                        ))}
-                      </div>
                     </div>
-                  )}
 
-                  {/* Blocked dates */}
-                  {formType === 'blocked_dates' && (
+                    {/* Product */}
                     <div className="space-y-1">
-                      <Label>Fechas a bloquear (separadas por coma)</Label>
-                      <Input
-                        placeholder="2026-07-04, 2026-07-05, 2026-12-25"
-                        value={formBlockedDates}
-                        onChange={(e) => setFormBlockedDates(e.target.value)}
-                      />
-                      <p className="text-xs text-gray-400">Formato: AAAA-MM-DD</p>
+                      <Label>Producto de Stripe <span className="text-red-500">*</span></Label>
+                      {loadingProducts ? (
+                        <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
+                          <Loader2 className="h-4 w-4 animate-spin" /> Cargando productos...
+                        </div>
+                      ) : (
+                        <Select value={formProductId} onValueChange={handleProductChange}>
+                          <SelectTrigger><SelectValue placeholder="Selecciona producto..." /></SelectTrigger>
+                          <SelectContent>
+                            {products.map((p) => (
+                              <SelectItem key={p.id} value={p.id}>{p.name} ({p.product_type})</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
                     </div>
-                  )}
 
-                  {/* Date range */}
-                  {formType === 'blocked_date_range' && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <Label>Fecha inicio</Label>
-                        <Input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} />
-                      </div>
-                      <div className="space-y-1">
-                        <Label>Fecha fin</Label>
-                        <Input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} />
-                      </div>
+                    {/* Type */}
+                    <div className="space-y-1">
+                      <Label>Tipo de restricción <span className="text-red-500">*</span></Label>
+                      <Select value={formType} onValueChange={(v) => setFormType(v as any)}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="allowed_weekdays">Solo ciertos días de la semana</SelectItem>
+                          <SelectItem value="blocked_dates">Bloquear fechas específicas</SelectItem>
+                          <SelectItem value="blocked_date_range">Bloquear rango de fechas</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                  )}
 
-                  {/* Note */}
-                  <div className="space-y-1">
-                    <Label>Nota (opcional)</Label>
-                    <Input placeholder="Ej: Promo solo aplica lunes, Vacaciones de verano..." value={formNote} onChange={(e) => setFormNote(e.target.value)} />
+                    {/* Weekdays */}
+                    {formType === 'allowed_weekdays' && (
+                      <div className="space-y-2">
+                        <Label>Días permitidos (los demás se bloquean)</Label>
+                        <div className="flex gap-2 flex-wrap">
+                          {WEEKDAYS.map((d) => (
+                            <label key={d.value} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border cursor-pointer text-sm transition-colors
+                              ${formWeekdays.includes(d.value) ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-700 hover:border-orange-300'}`}>
+                              <Checkbox
+                                checked={formWeekdays.includes(d.value)}
+                                onCheckedChange={() => toggleWeekday(d.value)}
+                                className="hidden"
+                              />
+                              {d.label}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Blocked dates */}
+                    {formType === 'blocked_dates' && (
+                      <div className="space-y-1">
+                        <Label>Fechas a bloquear (separadas por coma)</Label>
+                        <Input
+                          placeholder="2026-07-04, 2026-07-05, 2026-12-25"
+                          value={formBlockedDates}
+                          onChange={(e) => setFormBlockedDates(e.target.value)}
+                        />
+                        <p className="text-xs text-gray-400">Formato: AAAA-MM-DD</p>
+                      </div>
+                    )}
+
+                    {/* Date range */}
+                    {formType === 'blocked_date_range' && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <Label>Fecha inicio</Label>
+                          <Input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} />
+                        </div>
+                        <div className="space-y-1">
+                          <Label>Fecha fin</Label>
+                          <Input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Note */}
+                    <div className="space-y-1">
+                      <Label>Nota (opcional)</Label>
+                      <Input placeholder="Ej: Promo solo aplica lunes, Vacaciones de verano..." value={formNote} onChange={(e) => setFormNote(e.target.value)} />
+                    </div>
+
+                    <Button onClick={handleSave} disabled={saving} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+                      {saving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Guardando...</> : 'Guardar restricción'}
+                    </Button>
                   </div>
-
-                  <Button onClick={handleSave} disabled={saving} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-                    {saving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Guardando...</> : 'Guardar restricción'}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+            </SoloEditores>
           </div>
         </div>
 
@@ -358,7 +362,9 @@ export default function AdminShopPage() {
                     <TableHead>Detalle</TableHead>
                     <TableHead>Nota</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <SoloEditores>
+                      <TableHead className="text-right">Acciones</TableHead>
+                    </SoloEditores>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -374,22 +380,25 @@ export default function AdminShopPage() {
                       <TableCell>
                         <button
                           onClick={() => handleToggleActive(r)}
-                          className={`px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer
+                          disabled={!puedeEditar}
+                          className={`px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer disabled:pointer-events-none
                             ${r.is_active ? 'bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-700' : 'bg-gray-100 text-gray-500 hover:bg-green-100 hover:text-green-700'}`}
                         >
                           {r.is_active ? 'Activa' : 'Inactiva'}
                         </button>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(r.id)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
+                      <SoloEditores>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(r.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </SoloEditores>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { getAdminUser } from '@/lib/admin-auth'
+import { requireSuperAdmin } from '@/lib/admin-auth'
+import { normalizarPermisos } from '@/lib/admin-permissions'
 
 // Da de alta un admin nuevo listo para entrar con Google.
 //
@@ -10,16 +11,16 @@ import { getAdminUser } from '@/lib/admin-auth'
 // entra directo desde /admin con "Continuar con Google".
 //
 // La cuenta se crea sin contraseña a propósito: el acceso es solo por Google.
+//
+// Body: { email, role: 'super' | 'custom', permissions: { seccion: 'view' | 'edit' } }.
+// Los permisos van en app_metadata (ver src/lib/admin-permissions.ts).
 export async function POST(request: NextRequest) {
-  // El panel entero depende de esta ruta para crear cuentas con permisos totales:
-  // sin sesión de admin, nadie la puede llamar.
-  const admin = await getAdminUser()
-  if (!admin) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  // Esta ruta puede crear cuentas con permisos totales: solo un super admin la llama.
+  const { respuesta } = await requireSuperAdmin()
+  if (respuesta) return respuesta
 
   try {
-    const { email } = await request.json()
+    const { email, role, permissions } = await request.json()
 
     if (!email) {
       return NextResponse.json(
@@ -53,6 +54,11 @@ export async function POST(request: NextRequest) {
 
     const normalizado = email.trim().toLowerCase()
 
+    // Sin rol explícito se crea limitado y sin secciones: dar acceso total tiene que
+    // ser una decisión consciente.
+    const rol = role === 'super' ? 'super' : 'custom'
+    const permisos = rol === 'super' ? {} : normalizarPermisos(permissions)
+
     // Comprobar duplicados antes de crear: createUser devuelve un error genérico.
     const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers()
     if (!listError && usersData?.users?.some((u) => u.email?.toLowerCase() === normalizado)) {
@@ -67,6 +73,7 @@ export async function POST(request: NextRequest) {
       // Sin esto la cuenta queda sin confirmar y Google no se enlaza con ella.
       email_confirm: true,
       user_metadata: { role: 'admin' },
+      app_metadata: { admin_role: rol, admin_permissions: permisos },
     })
 
     if (error) {

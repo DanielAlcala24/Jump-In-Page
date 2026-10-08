@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Home, Download, Trash2, Calendar as CalendarIcon, FilterX } from 'lucide-react';
 import { toast } from 'sonner';
+import { SoloEditores } from '@/components/admin/admin-access';
 
 interface Lead {
     id: string;
@@ -267,7 +268,9 @@ export default function LeadsPage() {
                                                 <TableHead>Mes Cumple</TableHead>
                                                 <TableHead>Sucursal</TableHead>
                                                 <TableHead>Fecha</TableHead>
-                                                <TableHead className="text-right">Acciones</TableHead>
+                                                <SoloEditores>
+                                                  <TableHead className="text-right">Acciones</TableHead>
+                                                </SoloEditores>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -281,16 +284,18 @@ export default function LeadsPage() {
                                                     <TableCell className="text-xs">
                                                         {new Date(lead.created_at).toLocaleDateString()}
                                                     </TableCell>
-                                                    <TableCell className="text-right">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                                            onClick={() => handleDelete(lead.id)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </TableCell>
+                                                    <SoloEditores>
+                                                      <TableCell className="text-right">
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="sm"
+                                                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                              onClick={() => handleDelete(lead.id)}
+                                                          >
+                                                              <Trash2 className="h-4 w-4" />
+                                                          </Button>
+                                                      </TableCell>
+                                                    </SoloEditores>
                                                 </TableRow>
                                             ))}
                                         </TableBody>

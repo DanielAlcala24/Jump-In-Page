@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { getAdminUser } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-auth'
 import Stripe from 'stripe'
 
 // PATCH — actualiza un producto (datos, metadata, activo/archivado y precio).
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getAdminUser()
-  if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const { respuesta } = await requireAdmin('articulos', 'edit')
+  if (respuesta) return respuesta
 
   const { id } = await params
 

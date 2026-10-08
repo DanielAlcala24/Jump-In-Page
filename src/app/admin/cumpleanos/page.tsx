@@ -32,6 +32,7 @@ import {
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface BirthdayPackage {
     id: string
@@ -179,12 +180,14 @@ export default function BirthdayPackagesAdminPage() {
                                     Galería
                                 </Button>
                             </Link>
-                            <Link href="/admin/cumpleanos/new">
-                                <Button className="bg-orange-500 hover:bg-orange-600">
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Nuevo Paquete
-                                </Button>
-                            </Link>
+                            <SoloEditores>
+                              <Link href="/admin/cumpleanos/new">
+                                  <Button className="bg-orange-500 hover:bg-orange-600">
+                                      <Plus className="mr-2 h-4 w-4" />
+                                      Nuevo Paquete
+                                  </Button>
+                              </Link>
+                            </SoloEditores>
                         </div>
                     </div>
                 </div>
@@ -214,23 +217,29 @@ export default function BirthdayPackagesAdminPage() {
                             ) : packages.length === 0 ? (
                                 <div className="text-center py-8 text-gray-500">
                                     <p>No hay paquetes registrados.</p>
-                                    <Link href="/admin/cumpleanos/new" className="mt-4 inline-block">
-                                        <Button>
-                                            <Plus className="mr-2 h-4 w-4" />
-                                            Crear Primer Paquete
-                                        </Button>
-                                    </Link>
+                                    <SoloEditores>
+                                      <Link href="/admin/cumpleanos/new" className="mt-4 inline-block">
+                                          <Button>
+                                              <Plus className="mr-2 h-4 w-4" />
+                                              Crear Primer Paquete
+                                          </Button>
+                                      </Link>
+                                    </SoloEditores>
                                 </div>
                             ) : (
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-[100px]">Imagen</TableHead>
-                                            <TableHead className="w-[80px]">Orden</TableHead>
+                                            <SoloEditores>
+                                              <TableHead className="w-[80px]">Orden</TableHead>
+                                            </SoloEditores>
                                             <TableHead>Título</TableHead>
                                             <TableHead>Sucursales</TableHead>
                                             <TableHead>Precio</TableHead>
-                                            <TableHead className="text-right">Acciones</TableHead>
+                                            <SoloEditores>
+                                              <TableHead className="text-right">Acciones</TableHead>
+                                            </SoloEditores>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -246,28 +255,30 @@ export default function BirthdayPackagesAdminPage() {
                                                         />
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-col items-center">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-6 w-6 p-0"
-                                                            onClick={() => handleMovePackage(pkg, 'up')}
-                                                            disabled={idx === 0}
-                                                        >
-                                                            <ArrowUp className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-6 w-6 p-0"
-                                                            onClick={() => handleMovePackage(pkg, 'down')}
-                                                            disabled={idx === packages.length - 1}
-                                                        >
-                                                            <ArrowDown className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
+                                                <SoloEditores>
+                                                  <TableCell>
+                                                      <div className="flex flex-col items-center">
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="sm"
+                                                              className="h-6 w-6 p-0"
+                                                              onClick={() => handleMovePackage(pkg, 'up')}
+                                                              disabled={idx === 0}
+                                                          >
+                                                              <ArrowUp className="h-4 w-4" />
+                                                          </Button>
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="sm"
+                                                              className="h-6 w-6 p-0"
+                                                              onClick={() => handleMovePackage(pkg, 'down')}
+                                                              disabled={idx === packages.length - 1}
+                                                          >
+                                                              <ArrowDown className="h-4 w-4" />
+                                                          </Button>
+                                                      </div>
+                                                  </TableCell>
+                                                </SoloEditores>
                                                 <TableCell className="font-medium">
                                                     <div>
                                                         <div className="font-bold">{pkg.title}</div>
@@ -295,23 +306,25 @@ export default function BirthdayPackagesAdminPage() {
                                                 <TableCell className="font-semibold text-green-600">
                                                     {pkg.price || 'N/A'}
                                                 </TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex justify-end space-x-2">
-                                                        <Link href={`/admin/cumpleanos/${pkg.id}/edit`}>
-                                                            <Button variant="outline" size="sm">
-                                                                <Edit className="h-4 w-4" />
-                                                            </Button>
-                                                        </Link>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="text-red-600 hover:text-red-700"
-                                                            onClick={() => handleDelete(pkg.id)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
+                                                <SoloEditores>
+                                                  <TableCell className="text-right">
+                                                      <div className="flex justify-end space-x-2">
+                                                          <Link href={`/admin/cumpleanos/${pkg.id}/edit`}>
+                                                              <Button variant="outline" size="sm">
+                                                                  <Edit className="h-4 w-4" />
+                                                              </Button>
+                                                          </Link>
+                                                          <Button
+                                                              variant="outline"
+                                                              size="sm"
+                                                              className="text-red-600 hover:text-red-700"
+                                                              onClick={() => handleDelete(pkg.id)}
+                                                          >
+                                                              <Trash2 className="h-4 w-4" />
+                                                          </Button>
+                                                      </div>
+                                                  </TableCell>
+                                                </SoloEditores>
                                             </TableRow>
                                         ))}
                                     </TableBody>

@@ -1,13 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireSuperAdmin } from '@/lib/admin-auth'
 
 export async function POST(request: NextRequest) {
+  const { user: admin, respuesta } = await requireSuperAdmin()
+  if (respuesta) return respuesta
+
   try {
     const { userId } = await request.json()
 
     if (!userId) {
       return NextResponse.json(
         { error: 'El ID del usuario es requerido' },
+        { status: 400 }
+      )
+    }
+
+    // Quien borra es super y no puede borrarse a sí mismo: siempre queda al menos
+    // un super administrador.
+    if (userId === admin.id) {
+      return NextResponse.json(
+        { error: 'No puedes eliminar tu propio usuario' },
         { status: 400 }
       )
     }

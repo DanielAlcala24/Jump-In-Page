@@ -38,6 +38,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import ExternalKnowledgeSection from '@/components/admin/external-knowledge-section'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface KnowledgeEntry {
   id: string
@@ -262,12 +263,14 @@ export default function KnowledgeBaseAdminPage() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/base-conocimiento/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Pregunta
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/base-conocimiento/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nueva Pregunta
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -349,7 +352,9 @@ export default function KnowledgeBaseAdminPage() {
                       <TableHead>Categoría</TableHead>
                       <TableHead>Sucursales</TableHead>
                       <TableHead>Estado</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -370,26 +375,28 @@ export default function KnowledgeBaseAdminPage() {
                               {Math.round(similarity * 100)}%
                             </Badge>
                           ) : (
-                            <div className="flex flex-col gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => handleReorder(entry.id, 'up')}
-                                disabled={index === 0}
-                              >
-                                ↑
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => handleReorder(entry.id, 'down')}
-                                disabled={index === displayedEntries.length - 1}
-                              >
-                                ↓
-                              </Button>
-                            </div>
+                            <SoloEditores>
+                              <div className="flex flex-col gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => handleReorder(entry.id, 'up')}
+                                  disabled={index === 0}
+                                >
+                                  ↑
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => handleReorder(entry.id, 'down')}
+                                  disabled={index === displayedEntries.length - 1}
+                                >
+                                  ↓
+                                </Button>
+                              </div>
+                            </SoloEditores>
                           )}
                         </TableCell>
                         <TableCell className="font-medium">{entry.question}</TableCell>
@@ -433,23 +440,25 @@ export default function KnowledgeBaseAdminPage() {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/base-conocimiento/${entry.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/base-conocimiento/${entry.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(entry.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(entry.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

@@ -19,6 +19,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Home, Save, PanelTop, X, Monitor, Smartphone } from 'lucide-react'
 import { toast } from 'sonner'
 import MediaSelector from '@/components/admin/media-selector'
+import { BloqueEditable } from '@/components/admin/admin-access'
 
 const DEFAULT_DESKTOP_MAX_HEIGHT = 200
 
@@ -261,241 +262,243 @@ export default function BannerAdminPage() {
                   Muestra una imagen de ancho completo en la parte superior de la página de inicio, arriba del menú.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
-
-                {/* Activar / desactivar */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="banner-active" className="text-base font-semibold">
-                      Mostrar banner
-                    </Label>
-                    <p className="text-sm text-gray-500">
-                      Cuando está activo, el banner aparece arriba de todo en la página de inicio
-                    </p>
-                  </div>
-                  <Switch
-                    id="banner-active"
-                    checked={config.is_active}
-                    onCheckedChange={(checked) => setConfig(prev => ({ ...prev, is_active: checked }))}
-                  />
-                </div>
-
-                {/* Imagen para PC */}
-                <div className="space-y-2 p-4 border rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Monitor className="h-4 w-4 text-gray-500" />
-                    <Label className="text-base font-semibold">Imagen para PC (escritorio)</Label>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    Se muestra a lo ancho completo conservando su proporción. Usa una imagen horizontal tipo
-                    franja (por ejemplo 1920 × 200 px) para que no se vea enorme en pantallas grandes.
-                  </p>
-                  <MediaSelector
-                    value={config.image_url}
-                    onSelect={(url) => handleSelectImage('desktop', url)}
-                    label="Seleccionar Imagen para PC"
-                  />
-                  {config.image_width && config.image_height && (
-                    <p className="text-xs text-gray-500">
-                      Dimensiones detectadas: {config.image_width} × {config.image_height} px
-                    </p>
+              <CardContent>
+                <BloqueEditable className="space-y-6">
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
                   )}
-                </div>
 
-                {/* Imagen para móvil */}
-                <div className="space-y-2 p-4 border rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Smartphone className="h-4 w-4 text-gray-500" />
-                    <Label className="text-base font-semibold">Imagen para móvil</Label>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    Se usa en pantallas menores a 768 px. Si la dejas vacía, se usa la imagen de PC en todos
-                    los dispositivos.
-                  </p>
-                  <MediaSelector
-                    value={config.mobile_image_url}
-                    onSelect={(url) => handleSelectImage('mobile', url)}
-                    label="Seleccionar Imagen para Móvil"
-                  />
-                  {config.mobile_image_width && config.mobile_image_height && (
-                    <p className="text-xs text-gray-500">
-                      Dimensiones detectadas: {config.mobile_image_width} × {config.mobile_image_height} px
-                    </p>
-                  )}
-                </div>
-
-                {/* Alto máximo en PC: solo aplica cuando no hay imagen de escritorio */}
-                {isPillarbox && (
-                  <div className="space-y-2 p-4 border rounded-lg bg-amber-50 border-amber-200">
-                    <Label htmlFor="banner-max-height" className="text-base font-semibold">
-                      Alto máximo en PC
-                    </Label>
-                    <p className="text-sm text-gray-700">
-                      No hay imagen para PC, así que en pantallas grandes se mostrará la imagen de móvil
-                      centrada y con franjas negras a los costados. Este valor limita qué tan alta se ve.
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        id="banner-max-height"
-                        type="number"
-                        min={60}
-                        max={600}
-                        value={config.desktop_max_height}
-                        onChange={(e) =>
-                          setConfig(prev => ({
-                            ...prev,
-                            desktop_max_height: Number(e.target.value) || DEFAULT_DESKTOP_MAX_HEIGHT
-                          }))
-                        }
-                        className="w-32"
-                      />
-                      <span className="text-sm text-gray-600">píxeles</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Texto alternativo */}
-                <div className="space-y-2">
-                  <Label htmlFor="banner-alt" className="text-base font-semibold">
-                    Texto alternativo <span className="font-normal text-gray-500">(opcional)</span>
-                  </Label>
-                  <p className="text-sm text-gray-500">
-                    Describe la imagen para buscadores y lectores de pantalla. Ej: &quot;Promoción 2x1 en martes&quot;
-                  </p>
-                  <Input
-                    id="banner-alt"
-                    value={config.image_alt}
-                    onChange={(e) => setConfig(prev => ({ ...prev, image_alt: e.target.value }))}
-                    placeholder="Promoción de verano en Jump-In"
-                  />
-                </div>
-
-                {/* Enlace */}
-                <div className="space-y-2">
-                  <Label htmlFor="banner-link" className="text-base font-semibold">
-                    Enlace al hacer clic <span className="font-normal text-gray-500">(opcional)</span>
-                  </Label>
-                  <p className="text-sm text-gray-500">
-                    Usa una ruta del sitio (ej. <code>/precios-y-promociones</code>) o una URL completa
-                    (ej. <code>https://...</code>, se abre en una pestaña nueva). Déjalo vacío si el banner no debe ser clicable.
-                  </p>
-                  <Input
-                    id="banner-link"
-                    value={config.link_url}
-                    onChange={(e) => setConfig(prev => ({ ...prev, link_url: e.target.value }))}
-                    placeholder="/precios-y-promociones"
-                  />
-                </div>
-
-                {/* Botón de cerrar */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="banner-dismissible" className="text-base font-semibold">
-                      Permitir cerrar el banner
-                    </Label>
-                    <p className="text-sm text-gray-500">
-                      Muestra una &quot;✕&quot; para que el visitante lo oculte. No vuelve a aparecer durante esa visita.
-                    </p>
-                  </div>
-                  <Switch
-                    id="banner-dismissible"
-                    checked={config.is_dismissible}
-                    onCheckedChange={(checked) => setConfig(prev => ({ ...prev, is_dismissible: checked }))}
-                  />
-                </div>
-
-                {/* Vista previa */}
-                {hasAnyImage && (
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-base font-semibold">Vista previa</Label>
+                  {/* Activar / desactivar */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="banner-active" className="text-base font-semibold">
+                        Mostrar banner
+                      </Label>
                       <p className="text-sm text-gray-500">
-                        Aproximada: en el sitio real el ancho es el de la pantalla completa.
+                        Cuando está activo, el banner aparece arriba de todo en la página de inicio
                       </p>
                     </div>
-
-                    {/* PC */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                        <Monitor className="h-4 w-4" />
-                        En PC
-                      </div>
-                      <div className="border rounded-lg overflow-hidden bg-gray-900">
-                        <div className="relative bg-black">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={desktopPreviewUrl}
-                            alt={config.image_alt || 'Vista previa del banner en PC'}
-                            className={isPillarbox ? 'block mx-auto h-auto w-auto max-w-full' : 'block w-full h-auto'}
-                            style={isPillarbox ? { maxHeight: `${config.desktop_max_height}px` } : undefined}
-                          />
-                          {config.is_dismissible && (
-                            <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white">
-                              <X className="h-4 w-4" />
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 px-4 py-3 text-white/80">
-                          <PanelTop className="h-4 w-4" />
-                          <span className="text-xs">Aquí abajo continúa el sitio (logo, menú y video)</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Móvil */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                        <Smartphone className="h-4 w-4" />
-                        En móvil
-                      </div>
-                      <div className="border rounded-lg overflow-hidden bg-gray-900 max-w-[375px]">
-                        <div className="relative bg-black">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={mobilePreviewUrl}
-                            alt={config.image_alt || 'Vista previa del banner en móvil'}
-                            className="block w-full h-auto"
-                          />
-                          {config.is_dismissible && (
-                            <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white">
-                              <X className="h-4 w-4" />
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 px-4 py-3 text-white/80">
-                          <PanelTop className="h-4 w-4" />
-                          <span className="text-xs">Sigue el sitio</span>
-                        </div>
-                      </div>
-                    </div>
+                    <Switch
+                      id="banner-active"
+                      checked={config.is_active}
+                      onCheckedChange={(checked) => setConfig(prev => ({ ...prev, is_active: checked }))}
+                    />
                   </div>
-                )}
 
-                {/* Acciones */}
-                <div className="flex flex-col sm:flex-row justify-between gap-3 pt-4 border-t">
-                  <Button
-                    variant="outline"
-                    onClick={handleRemoveBanner}
-                    disabled={saving || !hasAnyImage}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Quitar banner
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {saving ? 'Guardando...' : 'Guardar Configuración'}
-                  </Button>
-                </div>
+                  {/* Imagen para PC */}
+                  <div className="space-y-2 p-4 border rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Monitor className="h-4 w-4 text-gray-500" />
+                      <Label className="text-base font-semibold">Imagen para PC (escritorio)</Label>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      Se muestra a lo ancho completo conservando su proporción. Usa una imagen horizontal tipo
+                      franja (por ejemplo 1920 × 200 px) para que no se vea enorme en pantallas grandes.
+                    </p>
+                    <MediaSelector
+                      value={config.image_url}
+                      onSelect={(url) => handleSelectImage('desktop', url)}
+                      label="Seleccionar Imagen para PC"
+                    />
+                    {config.image_width && config.image_height && (
+                      <p className="text-xs text-gray-500">
+                        Dimensiones detectadas: {config.image_width} × {config.image_height} px
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Imagen para móvil */}
+                  <div className="space-y-2 p-4 border rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Smartphone className="h-4 w-4 text-gray-500" />
+                      <Label className="text-base font-semibold">Imagen para móvil</Label>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      Se usa en pantallas menores a 768 px. Si la dejas vacía, se usa la imagen de PC en todos
+                      los dispositivos.
+                    </p>
+                    <MediaSelector
+                      value={config.mobile_image_url}
+                      onSelect={(url) => handleSelectImage('mobile', url)}
+                      label="Seleccionar Imagen para Móvil"
+                    />
+                    {config.mobile_image_width && config.mobile_image_height && (
+                      <p className="text-xs text-gray-500">
+                        Dimensiones detectadas: {config.mobile_image_width} × {config.mobile_image_height} px
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Alto máximo en PC: solo aplica cuando no hay imagen de escritorio */}
+                  {isPillarbox && (
+                    <div className="space-y-2 p-4 border rounded-lg bg-amber-50 border-amber-200">
+                      <Label htmlFor="banner-max-height" className="text-base font-semibold">
+                        Alto máximo en PC
+                      </Label>
+                      <p className="text-sm text-gray-700">
+                        No hay imagen para PC, así que en pantallas grandes se mostrará la imagen de móvil
+                        centrada y con franjas negras a los costados. Este valor limita qué tan alta se ve.
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="banner-max-height"
+                          type="number"
+                          min={60}
+                          max={600}
+                          value={config.desktop_max_height}
+                          onChange={(e) =>
+                            setConfig(prev => ({
+                              ...prev,
+                              desktop_max_height: Number(e.target.value) || DEFAULT_DESKTOP_MAX_HEIGHT
+                            }))
+                          }
+                          className="w-32"
+                        />
+                        <span className="text-sm text-gray-600">píxeles</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Texto alternativo */}
+                  <div className="space-y-2">
+                    <Label htmlFor="banner-alt" className="text-base font-semibold">
+                      Texto alternativo <span className="font-normal text-gray-500">(opcional)</span>
+                    </Label>
+                    <p className="text-sm text-gray-500">
+                      Describe la imagen para buscadores y lectores de pantalla. Ej: &quot;Promoción 2x1 en martes&quot;
+                    </p>
+                    <Input
+                      id="banner-alt"
+                      value={config.image_alt}
+                      onChange={(e) => setConfig(prev => ({ ...prev, image_alt: e.target.value }))}
+                      placeholder="Promoción de verano en Jump-In"
+                    />
+                  </div>
+
+                  {/* Enlace */}
+                  <div className="space-y-2">
+                    <Label htmlFor="banner-link" className="text-base font-semibold">
+                      Enlace al hacer clic <span className="font-normal text-gray-500">(opcional)</span>
+                    </Label>
+                    <p className="text-sm text-gray-500">
+                      Usa una ruta del sitio (ej. <code>/precios-y-promociones</code>) o una URL completa
+                      (ej. <code>https://...</code>, se abre en una pestaña nueva). Déjalo vacío si el banner no debe ser clicable.
+                    </p>
+                    <Input
+                      id="banner-link"
+                      value={config.link_url}
+                      onChange={(e) => setConfig(prev => ({ ...prev, link_url: e.target.value }))}
+                      placeholder="/precios-y-promociones"
+                    />
+                  </div>
+
+                  {/* Botón de cerrar */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="banner-dismissible" className="text-base font-semibold">
+                        Permitir cerrar el banner
+                      </Label>
+                      <p className="text-sm text-gray-500">
+                        Muestra una &quot;✕&quot; para que el visitante lo oculte. No vuelve a aparecer durante esa visita.
+                      </p>
+                    </div>
+                    <Switch
+                      id="banner-dismissible"
+                      checked={config.is_dismissible}
+                      onCheckedChange={(checked) => setConfig(prev => ({ ...prev, is_dismissible: checked }))}
+                    />
+                  </div>
+
+                  {/* Vista previa */}
+                  {hasAnyImage && (
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-base font-semibold">Vista previa</Label>
+                        <p className="text-sm text-gray-500">
+                          Aproximada: en el sitio real el ancho es el de la pantalla completa.
+                        </p>
+                      </div>
+
+                      {/* PC */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                          <Monitor className="h-4 w-4" />
+                          En PC
+                        </div>
+                        <div className="border rounded-lg overflow-hidden bg-gray-900">
+                          <div className="relative bg-black">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={desktopPreviewUrl}
+                              alt={config.image_alt || 'Vista previa del banner en PC'}
+                              className={isPillarbox ? 'block mx-auto h-auto w-auto max-w-full' : 'block w-full h-auto'}
+                              style={isPillarbox ? { maxHeight: `${config.desktop_max_height}px` } : undefined}
+                            />
+                            {config.is_dismissible && (
+                              <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white">
+                                <X className="h-4 w-4" />
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 px-4 py-3 text-white/80">
+                            <PanelTop className="h-4 w-4" />
+                            <span className="text-xs">Aquí abajo continúa el sitio (logo, menú y video)</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Móvil */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                          <Smartphone className="h-4 w-4" />
+                          En móvil
+                        </div>
+                        <div className="border rounded-lg overflow-hidden bg-gray-900 max-w-[375px]">
+                          <div className="relative bg-black">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={mobilePreviewUrl}
+                              alt={config.image_alt || 'Vista previa del banner en móvil'}
+                              className="block w-full h-auto"
+                            />
+                            {config.is_dismissible && (
+                              <span className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white">
+                                <X className="h-4 w-4" />
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 px-4 py-3 text-white/80">
+                            <PanelTop className="h-4 w-4" />
+                            <span className="text-xs">Sigue el sitio</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Acciones */}
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 pt-4 border-t">
+                    <Button
+                      variant="outline"
+                      onClick={handleRemoveBanner}
+                      disabled={saving || !hasAnyImage}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Quitar banner
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="bg-orange-500 hover:bg-orange-600"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {saving ? 'Guardando...' : 'Guardar Configuración'}
+                    </Button>
+                  </div>
+                </BloqueEditable>
               </CardContent>
             </Card>
           )}

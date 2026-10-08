@@ -18,6 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import MediaSelector from '@/components/admin/media-selector'
 import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
+import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
 interface StripeProduct {
   id: string
@@ -59,6 +60,7 @@ const emptyForm = {
 export default function AdminArticulosPage() {
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const puedeEditar = usePuedeEditar()
 
   const [user, setUser] = useState<any>(null)
   const [products, setProducts] = useState<StripeProduct[]>([])
@@ -282,9 +284,11 @@ export default function AdminArticulosPage() {
               <Layers className="h-4 w-4 mr-2" /> Grupos
             </Button>
           </Link>
-          <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
-            <Plus className="h-4 w-4 mr-2" /> Nuevo producto
-          </Button>
+          <SoloEditores>
+            <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
+              <Plus className="h-4 w-4 mr-2" /> Nuevo producto
+            </Button>
+          </SoloEditores>
         </div>
       </div>
 
@@ -376,7 +380,9 @@ export default function AdminArticulosPage() {
                   <TableHead>Id_Articulo</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Visible</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
+                  <SoloEditores>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </SoloEditores>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -408,6 +414,7 @@ export default function AdminArticulosPage() {
                       <Switch
                         checked={p.visible}
                         onCheckedChange={() => toggleVisible(p)}
+                        disabled={!puedeEditar}
                         aria-label={p.visible ? 'Ocultar en la tienda' : 'Mostrar en la tienda'}
                         className="data-[state=checked]:bg-orange-500"
                       />
@@ -416,14 +423,16 @@ export default function AdminArticulosPage() {
                         : <EyeOff className="h-4 w-4 text-gray-400" />}
                     </div>
                   </TableCell>
-                  <TableCell className="text-right whitespace-nowrap">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(p)} title="Editar">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => toggleActive(p)} title={p.active ? 'Archivar' : 'Activar'}>
-                      {p.active ? <Archive className="h-4 w-4 text-red-500" /> : <ArchiveRestore className="h-4 w-4 text-green-600" />}
-                    </Button>
-                  </TableCell>
+                  <SoloEditores>
+                    <TableCell className="text-right whitespace-nowrap">
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(p)} title="Editar">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => toggleActive(p)} title={p.active ? 'Archivar' : 'Activar'}>
+                        {p.active ? <Archive className="h-4 w-4 text-red-500" /> : <ArchiveRestore className="h-4 w-4 text-green-600" />}
+                      </Button>
+                    </TableCell>
+                  </SoloEditores>
                 </TableRow>
               ))}
             </TableBody>

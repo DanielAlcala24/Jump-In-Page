@@ -25,6 +25,7 @@ import { Plus, Edit, Trash2, Home, Tag } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 interface Attraction {
   id: string
@@ -152,12 +153,14 @@ export default function AtraccionesAdminPage() {
               <h1 className="text-2xl font-bold text-gray-900">Atracciones</h1>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/admin/atracciones/new">
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Atracción
-                </Button>
-              </Link>
+              <SoloEditores>
+                <Link href="/admin/atracciones/new">
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Nueva Atracción
+                  </Button>
+                </Link>
+              </SoloEditores>
             </div>
           </div>
         </div>
@@ -223,7 +226,9 @@ export default function AtraccionesAdminPage() {
                       <TableHead>Nombre</TableHead>
                       <TableHead>Categoría</TableHead>
                       <TableHead>Sucursales</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <SoloEditores>
+                        <TableHead>Acciones</TableHead>
+                      </SoloEditores>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -259,23 +264,25 @@ export default function AtraccionesAdminPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Link href={`/admin/atracciones/${attraction.id}/edit`}>
-                              <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4" />
+                        <SoloEditores>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Link href={`/admin/atracciones/${attraction.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(attraction.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(attraction.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                            </div>
+                          </TableCell>
+                        </SoloEditores>
                       </TableRow>
                     ))}
                   </TableBody>

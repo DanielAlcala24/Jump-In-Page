@@ -30,6 +30,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { SoloEditores } from '@/components/admin/admin-access'
 
 const DEFAULT_CATEGORIES = [
   'Atracciones Exclusivas',
@@ -435,25 +436,27 @@ export default function NewAttractionPage() {
                       Selecciona las sucursales donde está disponible esta atracción
                     </p>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowManageSucursales(!showManageSucursales)}
-                  >
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {showManageSucursales ? (
-                      <>
-                        <ChevronUp className="h-4 w-4 mr-1" />
-                        Ocultar Gestión
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4 mr-1" />
-                        Gestionar Sucursales
-                      </>
-                    )}
-                  </Button>
+                  <SoloEditores seccion="sucursales">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowManageSucursales(!showManageSucursales)}
+                    >
+                      <MapPin className="h-4 w-4 mr-2" />
+                      {showManageSucursales ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" />
+                          Ocultar Gestión
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" />
+                          Gestionar Sucursales
+                        </>
+                      )}
+                    </Button>
+                  </SoloEditores>
                 </div>
                 {loadingBranches ? (
                   <p className="text-sm text-gray-500">Cargando sucursales...</p>
