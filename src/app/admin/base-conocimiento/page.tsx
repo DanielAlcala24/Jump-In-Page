@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClientComponentClient } from '@/lib/supabase'
@@ -31,14 +31,15 @@ import {
   UtensilsCrossed,
   Tag,
   Search,
-  X
+  X,
+  ChevronRight
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import ExternalKnowledgeSection from '@/components/admin/external-knowledge-section'
-import { SoloEditores } from '@/components/admin/admin-access'
+import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
 interface KnowledgeEntry {
   id: string
@@ -136,6 +137,20 @@ export default function KnowledgeBaseAdminPage() {
   const [search, setSearch] = useState('')
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const puedeEditar = usePuedeEditar()
+
+  // Filas con la respuesta completa desplegada. Un clic en la fila la abre o la
+  // cierra; los clics en botones y enlaces (ordenar, editar, eliminar) no cuentan.
+  const [abiertas, setAbiertas] = useState<Set<string>>(new Set())
+  const alternarRespuesta = (e: React.MouseEvent, id: string) => {
+    if ((e.target as HTMLElement).closest('button, a')) return
+    setAbiertas((prev) => {
+      const siguiente = new Set(prev)
+      if (siguiente.has(id)) siguiente.delete(id)
+      else siguiente.add(id)
+      return siguiente
+    })
+  }
 
   const isSearching = search.trim().length > 0
 
@@ -359,7 +374,8 @@ export default function KnowledgeBaseAdminPage() {
                   </TableHeader>
                   <TableBody>
                     {displayedEntries.map(({ entry, similarity }, index) => (
-                      <TableRow key={entry.id}>
+                    <Fragment key={entry.id}>
+                      <TableRow className="cursor-pointer" onClick={(e) => alternarRespuesta(e, entry.id)}>
                         <TableCell>
                           {isSearching && similarity !== null ? (
                             <Badge
@@ -399,7 +415,14 @@ export default function KnowledgeBaseAdminPage() {
                             </SoloEditores>
                           )}
                         </TableCell>
-                        <TableCell className="font-medium">{entry.question}</TableCell>
+                        <TableCell className="font-medium">
+                          <span className="flex items-start gap-1.5">
+                            <ChevronRight
+                              className={`h-4 w-4 mt-0.5 shrink-0 text-gray-400 transition-transform ${abiertas.has(entry.id) ? 'rotate-90' : ''}`}
+                            />
+                            {entry.question}
+                          </span>
+                        </TableCell>
                         <TableCell className="max-w-md truncate">
                           {entry.answer}
                         </TableCell>
@@ -460,6 +483,19 @@ export default function KnowledgeBaseAdminPage() {
                           </TableCell>
                         </SoloEditores>
                       </TableRow>
+                      {abiertas.has(entry.id) && (
+                        <TableRow className="bg-orange-50/50 hover:bg-orange-50/50">
+                          <TableCell colSpan={puedeEditar ? 7 : 6} className="py-4">
+                            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-1">
+                              Respuesta completa
+                            </p>
+                            <p className="whitespace-pre-wrap text-sm text-gray-800">
+                              {entry.answer || 'Sin respuesta'}
+                            </p>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
                     ))}
                   </TableBody>
                 </Table>

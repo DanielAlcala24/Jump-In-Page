@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClientComponentClient } from '@/lib/supabase'
@@ -20,11 +20,11 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Plus, Edit, Trash2, Home, HelpCircle } from 'lucide-react'
+import { Plus, Edit, Trash2, Home, HelpCircle, ChevronRight } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { SoloEditores } from '@/components/admin/admin-access'
+import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
 interface FAQ {
   id: string
@@ -43,6 +43,20 @@ export default function FAQAdminPage() {
   const [error, setError] = useState('')
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const puedeEditar = usePuedeEditar()
+
+  // Filas con la respuesta completa desplegada. Un clic en la fila la abre o la
+  // cierra; los clics en botones y enlaces (ordenar, editar, eliminar) no cuentan.
+  const [abiertas, setAbiertas] = useState<Set<string>>(new Set())
+  const alternarRespuesta = (e: React.MouseEvent, id: string) => {
+    if ((e.target as HTMLElement).closest('button, a')) return
+    setAbiertas((prev) => {
+      const siguiente = new Set(prev)
+      if (siguiente.has(id)) siguiente.delete(id)
+      else siguiente.add(id)
+      return siguiente
+    })
+  }
 
   useEffect(() => {
     checkUser()
@@ -211,7 +225,8 @@ export default function FAQAdminPage() {
                   </TableHeader>
                   <TableBody>
                     {faqs.map((faq, index) => (
-                      <TableRow key={faq.id}>
+                    <Fragment key={faq.id}>
+                      <TableRow className="cursor-pointer" onClick={(e) => alternarRespuesta(e, faq.id)}>
                         <SoloEditores>
                           <TableCell>
                             <div className="flex flex-col gap-1">
@@ -236,7 +251,14 @@ export default function FAQAdminPage() {
                             </div>
                           </TableCell>
                         </SoloEditores>
-                        <TableCell className="font-medium">{faq.question}</TableCell>
+                        <TableCell className="font-medium">
+                          <span className="flex items-start gap-1.5">
+                            <ChevronRight
+                              className={`h-4 w-4 mt-0.5 shrink-0 text-gray-400 transition-transform ${abiertas.has(faq.id) ? 'rotate-90' : ''}`}
+                            />
+                            {faq.question}
+                          </span>
+                        </TableCell>
                         <TableCell className="max-w-md truncate">
                           {faq.answer}
                         </TableCell>
@@ -273,6 +295,19 @@ export default function FAQAdminPage() {
                           </TableCell>
                         </SoloEditores>
                       </TableRow>
+                      {abiertas.has(faq.id) && (
+                        <TableRow className="bg-orange-50/50 hover:bg-orange-50/50">
+                          <TableCell colSpan={puedeEditar ? 5 : 3} className="py-4">
+                            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-1">
+                              Respuesta completa
+                            </p>
+                            <p className="whitespace-pre-wrap text-sm text-gray-800">
+                              {faq.answer || 'Sin respuesta'}
+                            </p>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
                     ))}
                   </TableBody>
                 </Table>
