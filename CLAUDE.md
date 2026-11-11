@@ -167,6 +167,8 @@ Las de usuarios son solo para super admins; las demás de `/api/admin` exigen el
 >
 > Comportamiento según qué imágenes haya: **ambas** → cada una en su breakpoint; **solo PC** → esa imagen a ancho completo siempre; **solo móvil** → a ancho completo en móvil, y en PC centrada con alto máximo `desktop_max_height` (default 200 px) sobre fondo negro, es decir con franjas negras a los costados.
 
+> La tabla `popup_config` guarda **una fila por imagen** del popup de inicio (`image_url`, `order_index`, `is_active` repetido en todas) y `link_url` opcional por imagen (SQL: `supabase-popup-link-url.sql`): `/ruta`, `#seccion` (sección del inicio), `/ruta#seccion` o `https://...` (pestaña nueva). La validación y las sugerencias del admin viven en `src/lib/enlaces.ts`; `src/components/popup.tsx` vuelve a validar el enlace antes de usarlo, cierra el popup y luego navega (el Dialog abierto bloquea el scroll). El admin guarda borrando todas las filas e insertándolas de nuevo, por eso comprueba que exista `link_url` **antes** del DELETE.
+
 Storage bucket: **`media`**
 
 ---

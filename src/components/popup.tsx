@@ -1,19 +1,27 @@
 'use client'
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { esEnlaceExterno, esEnlaceASeccion, validarEnlace } from '@/lib/enlaces'
+
+// Una imagen del popup y su enlace opcional (popup_config.link_url).
+interface PopupItem {
+  url: string
+  link: string | null
+}
 
 // Memory cache to avoid redundant database hits during the same session
-let cachedPopupConfig: { is_active: boolean, images: string[] } | null = null;
+let cachedPopupConfig: { is_active: boolean, images: PopupItem[] } | null = null;
 
 export default function Popup() {
   const [isOpen, setIsOpen] = useState(false)
-  const [images, setImages] = useState<string[]>([])
+  const [images, setImages] = useState<PopupItem[]>([])
+  const router = useRouter()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const pathname = usePathname()
@@ -60,17 +68,22 @@ export default function Popup() {
         const hasImageUrls = data.some(row => row.image_url)
 
         let isActive = false
-        let imagesList: string[] = []
+        let imagesList: PopupItem[] = []
 
         if (hasImageUrls) {
           // New structure
           const imageRows = data.filter(row => row.image_url)
           isActive = imageRows[0]?.is_active || false
-          imagesList = imageRows.map(row => row.image_url)
+          // Se vuelve a validar aquí por si alguien escribió el enlace directo en la BD
+          // (p. ej. un "javascript:..." no debe llegar nunca al href).
+          imagesList = imageRows.map(row => {
+            const link = row.link_url?.trim() || ''
+            return { url: row.image_url, link: link && !validarEnlace(link) ? link : null }
+          })
         } else {
           // Legacy structure
           isActive = data[0].is_active || false
-          imagesList = data[0].images || []
+          imagesList = (data[0].images || []).map((url: string) => ({ url, link: null }))
         }
 
         cachedPopupConfig = { is_active: isActive, images: imagesList }
@@ -112,12 +125,29 @@ export default function Popup() {
     if (images.length > 1) {
       const nextIndex = (currentImageIndex + 1) % images.length
       const img = new (window as any).Image()
-      img.src = images[nextIndex]
+      img.src = images[nextIndex].url
     }
   }, [currentImageIndex, images])
 
   const handleClose = () => {
     setIsOpen(false)
+  }
+
+  // Clic en una imagen con enlace: se cierra el popup y se va al destino.
+  // Externo: el <a> abre la pestaña nueva por sí solo. Interno: se navega después
+  // de cerrar, porque mientras el Dialog está abierto bloquea el scroll de la página.
+  const handleImageClick = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
+    setIsOpen(false)
+    if (esEnlaceExterno(link)) return
+    e.preventDefault()
+    setTimeout(() => {
+      if (esEnlaceASeccion(link)) {
+        document.getElementById(decodeURIComponent(link.slice(1)))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        window.history.replaceState(null, '', link)
+      } else {
+        router.push(link)
+      }
+    }, 250)
   }
 
   const handlePrevious = () => {
@@ -157,16 +187,35 @@ export default function Popup() {
 
           {/* Image Container with aspect-ratio protection and next/image optimization */}
           <div className="relative max-h-[85vh] w-full flex items-center justify-center bg-black/5 min-h-[200px] min-w-[200px]">
-            <Image
-              src={images[currentImageIndex]}
-              alt={`Promoción Jump-In ${currentImageIndex + 1}`}
-              width={1200}
-              height={1200}
-              priority
-              quality={85}
-              className="max-w-full max-h-[85vh] h-auto w-auto object-contain rounded-lg shadow-2xl transition-opacity duration-300"
-              onLoadingComplete={() => setIsLoading(false)}
-            />
+            {(() => {
+              const current = images[currentImageIndex]
+              const image = (
+                <Image
+                  src={current.url}
+                  alt={`Promoción Jump-In ${currentImageIndex + 1}`}
+                  width={1200}
+                  height={1200}
+                  priority
+                  quality={85}
+                  className="max-w-full max-h-[85vh] h-auto w-auto object-contain rounded-lg shadow-2xl transition-opacity duration-300"
+                  onLoadingComplete={() => setIsLoading(false)}
+                />
+              )
+              if (!current.link) return image
+              const externo = esEnlaceExterno(current.link)
+              return (
+                <a
+                  href={current.link}
+                  target={externo ? '_blank' : undefined}
+                  rel={externo ? 'noopener noreferrer' : undefined}
+                  onClick={(e) => handleImageClick(e, current.link!)}
+                  className="block cursor-pointer transition-transform duration-200 hover:scale-[1.01]"
+                  aria-label={`Ver promoción ${currentImageIndex + 1}`}
+                >
+                  {image}
+                </a>
+              )
+            })()}
           </div>
 
           {/* Navigation Controls */}
