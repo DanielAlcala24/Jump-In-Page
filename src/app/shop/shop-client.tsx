@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { createClientComponentClient } from '@/lib/supabase'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
@@ -70,7 +70,8 @@ interface CartItem {
 interface DateRestriction {
   id: string
   stripe_product_id: string
-  restriction_type: 'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range'
+  // allowed_date_range = solo ese rango está disponible; todo lo demás se bloquea.
+  restriction_type: 'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range' | 'allowed_date_range'
   allowed_weekdays: number[] | null
   blocked_dates: string[] | null
   start_date: string | null
@@ -289,8 +290,40 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
     }
   }
 
+  // Rangos permitidos agrupados por producto. Si un producto tiene varios, la fecha
+  // vale si cae en cualquiera de ellos; con varios productos en el carrito, la fecha
+  // tiene que servirle a todos.
+  const allowedRangesByProduct = useMemo(() => {
+    const map = new Map<string, { start: string; end: string }[]>()
+    for (const r of restrictions) {
+      if (r.restriction_type !== 'allowed_date_range' || !r.start_date || !r.end_date) continue
+      const list = map.get(r.stripe_product_id) ?? []
+      list.push({ start: r.start_date, end: r.end_date })
+      map.set(r.stripe_product_id, list)
+    }
+    return map
+  }, [restrictions])
+
+  // Mes en que abre el calendario: si los rangos permitidos empiezan en un mes
+  // posterior, se abre ahí para que el cliente no vea solo días bloqueados.
+  const calendarDefaultMonth = useMemo(() => {
+    const today = startOfDay(new Date())
+    let first = today
+    for (const ranges of allowedRangesByProduct.values()) {
+      const vigentes = ranges.filter((r) => !isBefore(parseISO(r.end), today))
+      if (vigentes.length === 0) continue
+      const earliest = vigentes.map((r) => parseISO(r.start)).reduce((a, b) => (isBefore(a, b) ? a : b))
+      if (isBefore(first, earliest)) first = earliest
+    }
+    return first
+  }, [allowedRangesByProduct])
+
   const isDateDisabled = useCallback((date: Date): boolean => {
     if (isBefore(date, startOfDay(new Date()))) return true
+    const ymd = format(date, 'yyyy-MM-dd')
+    for (const ranges of allowedRangesByProduct.values()) {
+      if (!ranges.some((r) => ymd >= r.start && ymd <= r.end)) return true
+    }
     for (const r of restrictions) {
       if (r.restriction_type === 'allowed_weekdays' && r.allowed_weekdays?.length) {
         if (!r.allowed_weekdays.includes(date.getDay())) return true
@@ -303,7 +336,7 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
       }
     }
     return false
-  }, [restrictions])
+  }, [restrictions, allowedRangesByProduct])
 
   const formatPrice = (amount: number | null, cur?: string) => {
     if (amount === null) return 'Consultar precio'
@@ -620,6 +653,7 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                     disabled={isDateDisabled}
                     locale={es}
                     fromDate={new Date()}
+                    defaultMonth={calendarDefaultMonth}
                   />
                 </div>
                 {selectedDate && (

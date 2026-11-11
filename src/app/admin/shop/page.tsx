@@ -19,6 +19,10 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
+// allowed_date_range = solo ese rango está disponible; todo lo demás se bloquea.
+type RestrictionType = 'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range' | 'allowed_date_range'
+const esRango = (t: RestrictionType) => t === 'blocked_date_range' || t === 'allowed_date_range'
+
 interface Branch { id: string; name: string; Id_Terminal: string | null }
 interface StripeProduct {
   id: string
@@ -46,7 +50,7 @@ interface Restriction {
   stripe_product_id: string
   product_name: string | null
   branch_id: string | null
-  restriction_type: 'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range'
+  restriction_type: RestrictionType
   allowed_weekdays: number[] | null
   blocked_dates: string[] | null
   start_date: string | null
@@ -66,6 +70,7 @@ const TYPE_LABELS: Record<string, string> = {
   allowed_weekdays: 'Solo ciertos días',
   blocked_dates: 'Fechas bloqueadas',
   blocked_date_range: 'Rango bloqueado',
+  allowed_date_range: 'Solo un rango',
 }
 
 export default function AdminShopPage() {
@@ -85,7 +90,7 @@ export default function AdminShopPage() {
   const [formProductIds, setFormProductIds] = useState<string[]>([])
   const [productSearch, setProductSearch] = useState('')
   const [formBranchId, setFormBranchId] = useState('all')
-  const [formType, setFormType] = useState<'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range'>('allowed_weekdays')
+  const [formType, setFormType] = useState<RestrictionType>('allowed_weekdays')
   const [formWeekdays, setFormWeekdays] = useState<number[]>([])
   const [formBlockedDates, setFormBlockedDates] = useState('')
   const [formStartDate, setFormStartDate] = useState('')
@@ -177,7 +182,8 @@ export default function AdminShopPage() {
     if (formProductIds.length === 0) { toast.error('Selecciona al menos un producto'); return }
     if (formType === 'allowed_weekdays' && formWeekdays.length === 0) { toast.error('Selecciona al menos un día permitido'); return }
     if (formType === 'blocked_dates' && !formBlockedDates.trim()) { toast.error('Ingresa al menos una fecha'); return }
-    if (formType === 'blocked_date_range' && (!formStartDate || !formEndDate)) { toast.error('Ingresa fecha inicio y fin'); return }
+    if (esRango(formType) && (!formStartDate || !formEndDate)) { toast.error('Ingresa fecha inicio y fin'); return }
+    if (esRango(formType) && formEndDate < formStartDate) { toast.error('La fecha fin no puede ser antes de la fecha inicio'); return }
 
     setSaving(true)
     // Una fila por producto con la misma restricción: /shop consulta las
@@ -189,8 +195,8 @@ export default function AdminShopPage() {
       blocked_dates: formType === 'blocked_dates'
         ? formBlockedDates.split(',').map((d) => d.trim()).filter(Boolean)
         : null,
-      start_date: formType === 'blocked_date_range' ? formStartDate : null,
-      end_date: formType === 'blocked_date_range' ? formEndDate : null,
+      start_date: esRango(formType) ? formStartDate : null,
+      end_date: esRango(formType) ? formEndDate : null,
       note: formNote || null,
       is_active: true,
     }
@@ -244,6 +250,9 @@ export default function AdminShopPage() {
     }
     if (r.restriction_type === 'blocked_date_range') {
       return `${r.start_date} → ${r.end_date}`
+    }
+    if (r.restriction_type === 'allowed_date_range') {
+      return `Solo del ${r.start_date} al ${r.end_date}`
     }
     return ''
   }
@@ -389,6 +398,7 @@ export default function AdminShopPage() {
                           <SelectItem value="allowed_weekdays">Solo ciertos días de la semana</SelectItem>
                           <SelectItem value="blocked_dates">Bloquear fechas específicas</SelectItem>
                           <SelectItem value="blocked_date_range">Bloquear rango de fechas</SelectItem>
+                          <SelectItem value="allowed_date_range">Solo un rango de fechas (los demás se bloquean)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -427,16 +437,23 @@ export default function AdminShopPage() {
                     )}
 
                     {/* Date range */}
-                    {formType === 'blocked_date_range' && (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label>Fecha inicio</Label>
-                          <Input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} />
+                    {esRango(formType) && (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label>Fecha inicio</Label>
+                            <Input type="date" value={formStartDate} onChange={(e) => setFormStartDate(e.target.value)} />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Fecha fin</Label>
+                            <Input type="date" min={formStartDate || undefined} value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} />
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          <Label>Fecha fin</Label>
-                          <Input type="date" value={formEndDate} onChange={(e) => setFormEndDate(e.target.value)} />
-                        </div>
+                        <p className="text-xs text-gray-400">
+                          {formType === 'allowed_date_range'
+                            ? 'Solo se podrán elegir las fechas de este rango (incluye el inicio y el fin). Todas las demás quedan bloqueadas.'
+                            : 'Las fechas de este rango (incluye el inicio y el fin) quedan bloqueadas.'}
+                        </p>
                       </div>
                     )}
 

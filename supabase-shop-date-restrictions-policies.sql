@@ -1,5 +1,5 @@
 -- =============================================================================
--- Políticas RLS de shop_date_restrictions (restricciones de fecha de /shop)
+-- Políticas RLS y tipos de shop_date_restrictions (restricciones de fecha de /shop)
 -- =============================================================================
 -- La tabla se creó a mano con RLS activado pero sin políticas de escritura, así
 -- que /admin/shop fallaba con:
@@ -47,6 +47,32 @@ CREATE POLICY "Eliminacion de shop_date_restrictions para autenticados"
   FOR DELETE
   TO authenticated
   USING (true);
+
+-- -----------------------------------------------------------------------------
+-- Tipos de restricción permitidos
+-- -----------------------------------------------------------------------------
+--   allowed_weekdays    solo ciertos días de la semana
+--   blocked_dates       fechas sueltas bloqueadas
+--   blocked_date_range  rango bloqueado
+--   allowed_date_range  SOLO ese rango disponible; todo lo demás se bloquea
+-- La tabla se creó a mano y pudo quedar con un CHECK que solo acepta los tres
+-- primeros. Se borra cualquier CHECK sobre restriction_type y se crea el nuevo.
+DO $$
+DECLARE c record;
+BEGIN
+  FOR c IN
+    SELECT conname FROM pg_constraint
+    WHERE conrelid = 'public.shop_date_restrictions'::regclass
+      AND contype = 'c'
+      AND pg_get_constraintdef(oid) ILIKE '%restriction_type%'
+  LOOP
+    EXECUTE format('ALTER TABLE public.shop_date_restrictions DROP CONSTRAINT %I', c.conname);
+  END LOOP;
+END $$;
+
+ALTER TABLE public.shop_date_restrictions
+  ADD CONSTRAINT shop_date_restrictions_restriction_type_check
+  CHECK (restriction_type IN ('allowed_weekdays', 'blocked_dates', 'blocked_date_range', 'allowed_date_range'));
 
 -- Verificación (opcional): deben salir 4 permisivas + 3 restrictivas (permisos_admin_*).
 -- SELECT policyname, permissive, cmd
