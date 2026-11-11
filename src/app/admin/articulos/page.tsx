@@ -19,6 +19,7 @@ import MediaSelector from '@/components/admin/media-selector'
 import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
+import { OrdenSeccionesShop } from '@/components/admin/orden-secciones-shop'
 
 interface StripeProduct {
   id: string
@@ -284,6 +285,7 @@ export default function AdminArticulosPage() {
               <Layers className="h-4 w-4 mr-2" /> Grupos
             </Button>
           </Link>
+          <OrdenSeccionesShop />
           <SoloEditores>
             <Button onClick={openCreate} className="bg-orange-500 hover:bg-orange-600">
               <Plus className="h-4 w-4 mr-2" /> Nuevo producto

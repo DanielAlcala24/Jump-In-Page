@@ -101,6 +101,7 @@ BEGIN
       ('popup_config',           'popup'),
       ('banner_config',          'banner'),
       ('shop_product_groups',    'articulos'),
+      ('shop_settings',          'articulos'),
       ('shop_date_restrictions', 'shop'),
       ('leads',                  'leads')
     ) AS t(tabla, seccion)

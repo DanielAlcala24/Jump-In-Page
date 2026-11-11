@@ -16,6 +16,12 @@ import { es } from 'date-fns/locale'
 import { format, isBefore, startOfDay, parseISO, isWithinInterval } from 'date-fns'
 import 'react-day-picker/dist/style.css'
 import Image from 'next/image'
+import {
+  ETIQUETA_TIPO_PLURAL,
+  ORDEN_SECCIONES_DEFAULT,
+  obtenerOrdenSecciones,
+  type TipoProducto,
+} from '@/lib/shop-secciones'
 
 interface Branch {
   id: string
@@ -153,6 +159,8 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
   const [cart, setCart] = useState<Record<string, CartItem>>({})
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [groups, setGroups] = useState<ProductGroup[]>([])
+  // Orden de las secciones del paso de productos (/admin/articulos → "Orden en /shop").
+  const [sectionOrder, setSectionOrder] = useState<TipoProducto[]>(ORDEN_SECCIONES_DEFAULT)
   // Grupo cuyo desplegable de opciones está abierto (su `key`), o null.
   const [openGroupKey, setOpenGroupKey] = useState<string | null>(null)
   // Desplegable del carrito (se abre desde la barra flotante del paso de productos).
@@ -182,6 +190,10 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
       .then(({ data }) => setGroups(data ?? []))
+  }, [supabase])
+
+  useEffect(() => {
+    obtenerOrdenSecciones(supabase).then(setSectionOrder)
   }, [supabase])
 
   const loadProducts = useCallback(async (branchId: string) => {
@@ -471,7 +483,7 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                 <div className="text-center py-16 text-gray-400">No hay productos disponibles para esta sucursal en este momento.</div>
               ) : (
                 <div>
-                  {(['access', 'promotion', 'article'] as const).map((type) => {
+                  {sectionOrder.map((type) => {
                     // Cada tarjeta cae en la sección del tipo de su primera opción.
                     const typeEntries = allEntries.filter((e) => e.variants[0].product_type === type)
                     if (typeEntries.length === 0) return null
@@ -491,7 +503,7 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                       <div key={type} className="mb-8">
                         <div className="flex items-center gap-2 mb-4">
                           <Icon className="h-5 w-5 text-orange-500" />
-                          <h3 className="text-lg font-bold font-headline">{TYPE_LABELS[type]}s</h3>
+                          <h3 className="text-lg font-bold font-headline">{ETIQUETA_TIPO_PLURAL[type]}</h3>
                         </div>
                         {/* Flex en vez de grid para que las filas incompletas queden centradas.
                             Los anchos reproducen las columnas 1 / 2 / 3 descontando el gap de 1rem. */}

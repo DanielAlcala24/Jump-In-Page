@@ -123,6 +123,7 @@ Toda sección nueva del panel **tiene que** quedar bajo los permisos *Ver* / *Ed
 | Sucursales | `/admin/sucursales` | `branches` | `sucursales` |
 | Artículos (Shop/Stripe) | `/admin/articulos` | Productos de Stripe (API) | `articulos` |
 | Grupos de productos (Shop) | `/admin/articulos/grupos` | `shop_product_groups` | `articulos` |
+| Orden de secciones en /shop | `/admin/articulos` (botón "Orden en /shop") | `shop_settings` | `articulos` |
 | Restricciones de fecha (Shop) | `/admin/shop` | `shop_date_restrictions` | `shop` |
 | Ventas en línea (Shop) | `/admin/ventas` | `shop_orders` (solo lectura) | `ventas` (solo *Ver*) |
 | Promociones | `/admin/promociones` | `promotions` | `promociones` |
@@ -149,7 +150,7 @@ Las de usuarios son solo para super admins; las demás de `/api/admin` exigen el
 
 ## Tablas Supabase
 
-`posts` · `menu_items` · `faqs` · `knowledge_base` · `attractions` · `promotions` · `birthday_packages` · `leads` · `branches` · `banner_config` · `shop_orders` · `shop_date_restrictions` · `shop_product_groups`
+`posts` · `menu_items` · `faqs` · `knowledge_base` · `attractions` · `promotions` · `birthday_packages` · `leads` · `branches` · `banner_config` · `shop_orders` · `shop_date_restrictions` · `shop_product_groups` · `shop_settings`
 
 > La tabla `attractions` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
 >
@@ -248,6 +249,9 @@ Al crear un producto en el Dashboard de Stripe se agregan estos campos de metada
 - `product_type`: `access` | `article` | `promotion` (default `access`).
 - `Id_Articulo`: identificador del artículo. Se envía en el webhook de venta (ver abajo) por cada artículo comprado.
 - `visible_en_shop`: `'true'` | `'false'`. Controla si el producto se le muestra a los clientes en `/shop` (switch **"Visible en la tienda"** en `/admin/articulos`, tanto en el diálogo de crear/editar como en la columna *Visible* de la tabla). **Sin la metadata = visible**, para que los productos anteriores a esta bandera sigan apareciendo. Es distinto de archivar: oculto sigue activo en Stripe y conserva su precio e historial; archivado desaparece del catálogo. El filtro lo aplica `src/app/api/stripe/products/route.ts`.
+
+### Orden de las secciones en `/shop`
+En el paso de productos, las tarjetas se reparten en secciones por `product_type` (Accesos · Promociones · Artículos). Su orden se elige en `/admin/articulos` → botón **"Orden en /shop"** (`src/components/admin/orden-secciones-shop.tsx`) y se guarda en `shop_settings.section_order` (tabla de **una sola fila**, `id = 1`; SQL: `supabase-shop-settings.sql`, que ya trae sus políticas RESTRICTIVE de la clave `articulos`). Constantes, plurales y lectura en `src/lib/shop-secciones.ts`: `obtenerOrdenSecciones()` nunca lanza y, si la tabla no existe o el valor es raro, cae al orden `access → promotion → article`. Los títulos usan `ETIQUETA_TIPO_PLURAL` (antes se pegaba una "s" al singular y salía "Promocións").
 
 ### Grupos de productos (`/admin/articulos/grupos`)
 Varios productos de Stripe se pueden mostrar en `/shop` como **una sola tarjeta con selector** (p. ej. las tallas de unos calcetines). La agrupación es **solo visual y vive en Supabase**, en la tabla `shop_product_groups`: **la metadata de los productos en Stripe no se toca** — cada producto conserva su nombre, descripción, precio, imagen e `Id_Articulo` propios.
