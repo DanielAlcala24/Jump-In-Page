@@ -136,6 +136,7 @@ Toda sección nueva del panel **tiene que** quedar bajo los permisos *Ver* / *Ed
 **APIs internas:**
 - `GET /api/auth/callback` (retorno del login con Google)
 - `GET /api/admin/shop-orders`
+- `GET /api/admin/shop-products` (productos activos de Stripe con sucursales, `Id_Articulo` y visibilidad, para el selector de `/admin/shop`; permiso `shop` *Ver*)
 - `POST /api/admin/create-user` (alta de admin con rol y permisos, sin correo de invitación)
 - `GET /api/admin/list-users`
 - `PATCH /api/admin/update-user` (cambia rol y permisos)
@@ -208,6 +209,10 @@ Presentes en prácticamente todas las páginas públicas:
 ## Tienda / Pagos (Stripe)
 
 La tienda online (`/shop`) vende accesos/productos con pago vía **Stripe Checkout**. Los **productos NO viven en Supabase**: viven en el catálogo de Stripe y se leen en vivo. Supabase solo guarda las restricciones de fecha por producto (`shop_date_restrictions`), las órdenes pagadas (`shop_orders`) y la agrupación visual de productos (`shop_product_groups`).
+
+**Políticas RLS de `shop_date_restrictions`:** `supabase-shop-date-restrictions-policies.sql` (lectura pública, porque `/api/shop/date-restrictions` usa la anon key; escritura para `authenticated`). Sin ellas `/admin/shop` falla con *"new row violates row-level security policy"*.
+
+**Restricciones de fecha (`/admin/shop`):** el diálogo permite elegir **varios productos** (lista con casillas, buscador y datos de cada uno: sucursales con su `Id_Terminal`, precio, tipo, `Id_Articulo`). Se guarda **una fila por producto** con la misma restricción, porque `/shop` las consulta por `stripe_product_id`. `branch_id` NULL = aplica en todas las sucursales: `/api/shop/date-restrictions` trae las de la sucursal **y** las NULL.
 
 **Flujo `/shop`:** Sucursal → Productos → Fecha (calendario) → Pago (Stripe Checkout) → `/shop/success`.
 

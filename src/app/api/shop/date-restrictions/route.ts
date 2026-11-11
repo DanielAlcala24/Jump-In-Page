@@ -16,7 +16,14 @@ export async function GET(req: NextRequest) {
     .eq('is_active', true)
 
   if (productId) query = query.eq('stripe_product_id', productId)
-  if (branchId) query = query.eq('branch_id', branchId)
+  // branch_id NULL = la restricción aplica en todas las sucursales. Se valida que
+  // sea UUID porque va interpolado dentro del filtro .or() de PostgREST.
+  if (branchId) {
+    if (!/^[0-9a-f-]{36}$/i.test(branchId)) {
+      return NextResponse.json({ error: 'branch_id inválido' }, { status: 400 })
+    }
+    query = query.or(`branch_id.is.null,branch_id.eq.${branchId}`)
+  }
 
   const { data, error } = await query
 

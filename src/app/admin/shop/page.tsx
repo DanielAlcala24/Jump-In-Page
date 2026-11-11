@@ -12,15 +12,35 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Plus, Trash2, Home, ShoppingCart, CalendarOff, Loader2, RefreshCw } from 'lucide-react'
+import { Plus, Trash2, Home, ShoppingCart, CalendarOff, Loader2, RefreshCw, Search } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 
-interface Branch { id: string; name: string }
-interface StripeProduct { id: string; name: string; product_type: string }
+interface Branch { id: string; name: string; Id_Terminal: string | null }
+interface StripeProduct {
+  id: string
+  name: string
+  unit_amount: number | null
+  currency: string
+  id_articulo: string
+  product_type: string
+  branch_ids: string[] // vacío = todas las sucursales
+  visible: boolean
+}
+
+const PRODUCT_TYPE_LABELS: Record<string, string> = {
+  access: 'Acceso',
+  article: 'Artículo',
+  promotion: 'Promoción',
+}
+
+const formatMoney = (cents: number | null, currency: string) =>
+  cents == null
+    ? 'Sin precio'
+    : (cents / 100).toLocaleString('es-MX', { style: 'currency', currency: currency.toUpperCase() })
 interface Restriction {
   id: string
   stripe_product_id: string
@@ -62,8 +82,8 @@ export default function AdminShopPage() {
   const [saving, setSaving] = useState(false)
 
   // Form state
-  const [formProductId, setFormProductId] = useState('')
-  const [formProductName, setFormProductName] = useState('')
+  const [formProductIds, setFormProductIds] = useState<string[]>([])
+  const [productSearch, setProductSearch] = useState('')
   const [formBranchId, setFormBranchId] = useState('all')
   const [formType, setFormType] = useState<'allowed_weekdays' | 'blocked_dates' | 'blocked_date_range'>('allowed_weekdays')
   const [formWeekdays, setFormWeekdays] = useState<number[]>([])
@@ -82,7 +102,7 @@ export default function AdminShopPage() {
   const fetchData = async () => {
     setLoading(true)
     const [{ data: branchData }, { data: restrictionData }] = await Promise.all([
-      supabase.from('branches').select('id, name').eq('is_active', true).order('name'),
+      supabase.from('branches').select('id, name, Id_Terminal').eq('is_active', true).order('name'),
       supabase.from('shop_date_restrictions').select('*').order('created_at', { ascending: false }),
     ])
     setBranches(branchData ?? [])
@@ -90,48 +110,79 @@ export default function AdminShopPage() {
     setLoading(false)
   }
 
-  const loadProductsForBranch = useCallback(async (branchId: string) => {
+  // Se cargan una sola vez todos los productos; el filtro por sucursal y la
+  // búsqueda se hacen aquí mismo.
+  const loadProducts = useCallback(async () => {
     setLoadingProducts(true)
-    const url = branchId === 'all' ? '/api/stripe/products' : `/api/stripe/products?branch_id=${branchId}`
-    const res = await fetch(url)
-    const data = await res.json()
-    setProducts(Array.isArray(data) ? data : [])
+    try {
+      const res = await fetch('/api/admin/shop-products')
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error ?? 'No se pudieron cargar los productos')
+      setProducts(Array.isArray(data) ? data : [])
+    } catch (err: any) {
+      toast.error(err.message)
+      setProducts([])
+    }
     setLoadingProducts(false)
   }, [])
 
+  // Con una sucursal elegida se muestran sus productos y los de "todas las sucursales".
+  const productosFiltrados = products.filter((p) => {
+    if (formBranchId !== 'all' && p.branch_ids.length > 0 && !p.branch_ids.includes(formBranchId)) return false
+    const q = productSearch.trim().toLowerCase()
+    if (!q) return true
+    return p.name.toLowerCase().includes(q) || p.id_articulo.toLowerCase().includes(q)
+  })
+
   const handleBranchChange = (value: string) => {
     setFormBranchId(value)
-    setFormProductId('')
-    setFormProductName('')
-    loadProductsForBranch(value)
+    // Se quitan los seleccionados que no se venden en la sucursal nueva.
+    setFormProductIds((prev) => prev.filter((id) => {
+      const p = products.find((x) => x.id === id)
+      return value === 'all' || !p || p.branch_ids.length === 0 || p.branch_ids.includes(value)
+    }))
   }
 
-  const handleProductChange = (value: string) => {
-    setFormProductId(value)
-    const p = products.find((p) => p.id === value)
-    setFormProductName(p?.name ?? '')
+  const toggleProduct = (id: string) => {
+    setFormProductIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
   }
+
+  const todosFiltradosSeleccionados =
+    productosFiltrados.length > 0 && productosFiltrados.every((p) => formProductIds.includes(p.id))
+
+  const toggleTodosFiltrados = () => {
+    const ids = productosFiltrados.map((p) => p.id)
+    setFormProductIds((prev) =>
+      todosFiltradosSeleccionados
+        ? prev.filter((id) => !ids.includes(id))
+        : Array.from(new Set([...prev, ...ids]))
+    )
+  }
+
+  // Sucursales (con su terminal) en las que se vende un producto.
+  const sucursalesDeProducto = (p: StripeProduct) =>
+    p.branch_ids.map((id) => branches.find((b) => b.id === id) ?? { id, name: 'Sucursal desconocida', Id_Terminal: null })
 
   const toggleWeekday = (day: number) => {
     setFormWeekdays((prev) => prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day])
   }
 
   const resetForm = () => {
-    setFormProductId(''); setFormProductName(''); setFormBranchId('all')
+    setFormProductIds([]); setProductSearch(''); setFormBranchId('all')
     setFormType('allowed_weekdays'); setFormWeekdays([]); setFormBlockedDates('')
     setFormStartDate(''); setFormEndDate(''); setFormNote('')
   }
 
   const handleSave = async () => {
-    if (!formProductId) { toast.error('Selecciona un producto'); return }
+    if (formProductIds.length === 0) { toast.error('Selecciona al menos un producto'); return }
     if (formType === 'allowed_weekdays' && formWeekdays.length === 0) { toast.error('Selecciona al menos un día permitido'); return }
     if (formType === 'blocked_dates' && !formBlockedDates.trim()) { toast.error('Ingresa al menos una fecha'); return }
     if (formType === 'blocked_date_range' && (!formStartDate || !formEndDate)) { toast.error('Ingresa fecha inicio y fin'); return }
 
     setSaving(true)
-    const payload: any = {
-      stripe_product_id: formProductId,
-      product_name: formProductName,
+    // Una fila por producto con la misma restricción: /shop consulta las
+    // restricciones por stripe_product_id, así que no hay que cambiar nada allá.
+    const base = {
       branch_id: formBranchId === 'all' ? null : formBranchId,
       restriction_type: formType,
       allowed_weekdays: formType === 'allowed_weekdays' ? formWeekdays : null,
@@ -143,12 +194,20 @@ export default function AdminShopPage() {
       note: formNote || null,
       is_active: true,
     }
+    const filas = formProductIds.map((id) => ({
+      ...base,
+      stripe_product_id: id,
+      product_name: products.find((p) => p.id === id)?.name ?? null,
+    }))
 
-    const { error } = await supabase.from('shop_date_restrictions').insert(payload)
+    // Un solo INSERT con todas las filas: o se guardan todas o ninguna.
+    const { error } = await supabase.from('shop_date_restrictions').insert(filas)
     if (error) {
       toast.error('Error al guardar: ' + error.message)
     } else {
-      toast.success('Restricción creada correctamente')
+      toast.success(filas.length === 1
+        ? 'Restricción creada correctamente'
+        : `Restricción creada para ${filas.length} productos`)
       setOpen(false)
       resetForm()
       fetchData()
@@ -211,11 +270,11 @@ export default function AdminShopPage() {
             <SoloEditores>
               <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm() }}>
                 <DialogTrigger asChild>
-                  <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => loadProductsForBranch('all')}>
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={loadProducts}>
                     <Plus className="h-4 w-4 mr-1" /> Nueva restricción
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <CalendarOff className="h-5 w-5 text-orange-500" /> Agregar restricción de fechas
@@ -225,7 +284,7 @@ export default function AdminShopPage() {
                   <div className="space-y-4 py-2">
                     {/* Branch filter */}
                     <div className="space-y-1">
-                      <Label>Sucursal (para filtrar productos)</Label>
+                      <Label>Sucursal donde aplica la restricción</Label>
                       <Select value={formBranchId} onValueChange={handleBranchChange}>
                         <SelectTrigger><SelectValue placeholder="Selecciona sucursal..." /></SelectTrigger>
                         <SelectContent>
@@ -236,21 +295,88 @@ export default function AdminShopPage() {
                     </div>
 
                     {/* Product */}
-                    <div className="space-y-1">
-                      <Label>Producto de Stripe <span className="text-red-500">*</span></Label>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>
+                          Productos de Stripe <span className="text-red-500">*</span>
+                          {formProductIds.length > 0 && (
+                            <span className="ml-2 text-xs font-normal text-orange-600">
+                              {formProductIds.length} seleccionado{formProductIds.length === 1 ? '' : 's'}
+                            </span>
+                          )}
+                        </Label>
+                        {!loadingProducts && productosFiltrados.length > 0 && (
+                          <button type="button" onClick={toggleTodosFiltrados} className="text-xs text-orange-600 hover:underline">
+                            {todosFiltradosSeleccionados ? 'Quitar todos' : 'Seleccionar todos'}
+                          </button>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Buscar por nombre o Id_Articulo..."
+                          value={productSearch}
+                          onChange={(e) => setProductSearch(e.target.value)}
+                          className="pl-8"
+                        />
+                      </div>
                       {loadingProducts ? (
                         <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
                           <Loader2 className="h-4 w-4 animate-spin" /> Cargando productos...
                         </div>
+                      ) : productosFiltrados.length === 0 ? (
+                        <p className="text-sm text-gray-400 py-4 text-center border rounded-md">
+                          No hay productos {productSearch ? 'que coincidan con la búsqueda' : 'para esta sucursal'}.
+                        </p>
                       ) : (
-                        <Select value={formProductId} onValueChange={handleProductChange}>
-                          <SelectTrigger><SelectValue placeholder="Selecciona producto..." /></SelectTrigger>
-                          <SelectContent>
-                            {products.map((p) => (
-                              <SelectItem key={p.id} value={p.id}>{p.name} ({p.product_type})</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="max-h-72 overflow-y-auto rounded-md border divide-y">
+                          {productosFiltrados.map((p) => {
+                            const seleccionado = formProductIds.includes(p.id)
+                            const sucursales = sucursalesDeProducto(p)
+                            return (
+                              <label
+                                key={p.id}
+                                className={`flex items-start gap-3 p-3 cursor-pointer transition-colors ${seleccionado ? 'bg-orange-50' : 'hover:bg-gray-50'}`}
+                              >
+                                <Checkbox
+                                  checked={seleccionado}
+                                  onCheckedChange={() => toggleProduct(p.id)}
+                                  className="mt-0.5 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+                                />
+                                <div className="flex-1 min-w-0 space-y-1">
+                                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <span className="font-medium text-sm">{p.name}</span>
+                                    <Badge variant="outline" className="text-[10px] py-0">
+                                      {PRODUCT_TYPE_LABELS[p.product_type] ?? p.product_type}
+                                    </Badge>
+                                    {!p.visible && (
+                                      <Badge variant="secondary" className="text-[10px] py-0">Oculto en tienda</Badge>
+                                    )}
+                                    <span className="ml-auto text-sm font-semibold text-gray-700">
+                                      {formatMoney(p.unit_amount, p.currency)}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-gray-500">
+                                    Id_Articulo: <span className="font-mono">{p.id_articulo || '—'}</span>
+                                  </p>
+                                  {sucursales.length === 0 ? (
+                                    <p className="text-xs text-gray-500">Sucursal: <span className="font-medium">Todas las sucursales</span></p>
+                                  ) : (
+                                    <ul className="text-xs text-gray-500 space-y-0.5">
+                                      {sucursales.map((s) => (
+                                        <li key={s.id}>
+                                          <span className="font-medium text-gray-600">{s.name}</span>
+                                          {' · '}Terminal:{' '}
+                                          <span className="font-mono">{s.Id_Terminal ?? 'sin asignar'}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </div>
+                              </label>
+                            )
+                          })}
+                        </div>
                       )}
                     </div>
 
@@ -321,7 +447,11 @@ export default function AdminShopPage() {
                     </div>
 
                     <Button onClick={handleSave} disabled={saving} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-                      {saving ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Guardando...</> : 'Guardar restricción'}
+                      {saving
+                        ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Guardando...</>
+                        : formProductIds.length > 1
+                          ? `Guardar restricción para ${formProductIds.length} productos`
+                          : 'Guardar restricción'}
                     </Button>
                   </div>
                 </DialogContent>
