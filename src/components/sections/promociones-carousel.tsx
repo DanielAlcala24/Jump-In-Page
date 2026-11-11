@@ -12,15 +12,10 @@ import Autoplay from 'embla-carousel-autoplay'
 import React from 'react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { PromoButton } from '@/components/promo-button'
+import { obtenerPromociones, botonDePromocion, type PromocionPublica } from '@/lib/promociones'
 
-interface Promotion {
-  id: string
-  title: string
-  description: string
-  image_url: string
-  image_hint?: string
-  available_in: string[]
-}
+type Promotion = PromocionPublica
 
 export default function PromocionesCarousel() {
   const [promotions, setPromotions] = useState<Promotion[]>([])
@@ -36,18 +31,7 @@ export default function PromocionesCarousel() {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const { data, error } = await supabase
-          .from('promotions')
-          .select('id, title, description, image_url, image_hint, available_in, order_index, created_at')
-          .order('order_index', { ascending: true })
-          .order('created_at', { ascending: false })
-
-        if (error) {
-          console.error('Error fetching promotions:', error)
-          setPromotions([])
-        } else {
-          setPromotions(data && data.length > 0 ? data : [])
-        }
+        setPromotions(await obtenerPromociones(supabase))
       } catch (err) {
         console.error('Error:', err)
         setPromotions([])
@@ -172,8 +156,11 @@ export default function PromocionesCarousel() {
                           )}
                         </div>
                       </div>
+                      <PromoButton promo={promo} className="mb-2" />
                       <Link href="/precios-y-promociones?tab=Promociones" className="block">
-                        <div className="w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2 font-medium">
+                        <div className={`w-full text-center py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2 font-medium ${botonDePromocion(promo)
+                          ? 'border border-orange-500 text-orange-600 hover:bg-orange-50'
+                          : 'bg-orange-500 hover:bg-orange-600 text-white'}`}>
                           Ver Todas las Promociones
                           <ArrowRight className="h-4 w-4" />
                         </div>

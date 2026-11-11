@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { PromoButton } from '@/components/promo-button';
+import { obtenerPromociones, type PromocionPublica } from '@/lib/promociones';
 
 interface Branch {
   id: string;
@@ -17,14 +19,7 @@ interface Branch {
   state: string;
 }
 
-interface Promotion {
-  id: string;
-  title: string;
-  description: string;
-  image_url: string;
-  image_hint?: string;
-  available_in: string[];
-}
+type Promotion = PromocionPublica;
 
 function PreciosPromocionesContentComponent() {
   const searchParams = useSearchParams();
@@ -70,17 +65,7 @@ function PreciosPromocionesContentComponent() {
 
   const fetchPromotions = async () => {
     try {
-      const { data, error } = await supabase
-        .from('promotions')
-        .select('id, title, description, image_url, image_hint, available_in, order_index, created_at')
-        .order('order_index', { ascending: true })
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching promotions:', error);
-      } else {
-        setPromotions(data || []);
-      }
+      setPromotions(await obtenerPromociones(supabase));
     } catch (err) {
       console.error('Error:', err);
     } finally {
@@ -210,6 +195,7 @@ function PreciosPromocionesContentComponent() {
                           ))}
                         </div>
                       </div>
+                      <PromoButton promo={promo} className="mt-5" />
                     </CardContent>
                   </Card>
                 ))}

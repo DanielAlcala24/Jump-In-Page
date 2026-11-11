@@ -30,6 +30,8 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { SoloEditores } from '@/components/admin/admin-access'
+import { BotonPromocionFields } from '@/components/admin/boton-promocion-fields'
+import { validarBotonPromocion } from '@/lib/promociones'
 
 interface Branch {
   id: string
@@ -45,6 +47,8 @@ export default function NewPromotionPage() {
   const [availableIn, setAvailableIn] = useState<string[]>([])
   const [imageUrl, setImageUrl] = useState('')
   const [imageHint, setImageHint] = useState('')
+  const [buttonText, setButtonText] = useState('')
+  const [buttonUrl, setButtonUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [branches, setBranches] = useState<Branch[]>([])
@@ -215,6 +219,12 @@ export default function NewPromotionPage() {
       return
     }
 
+    const errorBoton = validarBotonPromocion(buttonText, buttonUrl)
+    if (errorBoton) {
+      setError(`Botón: ${errorBoton}`)
+      return
+    }
+
     setLoading(true)
     try {
       // Obtener el máximo order_index actual
@@ -236,13 +246,20 @@ export default function NewPromotionPage() {
         image_url: imageUrl.trim(),
         image_hint: imageHint.trim() || null,
         order_index: nextOrderIndex,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        // Solo si hay botón: así se puede crear una promoción sin botón aunque
+        // todavía no se corra supabase-promotions-button.sql.
+        ...(buttonText.trim() && buttonUrl.trim()
+          ? { button_text: buttonText.trim(), button_url: buttonUrl.trim() }
+          : {})
       }
 
       const { data, error } = await supabase.from('promotions').insert([dataToInsert]).select()
 
       if (error) {
-        setError(error.message)
+        setError(/button_(text|url)/.test(error.message)
+          ? 'Para guardar el botón primero hay que correr supabase-promotions-button.sql en el SQL Editor de Supabase.'
+          : error.message)
         console.error('Error al guardar:', error)
       } else {
         router.push('/admin/promociones')
@@ -536,6 +553,13 @@ export default function NewPromotionPage() {
                   Puedes seleccionar una imagen existente o subir una nueva.
                 </p>
               </div>
+
+              <BotonPromocionFields
+                texto={buttonText}
+                enlace={buttonUrl}
+                onTextoChange={setButtonText}
+                onEnlaceChange={setButtonUrl}
+              />
 
               <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
                 <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>

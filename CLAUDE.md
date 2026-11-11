@@ -155,6 +155,8 @@ Las de usuarios son solo para super admins; las demás de `/api/admin` exigen el
 >
 > La tabla `promotions` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
 >
+> La tabla `promotions` también tiene un **botón opcional**: `button_text` (leyenda, máx. 40) y `button_url` (`/ruta`, `#seccion` del inicio, `/ruta#seccion` o `https://...`; SQL: `supabase-promotions-button.sql`). Se muestra en la tarjeta del carrusel del inicio y de `/precios-y-promociones` con `<PromoButton>` (`src/components/promo-button.tsx`) solo si tiene leyenda **y** enlace válido; un `#seccion` suelto se convierte en `/#seccion`. Las dos vistas leen con `obtenerPromociones()` (`src/lib/promociones.ts`), que si aún no existen esas columnas vuelve a pedir sin ellas, para no dejar el sitio sin promociones. Los campos del admin son `<BotonPromocionFields>` (nueva y editar).
+>
 > La tabla `birthday_packages` incluye `description` (opcional, se muestra en la vista pública), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público).
 >
 > La tabla `menu_items` incluye `available_in` (array de sucursales donde está disponible el producto; se muestra en la vista pública con filtro y badges), `knowledge_base`, `knowledge_category` y `knowledge_is_active` (texto/bandera solo informativo para el admin / consumo vía API; **no** se muestra en el sitio público). Nota: `knowledge_category` y `knowledge_is_active` son independientes de `category` y de cualquier estado público del producto.

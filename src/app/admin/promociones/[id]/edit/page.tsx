@@ -30,6 +30,8 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { SoloEditores } from '@/components/admin/admin-access'
+import { BotonPromocionFields } from '@/components/admin/boton-promocion-fields'
+import { validarBotonPromocion } from '@/lib/promociones'
 
 interface Branch {
   id: string
@@ -56,6 +58,10 @@ export default function EditPromotionPage() {
   const [availableIn, setAvailableIn] = useState<string[]>([])
   const [imageUrl, setImageUrl] = useState('')
   const [imageHint, setImageHint] = useState('')
+  const [buttonText, setButtonText] = useState('')
+  const [buttonUrl, setButtonUrl] = useState('')
+  // ¿Existen ya las columnas del botón? (se sabe por el select('*') de la promoción)
+  const [tieneColumnasBoton, setTieneColumnasBoton] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loadingItem, setLoadingItem] = useState(true)
   const [error, setError] = useState('')
@@ -246,6 +252,9 @@ export default function EditPromotionPage() {
       setAvailableIn(data.available_in || [])
       setImageUrl(data.image_url || '')
       setImageHint(data.image_hint || '')
+      setButtonText(data.button_text || '')
+      setButtonUrl(data.button_url || '')
+      setTieneColumnasBoton('button_url' in data)
     } catch (err) {
       console.error('Error fetching promotion:', err)
       setError('Error al cargar la promoción')
@@ -263,6 +272,18 @@ export default function EditPromotionPage() {
       return
     }
 
+    const errorBoton = validarBotonPromocion(buttonText, buttonUrl)
+    if (errorBoton) {
+      setError(`Botón: ${errorBoton}`)
+      return
+    }
+
+    const conBoton = Boolean(buttonText.trim() && buttonUrl.trim())
+    if (conBoton && !tieneColumnasBoton) {
+      setError('Para guardar el botón primero hay que correr supabase-promotions-button.sql en el SQL Editor de Supabase.')
+      return
+    }
+
     setLoading(true)
     try {
       const { error } = await supabase
@@ -274,7 +295,14 @@ export default function EditPromotionPage() {
           available_in: availableIn,
           image_url: imageUrl.trim(),
           image_hint: imageHint.trim() || null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          // Si las columnas ya existen se mandan siempre (con null se quita el botón).
+          ...(tieneColumnasBoton
+            ? {
+                button_text: conBoton ? buttonText.trim() : null,
+                button_url: conBoton ? buttonUrl.trim() : null
+              }
+            : {})
         })
         .eq('id', promotionId)
 
@@ -597,6 +625,13 @@ export default function EditPromotionPage() {
                   Puedes seleccionar una imagen existente o subir una nueva.
                 </p>
               </div>
+
+              <BotonPromocionFields
+                texto={buttonText}
+                enlace={buttonUrl}
+                onTextoChange={setButtonText}
+                onEnlaceChange={setButtonUrl}
+              />
 
               <div className="space-y-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 p-4">
                 <Label htmlFor="knowledgeBase">Base de Conocimiento (uso interno)</Label>
