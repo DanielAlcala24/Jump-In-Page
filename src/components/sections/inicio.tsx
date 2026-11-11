@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { FerrisWheel, Cake, Briefcase, MapPin, Ticket, ChevronDown, UserPlus } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Inicio() {
   return (
@@ -9,6 +10,37 @@ export default function Inicio() {
       className="relative flex h-screen w-full flex-col items-center justify-center text-center text-white"
     >
       <div className="relative z-10 mx-4 flex flex-col items-center">
+        <p className="mb-2 text-sm font-semibold text-white md:text-base">Descarga nuestra app</p>
+        <div className="mb-6 flex flex-wrap justify-center gap-3">
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.jumpinapp.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform duration-300 hover:scale-105"
+          >
+            <Image
+              src="/assets/play_store.png"
+              alt="Descargar en Google Play"
+              width={150}
+              height={50}
+              className="h-10 w-auto md:h-12"
+            />
+          </Link>
+          <Link
+            href="https://apps.apple.com/mx/app/jump-in/id6745444409"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform duration-300 hover:scale-105"
+          >
+            <Image
+              src="/assets/apps_store.png"
+              alt="Descargar en App Store"
+              width={150}
+              height={50}
+              className="h-10 w-auto md:h-12"
+            />
+          </Link>
+        </div>
         <h1 className="text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl font-headline">
           ¡Salta a la Diversión!
         </h1>
