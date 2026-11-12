@@ -11,7 +11,10 @@ function mapProduct(p: Stripe.Product) {
     name: p.name,
     description: p.description,
     active: p.active,
+    // Imagen para escritorio = la imagen del producto en Stripe; la de móvil va en la
+    // metadata `imagen_movil` (Stripe solo guarda una lista de imágenes, sin etiqueta).
     image: p.images?.[0] ?? null,
+    image_mobile: p.metadata?.imagen_movil || null,
     price_id: price?.id ?? null,
     unit_amount: price?.unit_amount ?? null,
     currency: price?.currency ?? 'mxn',
@@ -47,10 +50,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const { name, description, image, price, product_type, id_articulo, branch_ids, visible } = body as {
+    const { name, description, image, image_mobile, price, product_type, id_articulo, branch_ids, visible } = body as {
       name: string
       description?: string
       image?: string
+      image_mobile?: string
       price: number // en pesos (MXN)
       product_type: string
       id_articulo?: string
@@ -60,6 +64,10 @@ export async function POST(req: NextRequest) {
 
     if (!name || !price || price <= 0) {
       return NextResponse.json({ error: 'Nombre y precio (mayor a 0) son requeridos' }, { status: 400 })
+    }
+    // Stripe limita cada valor de metadata a 500 caracteres.
+    if (image_mobile && image_mobile.length > 500) {
+      return NextResponse.json({ error: 'La URL de la imagen para móvil es demasiado larga (máx. 500 caracteres)' }, { status: 400 })
     }
 
     const product = await stripe.products.create({
@@ -72,6 +80,8 @@ export async function POST(req: NextRequest) {
         branch_id: (branch_ids ?? []).join(','), // vacío = todas las sucursales
         // Controla si el producto se muestra a los clientes en /shop.
         visible_en_shop: visible === false ? 'false' : 'true',
+        // Opcional; sin ella /shop usa la imagen de escritorio también en móvil.
+        ...(image_mobile ? { imagen_movil: image_mobile } : {}),
       },
     })
 

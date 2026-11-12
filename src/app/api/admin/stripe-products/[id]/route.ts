@@ -12,16 +12,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   try {
     const body = await req.json()
-    const { name, description, image, price, product_type, id_articulo, branch_ids, active, visible } = body as {
+    const { name, description, image, image_mobile, price, product_type, id_articulo, branch_ids, active, visible } = body as {
       name?: string
       description?: string
       image?: string
+      image_mobile?: string // metadata `imagen_movil`; '' la borra
       price?: number // en pesos (MXN)
       product_type?: string
       id_articulo?: string
       branch_ids?: string[]
       active?: boolean
       visible?: boolean
+    }
+
+    // Stripe limita cada valor de metadata a 500 caracteres.
+    if (image_mobile && image_mobile.length > 500) {
+      return NextResponse.json({ error: 'La URL de la imagen para móvil es demasiado larga (máx. 500 caracteres)' }, { status: 400 })
     }
 
     // Campos base del producto.
@@ -37,13 +43,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       product_type !== undefined ||
       id_articulo !== undefined ||
       branch_ids !== undefined ||
-      visible !== undefined
+      visible !== undefined ||
+      image_mobile !== undefined
     ) {
       updateData.metadata = {}
       if (product_type !== undefined) updateData.metadata.product_type = product_type
       if (id_articulo !== undefined) updateData.metadata.Id_Articulo = id_articulo || ''
       if (branch_ids !== undefined) updateData.metadata.branch_id = (branch_ids ?? []).join(',')
       if (visible !== undefined) updateData.metadata.visible_en_shop = visible ? 'true' : 'false'
+      // En Stripe, poner una llave de metadata en '' la elimina.
+      if (image_mobile !== undefined) updateData.metadata.imagen_movil = image_mobile || ''
     }
 
     // Si cambia el precio: los precios de Stripe son inmutables, se crea uno nuevo

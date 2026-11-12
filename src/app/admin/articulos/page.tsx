@@ -15,18 +15,19 @@ import { Switch } from '@/components/ui/switch'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import MediaSelector from '@/components/admin/media-selector'
 import { ArrowLeft, Plus, Pencil, Loader2, Archive, ArchiveRestore, Package, Search, X, Layers, Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { SoloEditores, usePuedeEditar } from '@/components/admin/admin-access'
 import { OrdenSeccionesShop } from '@/components/admin/orden-secciones-shop'
+import { ImagenesEscritorioMovil } from '@/components/admin/imagenes-escritorio-movil'
 
 interface StripeProduct {
   id: string
   name: string
   description: string | null
   active: boolean
-  image: string | null
+  image: string | null // escritorio
+  image_mobile: string | null // móvil (metadata imagen_movil)
   price_id: string | null
   unit_amount: number | null
   currency: string
@@ -51,6 +52,7 @@ const emptyForm = {
   name: '',
   description: '',
   image: '',
+  image_mobile: '',
   price: '',
   product_type: 'access',
   id_articulo: '',
@@ -122,6 +124,7 @@ export default function AdminArticulosPage() {
       name: p.name,
       description: p.description ?? '',
       image: p.image ?? '',
+      image_mobile: p.image_mobile ?? '',
       price: p.unit_amount != null ? String(p.unit_amount / 100) : '',
       product_type: p.product_type || 'access',
       id_articulo: p.id_articulo || '',
@@ -151,6 +154,7 @@ export default function AdminArticulosPage() {
         name: form.name.trim(),
         description: form.description.trim(),
         image: form.image,
+        image_mobile: form.image_mobile,
         price: priceNum,
         product_type: form.product_type,
         id_articulo: form.id_articulo.trim(),
@@ -393,7 +397,7 @@ export default function AdminArticulosPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="relative h-10 w-10 rounded bg-gray-100 overflow-hidden flex-shrink-0">
-                        {p.image && <Image src={p.image} alt={p.name} fill className="object-cover" sizes="40px" />}
+                        {(p.image || p.image_mobile) && <Image src={(p.image || p.image_mobile)!} alt={p.name} fill className="object-cover" sizes="40px" />}
                       </div>
                       <span className="font-medium">{p.name}</span>
                     </div>
@@ -467,10 +471,12 @@ export default function AdminArticulosPage() {
               <Input type="number" min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="220" />
             </div>
 
-            <div>
-              <Label className="mb-1 block">Imagen</Label>
-              <MediaSelector value={form.image} onSelect={(url) => setForm({ ...form, image: url })} />
-            </div>
+            <ImagenesEscritorioMovil
+              escritorio={form.image}
+              movil={form.image_mobile}
+              onEscritorioChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
+              onMovilChange={(url) => setForm((prev) => ({ ...prev, image_mobile: url }))}
+            />
 
             <div>
               <Label>Tipo de producto</Label>

@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import MediaSelector from '@/components/admin/media-selector'
+import { ImagenesEscritorioMovil } from '@/components/admin/imagenes-escritorio-movil'
 import {
   ArrowLeft, Plus, Pencil, Loader2, Trash2, Layers, Search, ChevronUp, ChevronDown, X, MapPin,
 } from 'lucide-react'
@@ -24,7 +24,8 @@ interface ProductGroup {
   id: string
   name: string
   description: string | null
-  image_url: string | null
+  image_url: string | null // escritorio
+  mobile_image_url?: string | null // móvil (puede no existir si falta el SQL)
   product_ids: string[]
   sort_order: number
   is_active: boolean
@@ -38,6 +39,7 @@ interface StripeProduct {
   description: string | null
   active: boolean
   image: string | null
+  image_mobile: string | null
   unit_amount: number | null
   currency: string
   product_type: string
@@ -53,6 +55,7 @@ const emptyForm = {
   name: '',
   description: '',
   image_url: '',
+  mobile_image_url: '',
   product_ids: [] as string[],
   sort_order: '0',
   is_active: true,
@@ -65,6 +68,9 @@ export default function AdminGruposPage() {
 
   const [user, setUser] = useState<any>(null)
   const [groups, setGroups] = useState<ProductGroup[]>([])
+  // Si existe shop_product_groups.mobile_image_url (supabase-shop-product-groups-mobile-image.sql).
+  // null = no se sabe todavía (no hay grupos para revisarlo).
+  const [columnaMovil, setColumnaMovil] = useState<boolean | null>(null)
   const [products, setProducts] = useState<StripeProduct[]>([])
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
@@ -90,6 +96,8 @@ export default function AdminGruposPage() {
       return
     }
     setGroups(data ?? [])
+    // ¿Ya existe la columna de la imagen para móvil? (se ve en cualquier fila del select('*'))
+    if (data && data.length > 0) setColumnaMovil('mobile_image_url' in data[0])
   }, [supabase])
 
   useEffect(() => {
@@ -138,6 +146,7 @@ export default function AdminGruposPage() {
       name: g.name,
       description: g.description ?? '',
       image_url: g.image_url ?? '',
+      mobile_image_url: g.mobile_image_url ?? '',
       product_ids: [...(g.product_ids ?? [])],
       sort_order: String(g.sort_order ?? 0),
       is_active: g.is_active,
@@ -191,6 +200,9 @@ export default function AdminGruposPage() {
       is_active: form.is_active,
       display_mode: form.display_mode,
       updated_at: new Date().toISOString(),
+      // Se manda si la columna ya existe (así también se puede quitar) o si se eligió
+      // imagen. Si falta el SQL y no hay imagen móvil, el grupo se guarda igual.
+      ...(columnaMovil || form.mobile_image_url ? { mobile_image_url: form.mobile_image_url || null } : {}),
     }
 
     const { error } = editingId
@@ -199,7 +211,12 @@ export default function AdminGruposPage() {
 
     setSaving(false)
 
-    if (error) { toast.error('Error al guardar: ' + error.message); return }
+    if (error) {
+      toast.error(/mobile_image_url/.test(error.message)
+        ? 'Para guardar la imagen para móvil primero hay que correr supabase-shop-product-groups-mobile-image.sql en el SQL Editor de Supabase.'
+        : 'Error al guardar: ' + error.message)
+      return
+    }
 
     toast.success(editingId ? 'Grupo actualizado' : 'Grupo creado')
     setDialogOpen(false)
@@ -361,9 +378,9 @@ export default function AdminGruposPage() {
             <div key={g.id} className={`border rounded-lg bg-white p-4 ${!g.is_active ? 'opacity-60' : ''}`}>
               <div className="flex items-start gap-4">
                 <div className="relative h-16 w-16 rounded bg-gray-100 overflow-hidden flex-shrink-0">
-                  {(g.image_url || productById(g.product_ids?.[0] ?? '')?.image) && (
+                  {(g.image_url || g.mobile_image_url || productById(g.product_ids?.[0] ?? '')?.image) && (
                     <Image
-                      src={g.image_url || productById(g.product_ids[0])?.image || ''}
+                      src={g.image_url || g.mobile_image_url || productById(g.product_ids[0])?.image || ''}
                       alt={g.name}
                       fill
                       className="object-cover"
@@ -454,13 +471,13 @@ export default function AdminGruposPage() {
               />
             </div>
 
-            <div>
-              <Label className="mb-1 block">Imagen del grupo</Label>
-              <MediaSelector value={form.image_url} onSelect={(url) => setForm({ ...form, image_url: url })} />
-              <p className="text-xs text-gray-500 mt-1">
-                Opcional — si la dejas vacía se usa la imagen del producto que el cliente seleccione.
-              </p>
-            </div>
+            <ImagenesEscritorioMovil
+              escritorio={form.image_url}
+              movil={form.mobile_image_url}
+              onEscritorioChange={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+              onMovilChange={(url) => setForm((prev) => ({ ...prev, mobile_image_url: url }))}
+              ayuda="En celular se muestra la de móvil y en computadora la de escritorio. Si solo pones una, se usa en las dos vistas; si no pones ninguna, se usan las del primer producto del grupo que tenga imagen."
+            />
 
             {/* Cómo ve el cliente las opciones en /shop */}
             <div>

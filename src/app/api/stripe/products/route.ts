@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
         id: p.id,
         name: p.name,
         description: p.description,
-        image: p.images?.[0] ?? null,
+        image: p.images?.[0] ?? null, // escritorio
+        image_mobile: p.metadata?.imagen_movil || null, // móvil (opcional)
         price_id: price?.id ?? null,
         unit_amount: price?.unit_amount ?? null,
         currency: price?.currency ?? 'mxn',

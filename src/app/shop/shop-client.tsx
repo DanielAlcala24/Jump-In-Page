@@ -35,7 +35,8 @@ interface Product {
   id: string
   name: string
   description: string | null
-  image: string | null
+  image: string | null // escritorio
+  image_mobile: string | null // móvil (metadata imagen_movil), opcional
   price_id: string | null
   unit_amount: number | null
   currency: string
@@ -50,7 +51,8 @@ interface ProductGroup {
   id: string
   name: string
   description: string | null
-  image_url: string | null
+  image_url: string | null // escritorio
+  mobile_image_url?: string | null // móvil; puede faltar si no se corrió el SQL
   product_ids: string[]
   sort_order: number
   // 'modal' = botón "Ver opciones" que abre un modal; 'expanded' = opciones ya
@@ -63,7 +65,8 @@ interface ProductEntry {
   key: string
   name: string
   description: string | null
-  image: string | null
+  image: string | null // escritorio
+  imageMobile: string | null // móvil
   variants: Product[]
   expanded: boolean
 }
@@ -94,6 +97,14 @@ const TYPE_COLORS = {
   promotion: 'bg-green-100 text-green-700',
 }
 
+// Imagen para escritorio y para móvil. Si solo hay una, se usa en las dos vistas;
+// null si no hay ninguna.
+function imagePair(desktop: string | null | undefined, mobile: string | null | undefined) {
+  const d = desktop || mobile
+  const m = mobile || desktop
+  return d && m ? { desktop: d, mobile: m } : null
+}
+
 // Arma las tarjetas: primero los grupos activos (en su orden), después los
 // productos sueltos que no quedaron dentro de ningún grupo.
 function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
@@ -115,6 +126,7 @@ function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
       name: g.name,
       description: g.description,
       image: g.image_url,
+      imageMobile: g.mobile_image_url ?? null,
       variants,
       expanded: g.display_mode === 'expanded',
     })
@@ -127,6 +139,7 @@ function buildEntries(list: Product[], groups: ProductGroup[]): ProductEntry[] {
       name: product.name,
       description: product.description,
       image: product.image,
+      imageMobile: product.image_mobile,
       variants: [product],
       expanded: false,
     })
@@ -521,7 +534,13 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                             const description = isGroup
                               ? (entry.description ?? (entry.expanded ? null : product.description))
                               : product.description
-                            const image = (isGroup ? entry.image : null) ?? product.image ?? entry.variants.find((v) => v.image)?.image ?? null
+                            // Par de imágenes (escritorio / móvil) de la primera fuente que tenga alguna:
+                            // el grupo, el producto mostrado o cualquier opción del grupo.
+                            const variantWithImage = entry.variants.find((v) => v.image || v.image_mobile)
+                            const images =
+                              (isGroup ? imagePair(entry.image, entry.imageMobile) : null) ??
+                              imagePair(product.image, product.image_mobile) ??
+                              (variantWithImage ? imagePair(variantWithImage.image, variantWithImage.image_mobile) : null)
                             // Precio más bajo del grupo, para el "Desde $…".
                             const minPrice = Math.min(...entry.variants.map((v) => v.unit_amount ?? Infinity))
                             // Grupo con modal (default) o con las opciones ya desplegadas en la tarjeta.
@@ -533,12 +552,21 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                                   ${widthClass} ${wide ? 'md:flex-row' : ''}
                                   ${entryQty > 0 ? 'border-orange-500' : 'border-transparent'}`}
                               >
-                                {image && (
+                                {images && (
                                   <div
                                     className={`relative h-36 bg-gray-100 shrink-0 ${wide ? 'md:h-auto md:min-h-[16rem] md:w-2/5' : ''} ${usesModal ? 'cursor-pointer' : ''}`}
                                     onClick={usesModal ? () => setOpenGroupKey(entry.key) : undefined}
                                   >
-                                    <Image src={image} alt={title} fill className="object-cover" />
+                                    {images.desktop === images.mobile ? (
+                                      <Image src={images.desktop} alt={title} fill className="object-cover" />
+                                    ) : (
+                                      // Imagen distinta por vista (corte en 768 px, igual que el banner).
+                                      // La oculta con display:none no se descarga (loading="lazy").
+                                      <>
+                                        <Image src={images.mobile} alt={title} fill sizes="100vw" className="object-cover md:hidden" />
+                                        <Image src={images.desktop} alt={title} fill sizes={wide ? '40vw' : '(min-width: 1024px) 33vw, 50vw'} className="object-cover hidden md:block" />
+                                      </>
+                                    )}
                                     {entryQty > 0 && (
                                       <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow">
                                         {entryQty}
@@ -769,9 +797,9 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
                       className={`flex items-center gap-3 rounded-xl border-2 p-3 transition-colors
                         ${vQty > 0 ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}
                     >
-                      {v.image && (
+                      {(v.image || v.image_mobile) && (
                         <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                          <Image src={v.image} alt={v.name} fill className="object-cover" sizes="48px" />
+                          <Image src={(v.image || v.image_mobile)!} alt={v.name} fill className="object-cover" sizes="48px" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
@@ -813,9 +841,9 @@ export default function ShopClient({ children }: { children?: React.ReactNode })
           <div className="space-y-2">
             {cartItems.map((item) => (
               <div key={item.product.id} className="flex items-center gap-3 rounded-xl border border-gray-200 p-3">
-                {item.product.image && (
+                {(item.product.image || item.product.image_mobile) && (
                   <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                    <Image src={item.product.image} alt={item.product.name} fill className="object-cover" sizes="48px" />
+                    <Image src={(item.product.image || item.product.image_mobile)!} alt={item.product.name} fill className="object-cover" sizes="48px" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
